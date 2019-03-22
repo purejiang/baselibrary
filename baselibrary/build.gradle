@@ -1,0 +1,52 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 26
+
+
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:recyclerview-v7:26.1.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    //导入retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    //Gson 库
+    compile 'com.google.code.gson:gson:2.6.2'
+    //okhttp
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.squareup.okio:okio:1.9.0'
+    //下面两个是RxJava 和 RxAndroid
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    compile 'io.reactivex.rxjava2:rxjava:2.x.y'
+    //转换器，请求结果转换成Model
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    //配合Rxjava 使用
+    compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    //内存泄漏检测
+//    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+//    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+
+}
+repositories {
+    mavenCentral()
+}

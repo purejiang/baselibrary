@@ -1,0 +1,32 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.nice.baselibrary" >
+    <!--网络权限-->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!--网络权限-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--网络权限-->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <!--读取手机状态-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!--读取手机状态-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!--读手机存储-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--系统弹出框,6.0以后需要用户在系统设置中同意-->
+    <!--<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />-->
+    <!--相机权限-->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <!--获取大概定位-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!--读取短信-->
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <!--录音权限-->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!--读取系统中所有的LOG的权限,4.1以上已无法获取-->
+    <!--<uses-permission android:name="android.permission.READ_LOGS" />-->
+    <application
+    >
+
+</application>
+
+</manifest>

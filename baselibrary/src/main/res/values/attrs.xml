@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="NiceCircleProgress">
+        <attr name="circleColor" format="reference" />
+        <attr name="progressColor" format="reference"/>
+        <attr name="textColor" format="reference"/>
+        <attr name="textSize" format="float"/>
+    </declare-styleable>
+</resources>
