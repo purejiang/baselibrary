@@ -1,14 +1,14 @@
 package com.jplus.manyfunction
 
 import android.content.Context
-import com.nice.baselibrary.base.BaseApplication
+import com.nice.baselibrary.base.NiceApplication
 
 
 /**
  * @author Administrator
  * @date 2019/2/20.
  */
-class MyApplication:BaseApplication() {
+class MyApplication: NiceApplication() {
 
     override fun onCreate() {
         super.onCreate()

@@ -8,7 +8,7 @@ import android.view.View
  * @author Administrator
  * @date 2019/2/18.
  */
-abstract class BaseLoadingView: View {
+abstract class NiceLoadingView : View {
 
     constructor(context: Context) : super(context)
 

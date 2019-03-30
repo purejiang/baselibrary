@@ -1,11 +1,15 @@
 package com.jplus.manyfunction.ui.activity
 
+import android.Manifest
 import android.os.Bundle
+import android.view.KeyEvent
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.presenter.DownloadListPresenter
-import com.nice.baselibrary.base.BaseActivity
+import com.nice.baselibrary.base.NiceActivity
 import com.jplus.manyfunction.ui.fragment.DownloadListFragment
+import com.jplus.manyfunction.utils.NicePermissionUtils
 import com.nice.baselibrary.base.common.ApiEntry
+import com.nice.baselibrary.base.utils.PermissionUtils
 import com.nice.baselibrary.base.view.NiceTitleBar
 import com.nice.baselibrary.download.NiceDownloadDataSource
 
@@ -14,23 +18,29 @@ import com.nice.baselibrary.download.NiceDownloadDataSource
  * @author JPlus
  * @date 2019/2/13.
  */
-class DownloadListActivity :BaseActivity() {
+class DownloadListActivity : NiceActivity() {
+    companion object {
+        private val EXIT_TIME = 2000L
+    }
 
     private var mDownloadFragment: DownloadListFragment?=null
     private var mDownloadTitle: NiceTitleBar?=null
+    private var mExitTime=0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_download)
         ApiEntry.getInstance().init(this, true)
+
     }
 
     override fun onStart() {
         super.onStart()
-        ApiEntry.getInstance().requestPermission()
+        NicePermissionUtils.getInstance().requestPermissions()
+//        ApiEntry.getInstance().requestPermission(Manifest.permission.CAMERA)
     }
-
     override fun onInit() {
+
 
     }
 
@@ -69,7 +79,20 @@ class DownloadListActivity :BaseActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        ApiEntry.getInstance().handleRequestPermissionsResult(requestCode, permissions, grantResults)
+//        ApiEntry.getInstance().handleRequestPermissionsResult(requestCode, permissions, grantResults)
+
     }
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            if(System.currentTimeMillis() - mExitTime >= EXIT_TIME){
+                mExitTime = System.currentTimeMillis()
+
+            }else{
+                finish()
+                System.exit(0)
+            }
+        }
+        return true
+    }
 }

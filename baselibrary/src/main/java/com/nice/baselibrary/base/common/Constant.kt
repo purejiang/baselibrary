@@ -19,7 +19,7 @@ class Constant {
 
          class Message{
              companion object {
-                 val DEFAULT_APPNAME = "Application"
+                 val DEFAULT_APP_NAME = "Application"
              }
 
         }
@@ -29,6 +29,11 @@ class Constant {
                 val CRASH_INFO_DIR =  File.separator + "crash"
                 val LOGCAT_INFO_DIR =  File.separator + "logcat"
                 val DOWNLOAD_PATH =  File.pathSeparator + "Download"
+            }
+        }
+        class Persistence {
+            companion object {
+                val DEFAULT = "setting"
             }
         }
     }

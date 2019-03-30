@@ -4,7 +4,7 @@ package com.nice.baselibrary.base.presenter
  * @author JPlus
  * @date 2019/2/12.
  */
-interface  BasePresenter {
+interface NicePresenter {
     /**
      * 实现订阅关系
      */

@@ -16,7 +16,7 @@ import com.nice.baselibrary.download.NiceDownloadListener
  * @author JPlus
  * @date 2019/1/16.
  */
-class DownloadAdapter(private val mItems:ArrayList<NiceDownloadInfo>): RecyclerView.Adapter<DownloadAdapter.VH>() {
+class DownloadAdapter(private val mItems:MutableList<NiceDownloadInfo>): RecyclerView.Adapter<DownloadAdapter.VH>() {
 
     private var mItemClickListener: DownloadAdapter.ItemClickListener?=null
 
@@ -35,7 +35,7 @@ class DownloadAdapter(private val mItems:ArrayList<NiceDownloadInfo>): RecyclerV
 
     }
 
-     fun refreshItems(items: ArrayList<NiceDownloadInfo>) {
+     fun refreshItems(items: MutableList<NiceDownloadInfo>) {
 
     }
      fun getItem(position: Int): NiceDownloadInfo {
@@ -44,7 +44,7 @@ class DownloadAdapter(private val mItems:ArrayList<NiceDownloadInfo>): RecyclerV
      fun setItemClickListener(itemClickListener: DownloadAdapter.ItemClickListener){
         mItemClickListener = itemClickListener
     }
-     fun addItems(items: ArrayList<NiceDownloadInfo>) {
+     fun addItems(items: MutableList<NiceDownloadInfo>) {
 
     }
 
@@ -53,7 +53,7 @@ class DownloadAdapter(private val mItems:ArrayList<NiceDownloadInfo>): RecyclerV
         notifyItemChanged(position)
     }
 
-     fun deleteItems(items: ArrayList<NiceDownloadInfo>) {
+     fun deleteItems(items: MutableList<NiceDownloadInfo>) {
 
     }
 

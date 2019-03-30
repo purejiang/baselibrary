@@ -11,20 +11,20 @@ import android.view.ViewGroup
  * @author JPlus
  * @date 2019/1/16.
  */
-abstract class BaseFragment :Fragment() {
-    private var mBaseActivity:BaseActivity?=null
+abstract class NiceFragment :Fragment() {
+    private var mNiceActivity: NiceActivity?=null
 
     abstract fun getInitView(view: View?, bundle:Bundle?)
 
     abstract fun getLayoutId():Int
 
-    fun getHolderActivity():BaseActivity?{
-        return mBaseActivity
+    fun getHolderActivity(): NiceActivity?{
+        return mNiceActivity
     }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        mBaseActivity = context as BaseActivity
+        mNiceActivity = context as NiceActivity
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {

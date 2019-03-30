@@ -8,7 +8,7 @@ import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import com.nice.baselibrary.R
-import com.nice.baselibrary.base.BaseLoadingView
+import com.nice.baselibrary.base.NiceLoadingView
 
 /**
  * 带下载进度的圆形进度条
@@ -16,7 +16,7 @@ import com.nice.baselibrary.base.BaseLoadingView
  * @date 2018\1\11
  */
 
-class NiceCircleProgress : BaseLoadingView {
+class NiceCircleProgress : NiceLoadingView {
     companion object {
         private val DOWNLOAD_SUCCESS = 100.0
         private val DOWNLOAD_FAILED = -2.0

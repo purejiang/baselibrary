@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper
  * @author Jplsu
  * @date 2019/2/16.
  */
-abstract class BaseDBHelper :SQLiteOpenHelper {
+abstract class NiceDBHelper :SQLiteOpenHelper {
 
 
     constructor(context: Context, dataName:String, factory: SQLiteDatabase.CursorFactory, dataVersion:Int):super(context, dataName, factory, dataVersion){

@@ -9,7 +9,7 @@ import java.util.ArrayList
  * @date 2019/3/7.
  */
 class NiceDownloadDataSource(context: Context) {
-    private var mNiceDownloadList: ArrayList<NiceDownloadInfo> = ArrayList()
+    private var mNiceDownloadList: MutableList<NiceDownloadInfo> = ArrayList()
     private var mDownloadDataHelper: NiceDownloadDBHelper? = null
     private var mDatabase: SQLiteDatabase? = null
 
@@ -26,7 +26,7 @@ class NiceDownloadDataSource(context: Context) {
         return item
     }
 
-    fun addDatas(items: ArrayList<NiceDownloadInfo>) {
+    fun addDataList(items: MutableList<NiceDownloadInfo>) {
         items.filter { mDownloadDataHelper?.add(it, mDatabase) != null }
                 .forEach { mNiceDownloadList.add(it) }
 
@@ -39,7 +39,7 @@ class NiceDownloadDataSource(context: Context) {
         return item
     }
 
-    fun removeDatas(items: ArrayList<NiceDownloadInfo>) {
+    fun removeDatas(items: MutableList<NiceDownloadInfo>) {
         items.filter { mDownloadDataHelper?.remove(it, mDatabase) != null }
                 .forEach { mNiceDownloadList.remove(it) }
     }
@@ -52,7 +52,7 @@ class NiceDownloadDataSource(context: Context) {
         mDownloadDataHelper?.update(niceDownloadInfo, mDatabase)
     }
 
-    fun refreshData(): List<NiceDownloadInfo>? {
+    fun refreshData(): MutableList<NiceDownloadInfo>? {
         return null
     }
 
@@ -64,7 +64,7 @@ class NiceDownloadDataSource(context: Context) {
         return mDownloadDataHelper?.queryByUrl(url, mDatabase)
     }
 
-    fun getAllData(): ArrayList<NiceDownloadInfo>? {
+    fun getAllData(): MutableList<NiceDownloadInfo>? {
         return mDownloadDataHelper?.queryAll(mDatabase)
     }
 }

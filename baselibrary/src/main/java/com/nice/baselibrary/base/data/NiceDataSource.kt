@@ -5,7 +5,7 @@ package com.nice.baselibrary.base.data
  * @author JPlus
  * @date 2019/2/14.
  */
-abstract class BaseDataSource<T> {
+abstract class NiceDataSource<T> {
     /**
      * 添加数据
      * @param data
@@ -15,7 +15,7 @@ abstract class BaseDataSource<T> {
      * 添加数据通过list
      * @param dataList
      */
-    abstract fun addDatas(dataList:ArrayList<T>)
+    abstract fun addDatas(dataList:MutableList<T>)
     /**
      * 删除数据
      * @param data
@@ -26,7 +26,7 @@ abstract class BaseDataSource<T> {
      * @param dataList
      * @return
      */
-    abstract fun removeData(dataList:ArrayList<T>)
+    abstract fun removeData(dataList:MutableList<T>)
     /**
      * 删除所有
      */
@@ -40,7 +40,7 @@ abstract class BaseDataSource<T> {
      * 刷新数据
      * @return
      */
-    abstract fun refreshData():ArrayList<T>
+    abstract fun refreshData():MutableList<T>
     /**
      * 查询数据
      * @param data
@@ -51,5 +51,5 @@ abstract class BaseDataSource<T> {
      * 查询所有数据
      * @return
      */
-    abstract fun getAllData():ArrayList<T>
+    abstract fun getAllData():MutableList<T>
 }

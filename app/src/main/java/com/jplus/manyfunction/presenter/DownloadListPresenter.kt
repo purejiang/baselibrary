@@ -5,7 +5,6 @@ import com.jplus.manyfunction.contract.DownloadListContract
 
 import com.nice.baselibrary.base.utils.StringUtils
 import com.nice.baselibrary.download.*
-import java.util.*
 
 
 /**
@@ -15,11 +14,11 @@ import java.util.*
 class DownloadListPresenter : DownloadListContract.Presenter {
 
 
-    private var mView: DownloadListContract.View? = null
+    private var mView: DownloadListContract.ViewNice? = null
     private var mDataSourceNice: NiceDownloadDataSource? = null
     private var mDownloadsManagerNice: NiceDownloadManager? = null
 
-    constructor(context: Context, view: DownloadListContract.View?, dataSourceNice: NiceDownloadDataSource) {
+    constructor(context: Context, view: DownloadListContract.ViewNice?, dataSourceNice: NiceDownloadDataSource) {
         mView = view
         mDataSourceNice = dataSourceNice
         mView?.setPresenter(this)
@@ -70,8 +69,8 @@ class DownloadListPresenter : DownloadListContract.Presenter {
 
     }
 
-    override fun addDownloads(niceDownloads: ArrayList<NiceDownloadInfo>) {
-        mDataSourceNice?.addDatas(niceDownloads)
+    override fun addDownloads(niceDownloads: MutableList<NiceDownloadInfo>) {
+        mDataSourceNice?.addDataList(niceDownloads)
         mView?.addDownloads(niceDownloads)
     }
 

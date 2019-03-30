@@ -3,6 +3,7 @@ package com.nice.baselibrary.base
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.KeyEvent
 import com.nice.baselibrary.base.utils.ActivityCollect
 import com.nice.baselibrary.base.utils.LogUtils
 
@@ -10,7 +11,7 @@ import com.nice.baselibrary.base.utils.LogUtils
  * @author JPlus
  * @date 2019/1/16.
  */
-abstract class BaseActivity : AppCompatActivity() {
+abstract class NiceActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +88,7 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         LogUtils.getInstance().d("onRequestPermissionsResult()")
     }
+
 
 
 }

@@ -33,7 +33,8 @@ class NiceDialog : AlertDialog {
         mMessage = view.findViewById(R.id.btv_dialog_message)
         mCancel = view.findViewById(R.id.btv_dialog_cancel)
         mConfirm = view.findViewById(R.id.btv_dialog_confirm)
-
+        mCancel?.visibility = View.INVISIBLE
+        mConfirm?.visibility = View.VISIBLE
     }
 
     fun setTitle(title: String): NiceDialog {
@@ -47,6 +48,7 @@ class NiceDialog : AlertDialog {
     }
 
     fun setCancel(cancel: String, dialogCancelClickListener: DialogClickListener): NiceDialog {
+        mCancel?.visibility = View.VISIBLE
         mCancel?.text = cancel
         mCancel?.setOnClickListener {
             dialogCancelClickListener.onClick()
@@ -54,15 +56,17 @@ class NiceDialog : AlertDialog {
         }
         return this
     }
-    fun setCancel(cancel: Boolean):NiceDialog{
+    fun setCanceled(cancel: Boolean):NiceDialog{
         this.setCancelable(cancel)
         return this
     }
 
     fun setConfirm(confirm: String, dialogConfirmClickListener: DialogClickListener): NiceDialog {
+        mConfirm?.visibility = View.VISIBLE
         mConfirm?.text = confirm
         mConfirm?.setOnClickListener {
             dialogConfirmClickListener.onClick()
+            dismiss()
         }
         return this
     }

@@ -1,21 +1,20 @@
 package com.jplus.manyfunction.contract
 
-import com.nice.baselibrary.base.presenter.BasePresenter
-import com.nice.baselibrary.base.BaseView
+import com.nice.baselibrary.base.presenter.NicePresenter
+import com.nice.baselibrary.base.NiceBaseView
 import com.nice.baselibrary.download.NiceDownloadInfo
 import com.nice.baselibrary.download.NiceDownloadListener
-import java.util.ArrayList
 
 /**
  * @author JPlus
  * @date 2019/2/13.
  */
 interface DownloadListContract {
-    interface View: BaseView<Presenter> {
+    interface ViewNice : NiceBaseView<Presenter> {
         /**
          * 展现列表
          */
-        fun showData(items: ArrayList<NiceDownloadInfo>)
+        fun showData(items: MutableList<NiceDownloadInfo>)
         /**
          * 添加下载项
          */
@@ -27,7 +26,7 @@ interface DownloadListContract {
         /**
          * 添加下载项
          */
-        fun addDownloads(niceDownloads: ArrayList<NiceDownloadInfo>)
+        fun addDownloads(niceDownloads: MutableList<NiceDownloadInfo>)
         /**
          * 空列表提示
          */
@@ -35,7 +34,7 @@ interface DownloadListContract {
 
     }
 
-    interface Presenter: BasePresenter {
+    interface Presenter: NicePresenter {
         /**
          * 添加新下载项
          */
@@ -47,7 +46,7 @@ interface DownloadListContract {
         /**
          * 添加新下载项
          */
-        fun addDownloads(niceDownloads:ArrayList<NiceDownloadInfo>)
+        fun addDownloads(niceDownloads:MutableList<NiceDownloadInfo>)
         /**
          * 移除下载项
          */

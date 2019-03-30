@@ -10,16 +10,15 @@ import android.widget.Button
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.adapter.DownloadAdapter
 import com.jplus.manyfunction.contract.DownloadListContract
-import com.nice.baselibrary.base.BaseFragment
+import com.nice.baselibrary.base.NiceFragment
 import com.nice.baselibrary.base.view.NiceEditText
 import com.nice.baselibrary.download.NiceDownloadInfo
-import java.util.ArrayList
 
 /**
  * @author JPlus
  * @date 2019/2/16.
  */
-class DownloadListFragment : BaseFragment(), DownloadListContract.View {
+class DownloadListFragment : NiceFragment(), DownloadListContract.ViewNice {
 
 
     private var mPresenter: DownloadListContract.Presenter?=null
@@ -70,7 +69,7 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
         super.onPause()
         mPresenter?.unSubscribe()
     }
-    override fun showData(items: ArrayList<NiceDownloadInfo>) {
+    override fun showData(items: MutableList<NiceDownloadInfo>) {
         mDownloadAdapter = DownloadAdapter(items)
         mDownloadAdapter?.setItemClickListener(object : DownloadAdapter.ItemClickListener{
             override fun setItemClick(itemView: DownloadAdapter.VH, item: NiceDownloadInfo, position:Int) {
@@ -86,7 +85,7 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
     }
 
 
-    override fun addDownloads(niceDownloads: ArrayList<NiceDownloadInfo>) {
+    override fun addDownloads(niceDownloads: MutableList<NiceDownloadInfo>) {
 
     }
 

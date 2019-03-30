@@ -34,7 +34,7 @@ class NiceTextView : AppCompatTextView {
         init()
     }
     private fun init(){
-//        this.gravity =  Gravity.CENTER
+        this.isSelected = true
     }
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         when (event?.action) {

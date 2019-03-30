@@ -2,30 +2,36 @@
     package="com.nice.baselibrary" >
     <!--网络权限-->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!--网络权限-->
+    <!--访问网络权限-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!--网络权限-->
+    <!--更改网络状态-->
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <!--读取手机状态-->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <!--读取手机状态-->
+    <!--访问wifi状态-->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!--读手机存储-->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--读取系统中所有的LOG的权限,4.1以上已无法获取-->
+    <!--<uses-permission android:name="android.permission.READ_LOGS" />-->
     <!--系统弹出框,6.0以后需要用户在系统设置中同意-->
     <!--<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />-->
+    <!--危险权限-->
+    <!--读取手机状态-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!--读取手机存储-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!--相机权限-->
     <uses-permission android:name="android.permission.CAMERA"/>
-    <!--获取大概定位-->
+    <!--访问精细位置-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <!--读取短信-->
     <uses-permission android:name="android.permission.READ_SMS"/>
-    <!--录音权限-->
+    <!--录制音频-->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <!--读取系统中所有的LOG的权限,4.1以上已无法获取-->
-    <!--<uses-permission android:name="android.permission.READ_LOGS" />-->
-    <application
-    >
+    <!--读取联系人-->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <!--读取日历-->
+    <uses-permission android:name="android.permission.READ_CALENDAR"/>
+    <!--传感器-->
+    <uses-permission android:name="android.permission.BODY_SENSORS"/>
+    <application>
 
 </application>
 

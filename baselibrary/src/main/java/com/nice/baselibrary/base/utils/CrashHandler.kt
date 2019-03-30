@@ -1,5 +1,6 @@
 package com.nice.baselibrary.base.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.nice.baselibrary.base.common.Constant
 
@@ -11,6 +12,7 @@ import java.io.*
  */
 class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
     companion object {
+        @SuppressLint("StaticFieldLeak")
         private var mCrashHandler: CrashHandler? = null
 
         @Synchronized fun getInstance(): CrashHandler {
@@ -29,7 +31,7 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
      * @param context
      */
     fun init(context: Context) {
-        mContext = context.applicationContext
+        mContext = context
         mDefaultCrashHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler(this)
     }
@@ -41,7 +43,7 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
      */
     override fun uncaughtException(thread: Thread?, exception: Throwable?) {
         val date = StringUtils.getDateTime()
-        val filePath = Constant.Companion.Path.ROOT_DIR + AndroidUtils.getPackageName(mContext!!) + Constant.Companion.Path.CRASH_INFO_DIR
+        val filePath = Constant.Companion.Path.ROOT_DIR + AppUtils.getInstance().getPackageName(mContext) + Constant.Companion.Path.CRASH_INFO_DIR
         val exceptionInfo = StringBuilder(date + "\n" + exception?.message + "\n")
         val sw = StringWriter()
         val pw = PrintWriter(sw)
@@ -51,6 +53,5 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
             FileUtils.writeFile(File(filePath, date + ".log"), ByteArrayInputStream(exceptionInfo.toString().toByteArray()), false)
         }).start()
         mDefaultCrashHandler?.uncaughtException(thread, exception)
-
     }
 }

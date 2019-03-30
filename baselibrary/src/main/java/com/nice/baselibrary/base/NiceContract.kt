@@ -6,7 +6,7 @@ package com.nice.baselibrary.base
  * @date 2019/2/21.
  */
 
-interface BaseContract<T>{
+interface NiceContract<T>{
 //    interface baseView:BaseView<T>{
 //
 //    }

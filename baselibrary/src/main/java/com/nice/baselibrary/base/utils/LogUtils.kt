@@ -1,5 +1,6 @@
 package com.nice.baselibrary.base.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.nice.baselibrary.base.common.Constant
@@ -39,8 +40,8 @@ class LogUtils private constructor() {
 
     fun init(context:Context, debug:Boolean){
         mDebug = debug
-        mContext = context.applicationContext
-        mTag = AndroidUtils.getApplicationName(context)
+        mContext = context
+        mTag = AppUtils.getInstance().getPackageName(context)
     }
 
     fun e(message:String, tag:String=mTag){
@@ -75,7 +76,7 @@ class LogUtils private constructor() {
         //要过滤的类型 *:W表示warm ，我们也可以换成 *:D ：debug， *:I：info，*:E：error等等,*后不加代表全部
         val running = arrayOf("logcat", "-s", "adb logcat *")
         val exec = Runtime.getRuntime().exec(running)
-        val filePath = Constant.Companion.Path.ROOT_DIR + AndroidUtils.getPackageName(mContext!!) + Constant.Companion.Path.LOGCAT_INFO_DIR
+        val filePath = Constant.Companion.Path.ROOT_DIR + AppUtils.getInstance().getPackageName(mContext!!) + Constant.Companion.Path.LOGCAT_INFO_DIR
         val file = File(filePath, StringUtils.getDateTime()+".log")
         Thread(Runnable {
             FileUtils.writeFile(file, exec.inputStream, false)
