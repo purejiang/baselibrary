@@ -43,8 +43,8 @@ dependencies {
     //配合Rxjava 使用
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     //内存泄漏检测
-//    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.6.3'
-//    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
 
 }
 repositories {

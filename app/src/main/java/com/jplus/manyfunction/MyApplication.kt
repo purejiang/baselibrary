@@ -2,6 +2,7 @@ package com.jplus.manyfunction
 
 import android.content.Context
 import com.nice.baselibrary.base.NiceApplication
+import com.squareup.leakcanary.LeakCanary
 
 
 /**
@@ -12,7 +13,7 @@ class MyApplication: NiceApplication() {
 
     override fun onCreate() {
         super.onCreate()
-
+        LeakCanary.install(this)
     }
 
     override fun getApplicationContext(): Context {

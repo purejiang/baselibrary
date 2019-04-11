@@ -1,5 +1,6 @@
 package com.nice.baselibrary.base.data
 
+
 /**
  * 数据处理基类
  * @author JPlus
@@ -42,11 +43,11 @@ abstract class NiceDataSource<T> {
      */
     abstract fun refreshData():MutableList<T>
     /**
-     * 查询数据
-     * @param data
+     * 通过特定值查询数据
+     * @param value
      * @return
      */
-    abstract fun getData(data:T):T?
+    abstract fun getData(value:Any):T?
     /**
      * 查询所有数据
      * @return

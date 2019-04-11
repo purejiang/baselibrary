@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/AndroidAssistSdk/AndroidAssistSdk.iml" filepath="$PROJECT_DIR$/AndroidAssistSdk/AndroidAssistSdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/ManyFunction.iml" filepath="$PROJECT_DIR$/ManyFunction.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/baselibrary/baselibrary.iml" filepath="$PROJECT_DIR$/baselibrary/baselibrary.iml" />

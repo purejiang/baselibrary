@@ -1,10 +1,12 @@
 package com.nice.baselibrary.base.utils
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.AudioFormat
+import android.media.AudioRecord
+import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -12,6 +14,8 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import com.nice.baselibrary.base.view.NiceDialog
 import com.nice.baselibrary.base.view.NiceShowView
+import java.io.IOException
+import java.lang.RuntimeException
 
 
 /**
@@ -68,9 +72,6 @@ class PermissionUtils private constructor() {
     companion object {
         private val REQUEST_CODE_ASK_PERMISSIONS = 1024
         private var mPermissionUtils: PermissionUtils? = null
-        val CAMERA = Manifest.permission.CAMERA
-        val READ_CONTACTS = Manifest.permission.READ_CONTACTS
-//        val ACCESS_FINE_LOCATION = Manifest.permission.read
         @Synchronized
         fun getInstance(): PermissionUtils {
             if (mPermissionUtils == null) {
@@ -82,25 +83,35 @@ class PermissionUtils private constructor() {
     }
 
     private var mContext: Context? = null
-    private var mNoPermission: Array<String>? = null
-    private var mIgnorePermissions: Array<String>? = null
-    private var mPermissionDialog: NiceDialog? = null
-    fun init(context: Context) {
+    private var mNiceDialog: NiceDialog? = null
+    private var mOpenWindow: Boolean = false
+    private var mIsCancelable: Boolean = false
+
+    fun init(context: Context, openWindow: Boolean, isCancelable: Boolean) {
         mContext = context
+        mOpenWindow = openWindow
+        mIsCancelable = isCancelable
     }
 
+    fun init(context: Context, openWindow: Boolean) {
+        init(context, openWindow, true)
+    }
+
+    fun init(context: Context) {
+        init(context, true)
+    }
 
     /**
      * 获取应用注册的权限
-     * @param context
-     * @return
+     * @param context 上下文
+     * @return 应用在manifest中注册的权限数组
      */
-    private fun getAllPermission(context: Context): Array<String>? {
+    private fun getAllPermissions(context: Context): Array<String>? {
         return try {
             context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS)?.requestedPermissions //此列表包括所有请求的权限，甚至包括系统在安装时未授予或已知的权限
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
-            arrayOf()
+            throw RuntimeException(e.message, e)
         }
 
     }
@@ -170,23 +181,45 @@ class PermissionUtils private constructor() {
      * 请求所有权限
      */
     fun requestPermissions() {
-        mNoPermission = getNoPermission(getAllPermission(mContext!!))
-        if (mNoPermission != null && !mNoPermission!!.isEmpty()) {
-            ActivityCompat.requestPermissions(mContext as Activity, mNoPermission!!, REQUEST_CODE_ASK_PERMISSIONS)
-        } else {
-            destroy()
+        requestPermissions(mContext!!)
+    }
+
+    /**
+     * 请求所有权限
+     *
+     * @param context
+     */
+    fun requestPermissions(context: Context) {
+        LogUtils.getInstance().e("requestPermissions", "manyfunction")
+        val mNoPermission = getNoPermission(getAllPermissions(context))
+        if (mNoPermission.isNotEmpty()) {
+            ActivityCompat.requestPermissions(context as Activity, mNoPermission, REQUEST_CODE_ASK_PERMISSIONS)
         }
     }
 
     /**
      * 请求单个权限后能够获取整组权限
+     *
+     * @param permission 需要请求的权限
      */
     fun requestPermissions(permission: String) {
+        requestPermissions(permission, mContext!!)
+    }
+
+    /**
+     * 请求单个权限后能够获取整组权限
+     *
+     * @param permission 需要请求的权限
+     * @param context 上下文
+     */
+    fun requestPermissions(permission: String?, context: Context) {
+        if (permission == null) {
+            return
+        }
         val permissions = arrayOf(permission)
-        if (!permissions.isEmpty() && !getNoPermission(permissions).isEmpty()) {
-            ActivityCompat.requestPermissions(mContext as Activity, permissions, REQUEST_CODE_ASK_PERMISSIONS)
-        } else {
-            destroy()
+        val noPermissions = getNoPermission(permissions)
+        if (permissions.isNotEmpty() && noPermissions.isNotEmpty()) {
+            ActivityCompat.requestPermissions(context as Activity, permissions, REQUEST_CODE_ASK_PERMISSIONS)
         }
     }
 
@@ -195,22 +228,48 @@ class PermissionUtils private constructor() {
      * @param context
      * @return
      */
-    private fun showPermissionDialog(context: Context): NiceDialog {
-        return NiceShowView.getInstance().baseDialog(context)
+    private fun showPermissionDialog(context: Context, permissions: Array<String>): NiceDialog {
+        LogUtils.getInstance().e("showPermissionDialog", "manyfunction")
+
+        val sb = StringBuilder("您有已忽略的权限，请到设置中开启:\n")
+        var pertxt = ArrayList<String>()
+        try {
+            val input = context.resources.assets.open("permission.txt")
+            pertxt = FileUtils.readFile2List(input, "UTF-8")
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        for (per in permissions) {
+            pertxt.filter { it.contains(per) }
+                    .forEach { per2 -> sb.append("\t\t").append(per2.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]).append("\n") }
+        }
+        return NiceShowView.getInstance().createDialog(context, NiceDialog.DIALOG_NORMAL)
                 .setTitle("关于权限")
-                .setMessage("您有未同意的权限，请到设置中开启！")
+                .setMessage(sb.toString())
+                .setCanceled(mIsCancelable)
+                .setCancel("取消", object : NiceDialog.DialogClickListener {
+                    override fun onClick() {
+                        destroy()
+                    }
+                })
                 .setConfirm("去设置", object : NiceDialog.DialogClickListener {
                     override fun onClick() {
-//                        startActivityToOverlay(context as Activity)
                         startActivityToSetting(context as Activity)
                     }
                 })
     }
 
-    private fun destroy() {
-        if (mPermissionDialog != null) {
-            mPermissionDialog?.dismiss()
-            mPermissionDialog = null
+    /**
+     * 避免内存泄漏
+     */
+    fun destroy() {
+        if (mContext != null) {
+            mContext = null
+        }
+        if (mNiceDialog != null) {
+            mNiceDialog?.dismiss()
+            mNiceDialog = null
         }
     }
 
@@ -221,34 +280,96 @@ class PermissionUtils private constructor() {
      * @param grantResult
      */
     fun handleRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResult: IntArray) {
-        var result = false
+        handleRequestPermissionsResult(mContext!!, requestCode, permissions, grantResult)
+    }
+
+    /**
+     * 是否请求到权限
+     * @param context 上下文
+     * @param requestCode 请求码
+     * @param permissions 请求的权限数组
+     * @param grantResult 请求的结果码
+     */
+    fun handleRequestPermissionsResult(context: Context, requestCode: Int, permissions: Array<out String>, grantResult: IntArray) {
+        var result = true
+        val noPermissionList:MutableList<String> = ArrayList()
         when (requestCode) {
             REQUEST_CODE_ASK_PERMISSIONS -> {
-                grantResult.filter { it == PackageManager.PERMISSION_GRANTED }
-                        .forEach { result = true }
-                if (result) {
-                    //请求到权限的
-                    LogUtils.getInstance().d("success")
-                } else {
-                    //未请求到权限的
-                    LogUtils.getInstance().d("failed")
+                for (i in grantResult.indices) {
+                    result = result && grantResult[i] == PackageManager.PERMISSION_GRANTED
+                    if (grantResult[i] != PackageManager.PERMISSION_GRANTED) {
+                        //未通过的权限
+                        noPermissionList.add(permissions[i])
+                    }
                 }
+                //是否请求到全部权限的
+                if (result) {
+                    LogUtils.getInstance().d("success", "tag")
+                } else {
+                    LogUtils.getInstance().d("failed", "tag")
+                }
+            }
+            else -> {
+            }
+        }
+
+        val noPermissions = noPermissionList.toTypedArray()
+        val ignorePermissions = shouldShowRequestPermissions(noPermissions)
+        if (ignorePermissions.isNotEmpty()) {
+            if (mOpenWindow) {
+                if (mNiceDialog == null) {
+                    mNiceDialog = showPermissionDialog(context, ignorePermissions)
+                }
+                mNiceDialog?.show()
             }
         }
         val sb = StringBuilder("handleRequestPermissionsResult").append("\n")
-        for (per: String in permissions) {
+        for (per in noPermissions) {
             sb.append(per).append("\n")
         }
-        LogUtils.getInstance().d(sb.toString())
-        if (!mNoPermission!!.isEmpty() && !shouldShowRequestPermissions(mNoPermission!!).isEmpty()) {
-            destroy()
-            mPermissionDialog = showPermissionDialog(mContext!!)
-            mPermissionDialog?.show()
-            LogUtils.getInstance().d("mPermissionDialog is " + (mPermissionDialog == null).toString())
-            LogUtils.getInstance().d("show")
-        } else {
-            destroy()
+        sb.append("" + requestCode + "\n")
+        for (grant in grantResult) {
+            sb.append("" + grant).append("\n")
         }
+        LogUtils.getInstance().d(sb.toString(), "manyfunction")
+    }
+
+    /**
+     * 获取app的录音权限是否打开
+     * 兼容Android 6.0 以下版本
+     * @param context
+     */
+    fun hasAudioPermission(context: Context): Boolean {
+        // 音频获取源
+        val audioSource = MediaRecorder.AudioSource.MIC
+        // 设置音频采样率，44100是目前的标准，但是某些设备仍然支持22050，16000，11025
+        val sampleRateInHz = 44100
+        // 设置音频的录制的声道CHANNEL_IN_STEREO为双声道，CHANNEL_CONFIGURATION_MONO为单声道
+        val channelConfig = AudioFormat.CHANNEL_IN_STEREO
+        // 音频数据格式:PCM 16位每个样本。保证设备支持。PCM 8位每个样本。不一定能得到设备支持。
+        val audioFormat = AudioFormat.ENCODING_PCM_16BIT
+        // 缓冲区字节大小
+        val bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRateInHz,
+                channelConfig, audioFormat)
+        var audioRecord: AudioRecord? = AudioRecord(audioSource, sampleRateInHz,
+                channelConfig, audioFormat, bufferSizeInBytes)
+        try {
+            // 防止某些手机崩溃
+            audioRecord!!.startRecording()
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
+
+        /**
+         * 根据开始录音判断是否有录音权限
+         */
+        if (audioRecord!!.recordingState != AudioRecord.RECORDSTATE_RECORDING) {
+            return false
+        }
+        audioRecord.stop()
+        audioRecord.release()
+        audioRecord = null
+        return true
     }
 }
 

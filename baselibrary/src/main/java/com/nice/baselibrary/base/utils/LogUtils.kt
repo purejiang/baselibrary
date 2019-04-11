@@ -75,11 +75,11 @@ class LogUtils private constructor() {
     fun saveLog(){
         //要过滤的类型 *:W表示warm ，我们也可以换成 *:D ：debug， *:I：info，*:E：error等等,*后不加代表全部
         val running = arrayOf("logcat", "-s", "adb logcat *")
-        val exec = Runtime.getRuntime().exec(running)
+        val exec = ExcCommand.exc(running)
         val filePath = Constant.Companion.Path.ROOT_DIR + AppUtils.getInstance().getPackageName(mContext!!) + Constant.Companion.Path.LOGCAT_INFO_DIR
         val file = File(filePath, StringUtils.getDateTime()+".log")
         Thread(Runnable {
-            FileUtils.writeFile(file, exec.inputStream, false)
+            FileUtils.writeFile(file, exec!!, false)
         }).start()
 
     }

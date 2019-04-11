@@ -1,1 +1,1 @@
-include ':app', ':baselibrary', ':jdownload'
+include ':app', ':baselibrary', ':jdownload', ':AndroidAssistSdk'

@@ -8,8 +8,11 @@ import android.support.v7.widget.AppCompatEditText
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
+import android.widget.EditText
 import com.nice.baselibrary.R
+import com.nice.baselibrary.base.utils.LogUtils
 
 /**
  * 可删除的输入框
@@ -54,18 +57,18 @@ class NiceEditText :AppCompatEditText {
      */
     private fun setDrawable() {
             if (length() < 1) {
-                setCompoundDrawables(null, null, null, null)
+                setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
             } else {
-                setCompoundDrawables(null, null, mDeleted, null)
+                setCompoundDrawablesWithIntrinsicBounds(null, null, mDeleted, null)
             }
         }
 
         override fun onTouchEvent(event: MotionEvent): Boolean {
             if (mDeleted != null && event.action == MotionEvent.ACTION_UP) {
-                val eventX = event.x.toInt()
-                val eventY = event.y.toInt()
+                val eventX = event.rawX.toInt()
+                val eventY = event.rawY.toInt()
                 val rect = Rect()
-                getGlobalVisibleRect(rect)
+                this.getGlobalVisibleRect(rect)
                 rect.left = rect.right - 100
                 if (rect.contains(eventX, eventY)) {
                     setText("")

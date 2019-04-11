@@ -31,13 +31,12 @@ class DownloadListActivity : NiceActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_download)
         ApiEntry.getInstance().init(this, true)
-
     }
 
     override fun onStart() {
         super.onStart()
-        NicePermissionUtils.getInstance().requestPermissions()
-//        ApiEntry.getInstance().requestPermission(Manifest.permission.CAMERA)
+//        NicePermissionUtils.getInstance().requ
+//        ApiEntry.getInstance().requestPermission(this, Manifest.permission.CAMERA)
     }
     override fun onInit() {
 

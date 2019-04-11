@@ -15,4 +15,25 @@
         <!--是否有标题栏-->
         <item name="android:windowNoTitle">true</item>
     </style>
+    <style name="BigNiceDialog" parent="@style/Theme.AppCompat.Dialog">
+        <item name="android:windowMinWidthMinor">100%</item>
+        <!-- dialog 背景颜色，默认是白色-->
+        <item name="android:colorBackground">@color/colorWhite_light</item>
+    </style>
+    <style name="NormalNiceDialog" parent="@style/Theme.AppCompat.Dialog">
+        <item name="android:windowMinWidthMinor">80%</item>
+        <!-- dialog 背景颜色，默认是白色-->
+        <item name="android:colorBackground">@color/colorWhite_light</item>
+    </style>
+    <style name="SmallNiceDialog" parent="@style/Theme.AppCompat.Dialog">
+        <item name="android:windowMinWidthMinor">50%</item>
+        <!-- dialog 背景颜色，默认是白色-->
+        <item name="android:colorBackground">@color/colorWhite_light</item>
+    </style>
+
+    <style name="SmallerNiceDialog" parent="@style/Theme.AppCompat.Dialog">
+        <item name="android:windowMinWidthMinor">25%</item>
+        <!-- dialog 背景颜色，默认是白色-->
+        <item name="android:colorBackground">@color/colorWhite_light</item>
+    </style>
 </resources>

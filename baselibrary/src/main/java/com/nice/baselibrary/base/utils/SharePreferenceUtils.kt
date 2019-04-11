@@ -12,22 +12,11 @@ import com.nice.baselibrary.base.common.Constant
  */
 class SharePreferenceUtils {
     companion object {
-        private var mSpUtils: SharePreferenceUtils? = null
-
-        fun getInstance(): SharePreferenceUtils {
-            if (mSpUtils == null) {
-                mSpUtils = SharePreferenceUtils()
-            }
-            return mSpUtils!!
+        fun create(context: Context, name: String = Constant.Companion.Persistence.DEFAULT, mode: Int = Context.MODE_PRIVATE): SpUtil {
+            return SpUtil(context, name, mode)
         }
+
     }
-
-    private var mSp: SharedPreferences? = null
-
-    fun create(context: Context, name: String = Constant.Companion.Persistence.DEFAULT, mode: Int = Context.MODE_PRIVATE): SpUtil {
-        return SpUtil(context, name, mode)
-    }
-
 
     class SpUtil {
       private var mSp:SharedPreferences?=null

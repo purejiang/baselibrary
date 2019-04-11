@@ -12,23 +12,54 @@ import android.view.ViewGroup
  * @date 2019/1/16.
  */
 abstract class NiceAdapter<T>(private val mItems:ArrayList<T>): RecyclerView.Adapter<NiceAdapter.VH>() {
-
+    /**
+     * 获取Layout
+     * @param viewType
+     */
     abstract fun getLayout(viewType:Int):Int
-
+    /**
+     * 提供绑定视图及item
+     * @param holder
+     * @param item
+     * @param position
+     */
     abstract fun convert(holder:VH, item:T, position: Int)
-
+    /**
+     * 添加删除item
+     * @param item
+     */
     abstract  fun addItem(item:T)
-
+    /**
+     * 添加列表中所有item
+     * @param items
+     */
     abstract  fun addItems(items:ArrayList<T>)
-
+    /**
+     * 删除item
+     * @param item
+     */
     abstract  fun deleteItem(item:T)
 
+    /**
+     * 删除指定位置的item
+     * @param position
+     */
     abstract  fun deleteItem(position: Int)
 
+    /**
+     * 删除列表中所有item
+     * @param items
+     */
     abstract  fun deleteItems(items:ArrayList<T>)
-
+    /**
+     * 获取指定位置的item
+     * @param position
+     */
     abstract  fun getItem(position:Int):T
-
+    /**
+     * 刷新所有item
+     * @param items
+     */
     abstract  fun refreshItems(items:ArrayList<T>)
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): VH {

@@ -1,5 +1,6 @@
 package com.nice.baselibrary.base.common
 
+import android.app.Activity
 import android.content.Context
 import com.nice.baselibrary.base.utils.AppUtils
 import com.nice.baselibrary.base.utils.CrashHandler
@@ -29,19 +30,21 @@ class ApiEntry private constructor() {
    fun init(context: Context, debug:Boolean){
         //初始化崩溃日志工具
         CrashHandler.getInstance().init(context.applicationContext)
-        //初始化权限处理
-        PermissionUtils.getInstance().init(context)
+
         //初始化日志工具
         LogUtils.getInstance().init(context.applicationContext, debug)
         //初始化AppUtil
         AppUtils.getInstance().init(context.applicationContext)
     }
 
-    fun requestPermission(){
+    fun requestPermission(activity: Activity){
+        //初始化权限处理
+        PermissionUtils.getInstance().init(activity)
         PermissionUtils.getInstance().requestPermissions()
-
     }
-    fun requestPermission(permission:String){
+    fun requestPermission(activity: Activity,permission:String){
+        //初始化权限处理
+        PermissionUtils.getInstance().init(activity)
         PermissionUtils.getInstance().requestPermissions(permission)
     }
 
@@ -52,7 +55,7 @@ class ApiEntry private constructor() {
      * 销毁
      */
     fun destory(){
-
+        PermissionUtils.getInstance().destroy()
     }
 
 }

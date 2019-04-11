@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -7,9 +8,20 @@
 
     <com.nice.baselibrary.base.view.NiceTitleBar
         android:id="@+id/bt_dialog_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/big_space"
+        android:visibility="invisible"
         />
+
+    <com.nice.baselibrary.base.view.NiceCircleProgress
+        android:id="@+id/cp_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        app:isNoProgress="true"
+        app:progressColor="@color/colorBlue_light"
+        android:visibility="gone"/>
+
 
     <com.nice.baselibrary.base.view.NiceTextView
         android:id="@+id/btv_dialog_message"
@@ -18,32 +30,28 @@
         android:gravity="start"
         android:layout_weight="1"
         android:padding="@dimen/normal_space"
+        android:visibility="gone"
         android:text="message"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/line_width"
-        android:background="@color/colorWhite_dark"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/bigger_space"
         android:orientation="horizontal"
-        android:padding="@dimen/small_space"
+        android:visibility="visible"
         >
         <com.nice.baselibrary.base.view.NiceTextView
             android:id="@+id/btv_dialog_cancel"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:visibility="gone"
             android:gravity="center"
             android:layout_weight="1"
             android:text="cancel"/>
-        <View
-            android:layout_width="@dimen/line_width"
-            android:layout_height="match_parent"
-            android:background="@color/colorWhite_dark"/>
         <com.nice.baselibrary.base.view.NiceTextView
             android:id="@+id/btv_dialog_confirm"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:visibility="gone"
             android:layout_weight="1"
             android:gravity="center"
             android:text="confirm"/>

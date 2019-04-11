@@ -2,6 +2,12 @@ package com.nice.baselibrary.base.utils
 
 import android.content.Context
 import java.io.*
+import java.security.DigestInputStream
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import java.nio.file.Files.exists
+
+
 
 /**
  * 文件工具类
@@ -21,7 +27,7 @@ class FileUtils {
         fun writeFile(file: File, stream: InputStream, append: Boolean): Boolean {
             var outputStream: OutputStream? = null
             try {
-                makeDirs(file)
+                createOrExistsFile(file)
                 outputStream = FileOutputStream(file, append)
                 val data = ByteArray(1024)
                 var length = 0
@@ -44,6 +50,32 @@ class FileUtils {
                     }
 
                 }
+            }
+        }
+        /**
+         * 文件写入
+         * @param file
+         * @param content
+         * @param append
+         * @return
+         */
+        fun writeFile(file: File, content: String, append: Boolean): Boolean {
+            var writer: BufferedWriter? = null
+            try {
+                createOrExistsFile(file)
+                writer = BufferedWriter(FileWriter(file, append))
+                writer.write(content)
+                return true
+            } catch (e: FileNotFoundException) {
+                throw RuntimeException("FileNotFoundException occurred. ", e)
+            } catch (e: IOException) {
+                throw RuntimeException("IOException occurred. ", e)
+            } finally {
+                    try {
+                        writer?.close()
+                    } catch (e: IOException) {
+                        throw RuntimeException("IOException occurred. ", e)
+                    }
             }
         }
 
@@ -78,10 +110,11 @@ class FileUtils {
                     }
                 }
             }
-    }
+        }
+
         /**
          * 文件读取
-         * @param file
+         * @param inputs
          * @param charsetName
          * @return
          */
@@ -110,6 +143,7 @@ class FileUtils {
                 }
             }
         }
+
         /**
          * 文件读取
          * @param file
@@ -138,45 +172,112 @@ class FileUtils {
                 }
             }
         }
-    /**
-     * 文件读取
-     * @param input
-     * @param charsetName
-     * @return
-     */
-    fun readFile2String(input: InputStream, charsetName: String = "UTF-8"): String {
-        val buffer = ByteArray(input.available())
-        input.read(buffer)
-        return String(buffer, charset(charsetName))
-    }
+
+        /**
+         * 文件读取
+         * @param input
+         * @param charsetName
+         * @return
+         */
+        fun readFile2String(input: InputStream, charsetName: String = "UTF-8"): String {
+            val buffer = ByteArray(input.available())
+            input.read(buffer)
+            return String(buffer, charset(charsetName))
+        }
 
 
-    /**
-     * 私有文件写入
-     * @param filePath
-     * @param context
-     * @param content
-     */
-    fun writePrivateFile(filePath: String, context: Context, content: String) {
-        val output = context.openFileOutput(filePath, Context.MODE_APPEND)
-        output.write(content.toByteArray())
-        output.close()
-    }
+        /**
+         * 私有文件写入
+         * @param filePath
+         * @param context
+         * @param content
+         */
+        fun writePrivateFile(filePath: String, context: Context, content: String) {
+            val output = context.openFileOutput(filePath, Context.MODE_APPEND)
+            output.write(content.toByteArray())
+            output.close()
+        }
 
-    private fun getFolderName(filePath: String): String {
-        val filePosition = filePath.lastIndexOf(File.separator)
-        return if (filePosition == -1) "" else filePath.substring(0, filePosition)
-    }
+        /**
+         * 获取文件夹名
+         * @param filePath
+         * @return String
+         */
+        fun getFolderName(filePath: String): String {
+            val filePosition = filePath.lastIndexOf(File.separator)
+            return if (filePosition == -1) "" else filePath.substring(0, filePosition)
+        }
 
-    private fun makeFile(filePath: String): Boolean {
-        val file = File(filePath)
-        return if (file.exists()) true else file.createNewFile()
-    }
+        /**
+         * 生成文件
+         * @param filePath
+         * @return 是否生成文件
+         */
+        fun createOrExistsFile(file: File): Boolean {
+            if (file == null) return false
+            if (file.exists()) return file.isFile
+            if (!createOrExistsDir(file.parentFile)) return false
+            return try {
+                file.createNewFile()
+            } catch (e: IOException) {
+                e.printStackTrace()
+                false
+            }
+        }
 
-    private fun makeDirs(file: File): Boolean {
-        val folderName = getFolderName(file.absolutePath)
-        val folder = File(folderName)
-        return if (folder.exists() && folder.isDirectory) true else folder.mkdirs()
+        /**
+         * 生成文件夹
+         * @param file
+         * @return
+         */
+        fun createOrExistsDir(folder: File): Boolean {
+            return if (folder.exists() && folder.isDirectory) true else folder.mkdirs()
+        }
+
+        /**
+         * 获取文件MD5值
+         * @param filePath
+         * @return String
+         */
+        fun getFileMD5(filePath: String): String {
+            return ConvertUtils.byte2HexString(getFileMD5(File(filePath)))
+        }
+
+        /**
+         * 获取文件MD5值
+         * @param file
+         * @return byte数组
+         */
+        fun getFileMD5(file: File): ByteArray {
+            var digest: DigestInputStream? = null
+            try {
+                val fileInput = FileInputStream(file)
+                var md = MessageDigest.getInstance("MD5")
+                digest = DigestInputStream(fileInput, md)
+                val bytes = ByteArray(1024 * 256)
+                while (true) {
+                    if ((digest.read(bytes) <= 0)) {
+                        break
+                    }
+                }
+                md = digest.messageDigest
+                return md.digest()
+            } catch (e: (NoSuchAlgorithmException)) {
+
+            } catch (e: IOException) {
+
+            } catch (e: FileNotFoundException) {
+
+            } finally {
+                try {
+                    if (digest != null) {
+                        digest.close()
+                    }
+                } catch (e: IOException) {
+
+                }
+            }
+            return byteArrayOf()
+        }
     }
-}
 }
