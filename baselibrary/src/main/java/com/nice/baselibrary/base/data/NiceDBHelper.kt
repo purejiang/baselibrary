@@ -10,8 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper
  * @author Jplsu
  * @date 2019/2/16.
  */
-abstract class NiceDBHelper :SQLiteOpenHelper {
-
+abstract class NiceDBHelper<T> :SQLiteOpenHelper {
 
     constructor(context: Context, dataName:String, factory: SQLiteDatabase.CursorFactory, dataVersion:Int):super(context, dataName, factory, dataVersion){
 
@@ -22,7 +21,18 @@ abstract class NiceDBHelper :SQLiteOpenHelper {
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
+
+    abstract fun queryAll(mDatabase: SQLiteDatabase?): ArrayList<T>
+
+    abstract fun queryByAny(any: Any, mDatabase: SQLiteDatabase?): T?
+
+    abstract fun add(item: T, mDatabase: SQLiteDatabase?): T?
+
+    abstract fun update(item: T, mDatabase: SQLiteDatabase?): T?
+
+    abstract fun remove(item: T, mDatabase: SQLiteDatabase?): T?
+
 
 }

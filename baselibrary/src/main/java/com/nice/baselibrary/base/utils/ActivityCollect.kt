@@ -1,6 +1,6 @@
 package com.nice.baselibrary.base.utils
 
-import com.nice.baselibrary.base.NiceActivity
+import com.nice.baselibrary.base.ui.NiceActivity
 import java.util.*
 
 /**

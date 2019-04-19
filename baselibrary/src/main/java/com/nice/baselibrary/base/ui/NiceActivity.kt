@@ -1,9 +1,11 @@
-package com.nice.baselibrary.base
+package com.nice.baselibrary.base.ui
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
+import com.nice.baselibrary.base.ui.view.NiceShowView
 import com.nice.baselibrary.base.utils.ActivityCollect
 import com.nice.baselibrary.base.utils.LogUtils
 
@@ -12,6 +14,11 @@ import com.nice.baselibrary.base.utils.LogUtils
  * @date 2019/1/16.
  */
 abstract class NiceActivity : AppCompatActivity() {
+    companion object {
+        private val BACK_TIME =2000
+    }
+
+    private var mBackTime=0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +51,11 @@ abstract class NiceActivity : AppCompatActivity() {
      * 绑定监听
      */
     abstract fun onBindListener()
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        LogUtils.getInstance().d(this.localClassName + " --onConfigurationChanged()")
+    }
 
     override fun onStart() {
         super.onStart()
@@ -91,5 +103,25 @@ abstract class NiceActivity : AppCompatActivity() {
         LogUtils.getInstance().d(this.localClassName + " --onRequestPermissionsResult()")
     }
 
+    /**
+     * 是否点击两次退出
+     * @return
+     */
+    open fun isBackTwice():Boolean{
+        return false
+    }
+
+    override fun onBackPressed() {
+        if(isBackTwice()){
+            if(System.currentTimeMillis()- mBackTime>BACK_TIME){
+                mBackTime = System.currentTimeMillis()
+                NiceShowView.getInstance().NormalToast("再按一次退出~").show()
+            }else{
+                ActivityCollect.removeAll()
+                System.exit(0)
+            }
+        }
+        super.onBackPressed()
+    }
 
 }

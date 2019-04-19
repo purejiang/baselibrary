@@ -12,8 +12,10 @@ import android.os.Build
 import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import com.nice.baselibrary.base.view.NiceDialog
-import com.nice.baselibrary.base.view.NiceShowView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.nice.baselibrary.base.ui.view.NiceDialog
+import com.nice.baselibrary.base.ui.view.NiceShowView
 import java.io.IOException
 import java.lang.RuntimeException
 
@@ -24,58 +26,15 @@ import java.lang.RuntimeException
  * @date 2019/2/27.
  */
 class PermissionUtils private constructor() {
-    /*
-     * 九组危险权限
-    group:android.permission-group.CALENDAR 日历
-        permission:android.permission.READ_CALENDAR 读取日历
-        permission:android.permission.WRITE_CALENDAR 写入日历
 
-    group:android.permission-group.CAMERA 照相机
-        permission:android.permission.CAMERA
-
-    group:android.permission-group.CONTACTS 通讯录方面
-        permission:android.permission.WRITE_CONTACTS 写入通讯录
-        permission:android.permission.GET_ACCOUNTS 访问通讯录权限
-        permission:android.permission.READ_CONTACTS 读取通讯录
-
-    group:android.permission-group.LOCATION 位置
-        permission:android.permission.ACCESS_FINE_LOCATION 获取位置
-        permission:android.permission.ACCESS_COARSE_LOCATION 获取粗略定位
-
-    group:android.permission-group.MICROPHONE 扩音器；麦克风
-        permission:android.permission.RECORD_AUDIO 录音
-
-    group:android.permission-group.PHONE 电话方面
-        permission:android.permission.READ_CALL_LOG 看电话记录
-        permission:android.permission.READ_PHONE_STATE 读取手机状态
-        permission:android.permission.CALL_PHONE 打电话
-        permission:android.permission.WRITE_CALL_LOG 编写调用日志
-        permission:android.permission.USE_SIP 使用SIP
-        permission:android.permission.PROCESS_OUTGOING_CALLS 过程输出调用
-        permission:com.android.voicemail.permission.ADD_VOICEMAIL 添加语音信箱
-
-    group:android.permission-group.SENSORS 传感器
-        permission:android.permission.BODY_SENSORS 体传感器
-　
-    group:android.permission-group.SMS 信息
-        permission:android.permission.READ_SMS 读取信息 　　
-        permission:android.permission.RECEIVE_WAP_PUSH 收到WAP推送
-        permission:android.permission.RECEIVE_MMS 接收彩信
-        permission:android.permission.RECEIVE_SMS 收信息
-        permission:android.permission.SEND_SMS 发信息
-        permission:android.permission.READ_CELL_BROADCASTS 读广播
-
-    group:android.permission-group.STORAGE 存储
-        permission:android.permission.READ_EXTERNAL_STORAGE 读取外部存储器  　
-        permission:android.permission.WRITE_EXTERNAL_STORAGE 写外部存储器
-    */
     companion object {
         private val REQUEST_CODE_ASK_PERMISSIONS = 1024
         private var mPermissionUtils: PermissionUtils? = null
-        @Synchronized
         fun getInstance(): PermissionUtils {
             if (mPermissionUtils == null) {
-                mPermissionUtils = PermissionUtils()
+                synchronized(PermissionUtils::class.java) {
+                    mPermissionUtils = PermissionUtils()
+                }
             }
             return mPermissionUtils!!
         }
@@ -86,11 +45,19 @@ class PermissionUtils private constructor() {
     private var mNiceDialog: NiceDialog? = null
     private var mOpenWindow: Boolean = false
     private var mIsCancelable: Boolean = false
-
+    private var mPerMap: HashMap<String, HashMap<String,List<String>>> ?= null
     fun init(context: Context, openWindow: Boolean, isCancelable: Boolean) {
         mContext = context
         mOpenWindow = openWindow
         mIsCancelable = isCancelable
+        //获取json文件中的权限信息
+        try {
+            val input = context.resources.assets.open("permissions.json")
+            val perContent = FileUtils.readFile2String(input, "UTF-8")
+            mPerMap = Gson().fromJson<HashMap<String,HashMap<String,List<String>>>>(perContent, object : TypeToken<HashMap<String, HashMap<String, List<String>>>>() {}.type)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
     }
 
     fun init(context: Context, openWindow: Boolean) {
@@ -147,7 +114,7 @@ class PermissionUtils private constructor() {
             return arrayOf()
         }
         val ignorePermissions: MutableList<String> = ArrayList()
-        params.filter { !ActivityCompat.shouldShowRequestPermissionRationale(mContext as Activity, it) }//筛选被用户忽略的权限
+        params.filter { !ActivityCompat.shouldShowRequestPermissionRationale(mContext as Activity, it)&& isDangerPermission(it) }//筛选被用户忽略的权限
                 .forEach {
                     ignorePermissions.add(it)
                     sb.append(it).append("\n")
@@ -156,6 +123,21 @@ class PermissionUtils private constructor() {
         return ignorePermissions.toTypedArray()//返回数组
     }
 
+    /**
+     * 判断是否危险权限
+     * @param permission
+     */
+    fun isDangerPermission(permission:String):Boolean{
+        val dangerPermission = mPerMap!!["danger_permissions"]
+        for (perInfoList:List<String> in dangerPermission?.values!!){
+            perInfoList
+                    .filter { it.contains(permission) }
+                    .forEach {
+                        LogUtils.getInstance().e(it)
+                        return true }
+        }
+        return false
+    }
     /**
      * 跳转到应用的设置界面
      * @param activity
@@ -186,7 +168,6 @@ class PermissionUtils private constructor() {
 
     /**
      * 请求所有权限
-     *
      * @param context
      */
     fun requestPermissions(context: Context) {
@@ -226,23 +207,21 @@ class PermissionUtils private constructor() {
     /**
      * 弹出权限设置提醒框
      * @param context
+     * @param permissions
      * @return
      */
     private fun showPermissionDialog(context: Context, permissions: Array<String>): NiceDialog {
         LogUtils.getInstance().e("showPermissionDialog", "manyfunction")
+        val sb = StringBuilder("您有已忽略的权限，请到设置中开启:\n\n")
 
-        val sb = StringBuilder("您有已忽略的权限，请到设置中开启:\n")
-        var pertxt = ArrayList<String>()
-        try {
-            val input = context.resources.assets.open("permission.txt")
-            pertxt = FileUtils.readFile2List(input, "UTF-8")
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
+        //获取危险权限信息
         for (per in permissions) {
-            pertxt.filter { it.contains(per) }
-                    .forEach { per2 -> sb.append("\t\t").append(per2.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]).append("\n") }
+            val dangerPermission = mPerMap!!["danger_permissions"]
+            for (perInfoList:List<String> in dangerPermission?.values!!){
+                perInfoList
+                        .filter { it.contains(per) }
+                        .forEach { sb.append("\t\t\t\t").append(it.split(" ")[1]).append("\n") }
+            }
         }
         return NiceShowView.getInstance().createDialog(context, NiceDialog.DIALOG_NORMAL)
                 .setTitle("关于权限")
@@ -372,5 +351,6 @@ class PermissionUtils private constructor() {
         return true
     }
 }
+
 
 

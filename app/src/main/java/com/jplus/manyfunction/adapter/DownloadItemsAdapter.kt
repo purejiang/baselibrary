@@ -2,7 +2,7 @@ package com.jplus.manyfunction.adapter
 
 import com.jplus.manyfunction.R
 import com.nice.baselibrary.base.adapter.NiceAdapter
-import com.nice.baselibrary.base.view.NiceTextView
+import com.nice.baselibrary.base.ui.view.NiceTextView
 import com.nice.baselibrary.download.NiceDownloadInfo
 
 /**

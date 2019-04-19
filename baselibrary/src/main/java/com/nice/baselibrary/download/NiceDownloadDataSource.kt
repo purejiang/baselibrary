@@ -19,8 +19,8 @@ class NiceDownloadDataSource(context: Context) {
         mNiceDownloadList = mDownloadDataHelper!!.queryAll(mDatabase)
     }
 
-    fun addData(item: NiceDownloadInfo) : NiceDownloadInfo {
-        if (mDownloadDataHelper?.add(item, mDatabase) != null) {
+    fun addData(item: NiceDownloadInfo) : NiceDownloadInfo? {
+        mDownloadDataHelper?.add(item, mDatabase)?.let {
             mNiceDownloadList.add(item)
         }
         return item
@@ -33,10 +33,11 @@ class NiceDownloadDataSource(context: Context) {
     }
 
     fun removeData(item: NiceDownloadInfo): NiceDownloadInfo? {
-        if (mDownloadDataHelper?.remove(item, mDatabase) != null) {
+        mDownloadDataHelper?.remove(item, mDatabase)?.let {
             mNiceDownloadList.remove(item)
+            return item
         }
-        return item
+        return null
     }
 
     fun removeDatas(items: MutableList<NiceDownloadInfo>) {

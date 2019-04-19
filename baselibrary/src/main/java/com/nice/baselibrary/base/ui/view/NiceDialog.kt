@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.view
+package com.nice.baselibrary.base.ui.view
 
 import android.content.Context
 import android.support.v7.app.AlertDialog
@@ -63,7 +63,7 @@ class NiceDialog : AlertDialog {
      * @param text 显示的加载提示文字
      * @return
      */
-    fun setCircleProgress(text:String):NiceDialog{
+    fun setCircleProgress(text:String): NiceDialog {
         mProgress?.visibility = View.VISIBLE
         setConfirm(text, null)
         return this
@@ -124,7 +124,7 @@ class NiceDialog : AlertDialog {
      * @param cancel 是否可以取消
      * @return
      */
-    fun setCanceled(cancel: Boolean):NiceDialog{
+    fun setCanceled(cancel: Boolean): NiceDialog {
         this.setCancelable(cancel)
         return this
     }

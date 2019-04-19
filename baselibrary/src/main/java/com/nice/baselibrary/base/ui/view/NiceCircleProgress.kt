@@ -1,6 +1,5 @@
-package com.nice.baselibrary.base.view
+package com.nice.baselibrary.base.ui.view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -8,10 +7,9 @@ import android.graphics.RectF
 import android.os.CountDownTimer
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import com.nice.baselibrary.R
-import com.nice.baselibrary.base.NiceLoadingView
+import com.nice.baselibrary.base.ui.NiceLoadingView
 import com.nice.baselibrary.base.utils.LogUtils
 
 /**
@@ -106,6 +104,7 @@ class NiceCircleProgress : NiceLoadingView {
         textPaint?.textAlign = Paint.Align.CENTER
 
         if(mIsNoProgress) {
+            //倒计时，第一个参数为总时长，第二个为每次执行onTick的间隔时间
             mCountTimer = object :CountDownTimer(3000, 10) {
                 override fun onTick(millisUntilFinished: Long) {
                     val radio =  millisUntilFinished / 1500f
@@ -145,8 +144,10 @@ class NiceCircleProgress : NiceLoadingView {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         if(!mIsNoProgress){
+            //绘制带进度的进度条，通过传入mProgress作为进度
             drawByProgress(mProgress, canvas, mShowNumProgress)
         }else{
+            //绘制无进度的loading条
             drawNoProgress(canvas)
         }
     }

@@ -9,10 +9,11 @@ import android.content.Context
 class ResourceUtils private constructor(){
     companion object {
         private var mResourceUtils:ResourceUtils?=null
-        @Synchronized
         fun getInstance():ResourceUtils{
             if(mResourceUtils==null){
-                mResourceUtils = ResourceUtils()
+                synchronized(ResourceUtils::class.java) {
+                    mResourceUtils = ResourceUtils()
+                }
             }
             return mResourceUtils!!
         }

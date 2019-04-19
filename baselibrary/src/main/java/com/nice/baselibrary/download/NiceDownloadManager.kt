@@ -28,16 +28,14 @@ class NiceDownloadManager private constructor() {
          * @return
          */
         fun getInstance(): NiceDownloadManager? {
-            if (mNiceDownloadManager == null) {
-                mNiceDownloadManager = NiceDownloadManager()
-            }
+            mNiceDownloadManager ?: NiceDownloadManager()
             return mNiceDownloadManager
         }
 
     }
 
     private var mInfo2ServiceNice: HashMap<String, NiceDownloadService>? = null
-    private var mInfo2Subscribe: HashMap<String, NiceNiceDownloadSubscriber>? = null
+    private var mInfo2Subscribe: HashMap<String, NiceDownloadSubscriber>? = null
     private var mContext: Context? = null
 
 
@@ -57,7 +55,7 @@ class NiceDownloadManager private constructor() {
      * @param niceDownloadListener
      */
     fun startNewDownload(niceDownloadInfo: NiceDownloadInfo, niceDownloadListener: NiceDownloadListener, niceDownloadDataSource: NiceDownloadDataSource) {
-        val subscriber = NiceNiceDownloadSubscriber(niceDownloadInfo, niceDownloadListener, niceDownloadDataSource)
+        val subscriber = NiceDownloadSubscriber(niceDownloadInfo, niceDownloadListener, niceDownloadDataSource)
         mInfo2Subscribe?.put(niceDownloadInfo.url, subscriber)
         val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(NiceDownloadInterceptor(subscriber))
@@ -75,7 +73,7 @@ class NiceDownloadManager private constructor() {
     fun reStartDownload(niceDownloadInfo: NiceDownloadInfo, niceDownloadListener: NiceDownloadListener, niceDownloadDataSource: NiceDownloadDataSource) {
         //列表包含该url则复用map中指向的service对象，不包含该url则重新构建service进行下载
         if(mInfo2ServiceNice?.containsKey(niceDownloadInfo.url)!!){
-            val subscriber =  NiceNiceDownloadSubscriber(niceDownloadInfo, niceDownloadListener, niceDownloadDataSource)
+            val subscriber =  NiceDownloadSubscriber(niceDownloadInfo, niceDownloadListener, niceDownloadDataSource)
             mInfo2Subscribe?.put(niceDownloadInfo.url, subscriber)
             startDownload(mInfo2ServiceNice?.get(niceDownloadInfo.url)!!, niceDownloadInfo, subscriber)
         }else{
@@ -88,8 +86,10 @@ class NiceDownloadManager private constructor() {
      * @param niceDownloadInfo
      */
     fun pauseDownload(niceDownloadInfo: NiceDownloadInfo) {
-        mInfo2Subscribe?.get(niceDownloadInfo.url)?.dispose()
-        mInfo2Subscribe?.remove(niceDownloadInfo.url)
+        mInfo2Subscribe?.let {
+            it[niceDownloadInfo.url]?.dispose() //通过url获取HashMap中NiceDownloadSubscriber的实例并取消订阅
+            it.remove(niceDownloadInfo.url) //从list中移除
+        }
         LogUtils.getInstance().d("download+pause:" + niceDownloadInfo.status)
     }
 
@@ -99,15 +99,18 @@ class NiceDownloadManager private constructor() {
      * @param niceDownloadInfo
      * @param subscriberNice
      */
-    private fun startDownload(downloadServiceNice: NiceDownloadService, niceDownloadInfo: NiceDownloadInfo, subscriberNice: NiceNiceDownloadSubscriber) {
-        LogUtils.getInstance().d("download+:" + niceDownloadInfo.toString())
-        downloadServiceNice.downloadFile("bytes=" + niceDownloadInfo.read.toString() + "-", niceDownloadInfo.url)
-                .subscribeOn(Schedulers.io())
-                ?.doOnNext { t: ResponseBody ->
-                    writeRandomAccessFile(t, File(DOWNLOAD_FILE_DIR, niceDownloadInfo.name), niceDownloadInfo)
-                }
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(subscriberNice)
+    private fun startDownload(downloadServiceNice: NiceDownloadService, niceDownloadInfo: NiceDownloadInfo, subscriberNice: NiceDownloadSubscriber) {
+        niceDownloadInfo.run{
+            LogUtils.getInstance().d("download+:" + toString())
+            downloadServiceNice.downloadFile("bytes=" + read.toString() + "-", url)
+                    .subscribeOn(Schedulers.io())
+                    ?.doOnNext { t: ResponseBody ->
+                        writeRandomAccessFile(t, File(DOWNLOAD_FILE_DIR, name), niceDownloadInfo)
+                    }
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe(subscriberNice)
+        }
+
     }
 
     /**

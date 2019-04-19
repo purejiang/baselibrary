@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.telephony.TelephonyManager
 import com.nice.baselibrary.base.common.Constant
@@ -21,10 +22,11 @@ import java.util.*
 class AppUtils {
     companion object {
         private var mAppUtils:AppUtils?=null
-        @Synchronized
         fun getInstance():AppUtils{
             if(mAppUtils==null){
-                mAppUtils = AppUtils()
+                synchronized(AppUtils::class.java) {
+                    mAppUtils = AppUtils()
+                }
             }
             return mAppUtils!!
         }
@@ -104,8 +106,8 @@ class AppUtils {
         private fun getPermissions(packageName:String, packageManager: PackageManager): MutableList<String>{
             val pi:PackageInfo=packageManager.getPackageInfo(packageName,PackageManager.GET_PERMISSIONS)
             var permissions: MutableList<String> = mutableListOf("此应用无权限信息")
-            if(pi.requestedPermissions!=null) {
-                permissions= pi.requestedPermissions.toMutableList()
+            pi.requestedPermissions?.let {
+                permissions= it.toMutableList()
             }
             return permissions
         }
@@ -172,7 +174,16 @@ class AppUtils {
          * @return
          */
          fun getDeviceInfo(): String {
-            return Build.BRAND + " " + Build.MODEL
+            return Build.MANUFACTURER + " " + Build.BRAND + " " + Build.MODEL
         }
 
+    /**
+     * 获取设备mac地址
+     * @param context
+     * @return
+     */
+    fun getMacAddress(context: Context): String {
+        val wm = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        return wm.connectionInfo.macAddress
+    }
 }

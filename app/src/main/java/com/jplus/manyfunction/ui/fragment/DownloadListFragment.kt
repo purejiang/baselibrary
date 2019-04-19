@@ -10,8 +10,8 @@ import android.widget.Button
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.adapter.DownloadAdapter
 import com.jplus.manyfunction.contract.DownloadListContract
-import com.nice.baselibrary.base.NiceFragment
-import com.nice.baselibrary.base.view.NiceEditText
+import com.nice.baselibrary.base.ui.NiceFragment
+import com.nice.baselibrary.base.ui.view.NiceEditText
 import com.nice.baselibrary.download.NiceDownloadInfo
 
 /**

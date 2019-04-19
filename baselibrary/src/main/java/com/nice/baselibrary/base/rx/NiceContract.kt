@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base
+package com.nice.baselibrary.base.rx
 
 /**
  * 契约类，组织presenter和view的接口

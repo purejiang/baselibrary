@@ -12,8 +12,8 @@ import android.support.v4.content.ContextCompat;
 
 import com.nice.baselibrary.base.utils.FileUtils;
 import com.nice.baselibrary.base.utils.LogUtils;
-import com.nice.baselibrary.base.view.NiceDialog;
-import com.nice.baselibrary.base.view.NiceShowView;
+import com.nice.baselibrary.base.ui.view.NiceDialog;
+import com.nice.baselibrary.base.ui.view.NiceShowView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -183,7 +183,7 @@ public class NicePermissionUtils {
         StringBuilder sb = new StringBuilder("您有已忽略的权限，请到设置中开启:\n");
         ArrayList<String> pertxt= new ArrayList<>();
         try {
-            InputStream input = context.getResources().getAssets().open("permission.txt");
+            InputStream input = context.getResources().getAssets().open("permissions.json");
             pertxt = FileUtils.Companion.readFile2List(input, "UTF-8");
         } catch (IOException e) {
             e.printStackTrace();

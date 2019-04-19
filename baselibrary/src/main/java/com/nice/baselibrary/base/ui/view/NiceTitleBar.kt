@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.view
+package com.nice.baselibrary.base.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
@@ -40,15 +40,18 @@ class NiceTitleBar :RelativeLayout,View.OnClickListener {
 
     private fun initView() {
         val view = LayoutInflater.from(mContext).inflate(R.layout.layout_title_bar_base, this)
-        mBackNiceTextView = view.findViewById(R.id.tv_back_title_bar)
-        mTitleNiceTextView = view.findViewById(R.id.tv_title_title_bar)
-        mMenuNiceTextView = view.findViewById(R.id.tv_menu_title_bar)
+        view?.let {
+            mBackNiceTextView = it.findViewById(R.id.tv_back_title_bar)
+            mTitleNiceTextView = it.findViewById(R.id.tv_title_title_bar)
+            mMenuNiceTextView = it.findViewById(R.id.tv_menu_title_bar)
+        }
 
     }
 
     private fun bindListener() {
 
     }
+
     /**
      * 设置标题文字颜色
      * @param color
@@ -121,18 +124,21 @@ class NiceTitleBar :RelativeLayout,View.OnClickListener {
             left2Drawable?.setBounds(0, 0, iconSize, iconSize)
 
         }
-        mBackNiceTextView?.setCompoundDrawables(leftDrawable, null, left2Drawable, null)
+        mBackNiceTextView?.let {
+            it.setCompoundDrawables(leftDrawable, null, left2Drawable, null)
+            it.setLeftDrawableListener(object : NiceTextView.LeftDrawableListener {
+                override fun onLeftDrawableListener() {
+                    leftListener?.onClickListener()
+                }
+            })
+            it.setRightDrawableListener(object : NiceTextView.RightDrawableListener {
+                override fun onRightDrawableListener() {
+                    left2Listener?.onClickListener()
+                }
+            })
+        }
 
-        mBackNiceTextView?.setLeftDrawableListener(object : NiceTextView.LeftDrawableListener {
-            override fun onLeftDrawableListener() {
-                leftListener?.onClickListener()
-            }
-        })
-        mBackNiceTextView?.setRightDrawableListener(object : NiceTextView.RightDrawableListener {
-            override fun onRightDrawableListener() {
-                left2Listener?.onClickListener()
-            }
-        })
+
 
     }
     /**
@@ -156,17 +162,20 @@ class NiceTitleBar :RelativeLayout,View.OnClickListener {
 //            right2Drawable.setBounds(0, 0, right2Drawable.minimumWidth, right2Drawable.minimumHeight)
             right2Drawable?.setBounds(0, 0, iconSize, iconSize)
         }
-        mMenuNiceTextView?.setCompoundDrawables(rightDrawable, null, right2Drawable, null)
-         mMenuNiceTextView?.setLeftDrawableListener(object : NiceTextView.LeftDrawableListener {
-             override fun onLeftDrawableListener() {
-                 rightListener?.onClickListener()
-             }
-         })
-         mMenuNiceTextView?.setRightDrawableListener(object : NiceTextView.RightDrawableListener {
-             override fun onRightDrawableListener() {
-                 right2Listener?.onClickListener()
-             }
-         })
+        mMenuNiceTextView?.let{
+            it.setCompoundDrawables(rightDrawable, null, right2Drawable, null)
+
+            it.setLeftDrawableListener(object : NiceTextView.LeftDrawableListener {
+                override fun onLeftDrawableListener() {
+                    rightListener?.onClickListener()
+                }
+            })
+            it.setRightDrawableListener(object : NiceTextView.RightDrawableListener {
+                override fun onRightDrawableListener() {
+                    right2Listener?.onClickListener()
+                }
+            })
+        }
     }
 
 

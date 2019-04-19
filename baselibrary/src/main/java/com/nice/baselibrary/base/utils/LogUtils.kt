@@ -17,9 +17,11 @@ class LogUtils private constructor() {
          * 通过单例获取
          * @return
          */
-        @Synchronized fun getInstance():LogUtils{
+         fun getInstance():LogUtils{
             if(mLogUtils ==null){
-                mLogUtils = LogUtils()
+                synchronized(LogUtils::class.java) {
+                    mLogUtils = LogUtils()
+                }
             }
             return mLogUtils!!
         }
@@ -39,9 +41,13 @@ class LogUtils private constructor() {
     private var mTag = "tag"
 
     fun init(context:Context, debug:Boolean){
+        init(context, debug, AppUtils.getInstance().getPackageName(context))
+    }
+
+    fun init(context:Context, debug:Boolean, tag:String){
         mDebug = debug
         mContext = context
-        mTag = AppUtils.getInstance().getPackageName(context)
+        mTag = tag
     }
 
     fun e(message:String, tag:String=mTag){
@@ -72,15 +78,20 @@ class LogUtils private constructor() {
     /**
      * 保存log到文件
      */
-    fun saveLog(){
+    fun saveLog(file:File){
         //要过滤的类型 *:W表示warm ，我们也可以换成 *:D ：debug， *:I：info，*:E：error等等,*后不加代表全部
         val running = arrayOf("logcat", "-s", "adb logcat *")
+        //执行命令行
         val exec = ExcCommand.exc(running)
-        val filePath = Constant.Companion.Path.ROOT_DIR + AppUtils.getInstance().getPackageName(mContext!!) + Constant.Companion.Path.LOGCAT_INFO_DIR
-        val file = File(filePath, StringUtils.getDateTime()+".log")
+        //子线程写文件
         Thread(Runnable {
-            FileUtils.writeFile(file, exec!!, false)
+            FileUtils.writeFile(file, exec, false)
         }).start()
 
+    }
+    fun saveLog(){
+        val filePath = Constant.Companion.Path.ROOT_DIR + AppUtils.getInstance().getPackageName(mContext!!) + Constant.Companion.Path.LOGCAT_INFO_DIR
+        val file = File(filePath, StringUtils.getDateTime()+".log")
+        saveLog(file)
     }
 }

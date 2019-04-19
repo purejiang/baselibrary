@@ -25,6 +25,10 @@ class NiceDownloadRetrofitHelper {
                     .build()
     }
 
+    /**
+     * 创建新的service
+     * @return
+     */
     fun getService(): NiceDownloadService?{
         return downloadRetrofit?.create(NiceDownloadService::class.java)
     }

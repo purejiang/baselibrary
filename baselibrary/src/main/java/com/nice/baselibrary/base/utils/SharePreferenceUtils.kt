@@ -15,7 +15,6 @@ class SharePreferenceUtils {
         fun create(context: Context, name: String = Constant.Companion.Persistence.DEFAULT, mode: Int = Context.MODE_PRIVATE): SpUtil {
             return SpUtil(context, name, mode)
         }
-
     }
 
     class SpUtil {

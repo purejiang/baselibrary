@@ -15,6 +15,8 @@
         <!--是否有标题栏-->
         <item name="android:windowNoTitle">true</item>
     </style>
+
+    <!--dialog的大小风格-->
     <style name="BigNiceDialog" parent="@style/Theme.AppCompat.Dialog">
         <item name="android:windowMinWidthMinor">100%</item>
         <!-- dialog 背景颜色，默认是白色-->
@@ -35,5 +37,13 @@
         <item name="android:windowMinWidthMinor">25%</item>
         <!-- dialog 背景颜色，默认是白色-->
         <item name="android:colorBackground">@color/colorWhite_light</item>
+    </style>
+
+    <!--dialog动画-->
+    <style name="NiceDialogAnim" parent="android:Animation">
+        <!--进入时的动画-->
+        <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
+        <!--退出时的动画-->
+        <item name="android:windowExitAnimation">@anim/dialog_exit</item>
     </style>
 </resources>

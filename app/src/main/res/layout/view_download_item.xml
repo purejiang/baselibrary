@@ -7,7 +7,7 @@
     android:gravity="center_vertical"
     android:paddingLeft="@dimen/normal_space"
     android:paddingRight="@dimen/normal_space">
-    <com.nice.baselibrary.base.view.NiceTextView
+    <com.nice.baselibrary.base.ui.view.NiceTextView
         android:id="@+id/btv_download_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         android:maxEms="16"
         android:layout_weight="1"
         />
-    <com.nice.baselibrary.base.view.NiceTextView
+    <com.nice.baselibrary.base.ui.view.NiceTextView
         android:id="@+id/btv_download_item_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
         android:maxEms="16"
         android:layout_marginStart="@dimen/normal_space"
         />
-    <com.nice.baselibrary.base.view.NiceCircleProgress
+    <com.nice.baselibrary.base.ui.view.NiceCircleProgress
         android:id="@+id/cpb_download_item"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

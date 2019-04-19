@@ -9,6 +9,11 @@ import java.security.NoSuchAlgorithmException
  */
 class MD5Utils {
     companion object {
+        /**
+         * byte数组转MD5字符串
+         * @param byteStr
+         * @return
+         */
         fun  encryptionMD5(byteStr:ByteArray):String{
             var messageDigest: MessageDigest
             var md5StrBuff = StringBuffer()

@@ -1,7 +1,7 @@
 package com.jplus.manyfunction.contract
 
-import com.nice.baselibrary.base.presenter.NicePresenter
-import com.nice.baselibrary.base.NiceBaseView
+import com.nice.baselibrary.base.rx.NicePresenter
+import com.nice.baselibrary.base.ui.NiceBaseView
 import com.nice.baselibrary.download.NiceDownloadInfo
 import com.nice.baselibrary.download.NiceDownloadListener
 

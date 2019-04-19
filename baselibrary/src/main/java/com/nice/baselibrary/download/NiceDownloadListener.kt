@@ -19,6 +19,7 @@ interface NiceDownloadListener {
     fun downloadSuccess()
     /**
      * 下载失败
+     * @param e
      */
     fun downloadFailed(e:Throwable)
     /**

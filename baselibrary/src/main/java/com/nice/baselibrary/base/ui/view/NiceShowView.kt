@@ -1,8 +1,7 @@
-package com.nice.baselibrary.base.view
+package com.nice.baselibrary.base.ui.view
 
 import android.content.Context
 import android.view.Gravity
-import android.widget.ProgressBar
 import android.widget.Toast
 import com.nice.baselibrary.R
 
@@ -69,12 +68,12 @@ class NiceShowView {
         return createDialog(context, resInt, resIntArray, size)
     }
 
-    fun showNormalToast(message: String, context: Context = mContext!!): Toast {
+    fun NormalToast(message: String, context: Context = mContext!!): Toast {
         return Toast.makeText(context, message, Toast.LENGTH_SHORT)
     }
 
-    fun showGravityToast(message: String, context: Context = mContext!!): Toast {
-        val toast = showNormalToast(message, context)
+    fun GravityToast(message: String, context: Context = mContext!!): Toast {
+        val toast = NormalToast(message, context)
         toast.setGravity(Gravity.CENTER, 0, 0)
         return toast
     }

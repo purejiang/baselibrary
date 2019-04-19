@@ -6,13 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.jplus.manyfunction.R
-import com.nice.baselibrary.base.view.NiceCircleProgress
-import com.nice.baselibrary.base.view.NiceTextView
+import com.nice.baselibrary.base.ui.view.NiceCircleProgress
+import com.nice.baselibrary.base.ui.view.NiceTextView
 import com.nice.baselibrary.download.NiceDownloadInfo
 import com.nice.baselibrary.download.NiceDownloadListener
 
 /**
- * 适配器基类
+ * 下载列表适配器
  * @author JPlus
  * @date 2019/1/16.
  */

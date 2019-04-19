@@ -210,11 +210,10 @@ class FileUtils {
 
         /**
          * 生成文件
-         * @param filePath
+         * @param file
          * @return 是否生成文件
          */
         fun createOrExistsFile(file: File): Boolean {
-            if (file == null) return false
             if (file.exists()) return file.isFile
             if (!createOrExistsDir(file.parentFile)) return false
             return try {

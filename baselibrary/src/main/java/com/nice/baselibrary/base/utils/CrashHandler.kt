@@ -15,9 +15,11 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
         @SuppressLint("StaticFieldLeak")
         private var mCrashHandler: CrashHandler? = null
 
-        @Synchronized fun getInstance(): CrashHandler {
+        fun getInstance(): CrashHandler {
             if (mCrashHandler == null) {
-                mCrashHandler = CrashHandler()
+                synchronized(CrashHandler::class.java) {
+                    mCrashHandler = CrashHandler()
+                }
             }
             return mCrashHandler!!
         }
@@ -49,9 +51,11 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
         val pw = PrintWriter(sw)
         exception?.printStackTrace(pw)
         exceptionInfo.append(sw.toString())
+        //新线程写入文件
         Thread(Runnable {
             FileUtils.writeFile(File(filePath, date + ".log"), ByteArrayInputStream(exceptionInfo.toString().toByteArray()), false)
         }).start()
+        //返回给系统处理异常
         mDefaultCrashHandler?.uncaughtException(thread, exception)
     }
 }

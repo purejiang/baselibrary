@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.view
+package com.nice.baselibrary.base.ui.view
 
 import android.content.Context
 import android.support.v7.widget.AppCompatTextView
@@ -21,35 +21,34 @@ class NiceTextView : AppCompatTextView {
 
     private var mLeftDrawableListener: LeftDrawableListener? = null
     private var mRightDrawableListener: RightDrawableListener? = null
+
     constructor(context: Context) : super(context){
         init()
     }
-
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs){
         init()
     }
-
-
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr){
         init()
     }
     private fun init(){
         this.isSelected = true
     }
+
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         when (event?.action) {
             MotionEvent.ACTION_UP -> {
-                if (mLeftDrawableListener != null) {
-                    var leftDrawable = compoundDrawables[DRAWABLE_LEFT] //获取左图片实例
+                mLeftDrawableListener?.let{
+                    val leftDrawable = compoundDrawables[DRAWABLE_LEFT] //获取左边图片
                     if (leftDrawable != null && event.rawX <= (left + leftDrawable.bounds.width())) {//判断点击是否在图片区域中
-                        mLeftDrawableListener?.onLeftDrawableListener()
+                        it.onLeftDrawableListener()
                         return true //消费点击事件
                     }
                 }
-                if (mRightDrawableListener != null) {
-                    var leftDrawable = compoundDrawables[DRAWABLE_RIGHT]
+                mRightDrawableListener?.let{
+                    val leftDrawable = compoundDrawables[DRAWABLE_RIGHT]
                     if (leftDrawable != null && event.rawX >= (right - leftDrawable.bounds.width())) {
-                        mRightDrawableListener?.onRightDrawableListener()
+                        it.onRightDrawableListener()
                         return true
                     }
                 }
@@ -60,6 +59,7 @@ class NiceTextView : AppCompatTextView {
 
     /**
      * 左图片的点击监听
+     * @param leftDrawableListener
      */
     fun setLeftDrawableListener(leftDrawableListener: LeftDrawableListener) {
         this.mLeftDrawableListener = leftDrawableListener
@@ -67,21 +67,24 @@ class NiceTextView : AppCompatTextView {
 
     /**
      * 右图片的点击监听
+     * @param rightDrawableListener
      */
     fun setRightDrawableListener(rightDrawableListener: RightDrawableListener) {
         this.mRightDrawableListener = rightDrawableListener
     }
 
-    /**
-     * 左图片的点击
-     */
+
     interface LeftDrawableListener {
+        /**
+         * 左图片的点击事件
+         */
         fun onLeftDrawableListener()
     }
-    /**
-     * 右图片的点击
-     */
+
     interface RightDrawableListener {
+        /**
+         * 右图片的点击时间
+         */
         fun onRightDrawableListener()
     }
 

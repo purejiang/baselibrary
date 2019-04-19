@@ -1,16 +1,13 @@
 package com.jplus.manyfunction.ui.activity
 
-import android.Manifest
 import android.os.Bundle
 import android.view.KeyEvent
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.presenter.DownloadListPresenter
-import com.nice.baselibrary.base.NiceActivity
+import com.nice.baselibrary.base.ui.NiceActivity
 import com.jplus.manyfunction.ui.fragment.DownloadListFragment
-import com.jplus.manyfunction.utils.NicePermissionUtils
 import com.nice.baselibrary.base.common.ApiEntry
-import com.nice.baselibrary.base.utils.PermissionUtils
-import com.nice.baselibrary.base.view.NiceTitleBar
+import com.nice.baselibrary.base.ui.view.NiceTitleBar
 import com.nice.baselibrary.download.NiceDownloadDataSource
 
 

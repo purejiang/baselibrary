@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base
+package com.nice.baselibrary.base.ui
 
 import android.app.Application
 import android.content.Context

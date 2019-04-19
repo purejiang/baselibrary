@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.presenter
+package com.nice.baselibrary.base.rx
 
 /**
  * @author JPlus

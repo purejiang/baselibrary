@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base
+package com.nice.baselibrary.base.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -14,10 +14,22 @@ import android.view.ViewGroup
 abstract class NiceFragment :Fragment() {
     private var mNiceActivity: NiceActivity?=null
 
+    /**
+     * 获取Fragment的布局
+     * @param view
+     * @param bundle
+     */
     abstract fun getInitView(view: View?, bundle:Bundle?)
 
+    /**
+     * 获取布局
+     * @return
+     */
     abstract fun getLayoutId():Int
 
+    /**
+     * 获取连接的Activity
+     */
     fun getHolderActivity(): NiceActivity?{
         return mNiceActivity
     }
