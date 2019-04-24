@@ -3,7 +3,8 @@ package com.nice.baselibrary.base.utils
 import java.io.*
 
 /**
- * @author Administrator
+ * 命令行工具类
+ * @author JPlus
  * @date 2019/4/2.
  */
 class ExcCommand {

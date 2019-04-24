@@ -12,7 +12,7 @@ import com.nice.baselibrary.base.common.Constant
  */
 class SharePreferenceUtils {
     companion object {
-        fun create(context: Context, name: String = Constant.Companion.Persistence.DEFAULT, mode: Int = Context.MODE_PRIVATE): SpUtil {
+        fun create(context: Context, name: String = Constant.Persistence.DEFAULT, mode: Int = Context.MODE_PRIVATE): SpUtil {
             return SpUtil(context, name, mode)
         }
     }

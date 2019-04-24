@@ -10,7 +10,7 @@ import java.io.File
  * @date 2019/2/22.
  */
 class Constant {
-    companion object {
+
 
         class Api{
 
@@ -31,10 +31,11 @@ class Constant {
          */
         class Path {
             companion object {
-                val ROOT_DIR = Environment.getExternalStoragePublicDirectory("").absolutePath + File.separator
-                val CRASH_INFO_DIR =  File.separator + "crash"
-                val LOGCAT_INFO_DIR =  File.separator + "logcat"
-                val DOWNLOAD_PATH =  File.pathSeparator + "Download"
+                val ROOT_DIR = Environment.getExternalStoragePublicDirectory("").absolutePath
+                val CRASH_INFO_DIR = "crash"
+                val LOGCAT_INFO_DIR = "logcat"
+                val DOWNLOAD_PATH = "download"
+                val PATCH_DEX_PATH = "patch"
             }
         }
 
@@ -46,6 +47,6 @@ class Constant {
                 val DEFAULT = "setting"
             }
         }
-    }
+
 
 }

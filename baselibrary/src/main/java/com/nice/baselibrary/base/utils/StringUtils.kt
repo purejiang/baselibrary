@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
+ * String工具类
  * @author JPlus
  * @date 2019/1/23.
  */

@@ -7,7 +7,8 @@ import com.nice.baselibrary.base.common.Constant
 import java.io.*
 
 /**
- * @author Administrator
+ * 崩溃日志处理类
+ * @author JPlus
  * @date 2019/3/14.
  */
 class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
@@ -45,7 +46,7 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
      */
     override fun uncaughtException(thread: Thread?, exception: Throwable?) {
         val date = StringUtils.getDateTime()
-        val filePath = Constant.Companion.Path.ROOT_DIR + AppUtils.getInstance().getPackageName(mContext) + Constant.Companion.Path.CRASH_INFO_DIR
+        val filePath = Constant.Path.ROOT_DIR + AppUtils.getInstance().getPackageName(mContext) + Constant.Path.CRASH_INFO_DIR
         val exceptionInfo = StringBuilder(date + "\n" + exception?.message + "\n")
         val sw = StringWriter()
         val pw = PrintWriter(sw)

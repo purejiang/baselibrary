@@ -5,7 +5,8 @@ import android.util.AttributeSet
 import android.view.View
 
 /**
- * @author Administrator
+ * 加载型view基类
+ * @author JPlus
  * @date 2019/2/18.
  */
 abstract class NiceLoadingView : View {

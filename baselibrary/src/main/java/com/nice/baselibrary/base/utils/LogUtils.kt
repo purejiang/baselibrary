@@ -90,7 +90,7 @@ class LogUtils private constructor() {
 
     }
     fun saveLog(){
-        val filePath = Constant.Companion.Path.ROOT_DIR + AppUtils.getInstance().getPackageName(mContext!!) + Constant.Companion.Path.LOGCAT_INFO_DIR
+        val filePath = Constant.Path.ROOT_DIR + AppUtils.getInstance().getPackageName(mContext!!) + Constant.Path.LOGCAT_INFO_DIR
         val file = File(filePath, StringUtils.getDateTime()+".log")
         saveLog(file)
     }

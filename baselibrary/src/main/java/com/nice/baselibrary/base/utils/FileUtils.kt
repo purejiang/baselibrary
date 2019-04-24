@@ -8,7 +8,6 @@ import java.security.NoSuchAlgorithmException
 import java.nio.file.Files.exists
 
 
-
 /**
  * 文件工具类
  * @author JPlus
@@ -41,17 +40,15 @@ class FileUtils {
             } catch (e: IOException) {
                 throw RuntimeException("IOException occurred. ", e)
             } finally {
-                if (outputStream != null) {
                     try {
-                        outputStream.close()
+                        outputStream?.close()
                         stream.close()
                     } catch (e: IOException) {
                         throw RuntimeException("IOException occurred. ", e)
                     }
-
-                }
             }
         }
+
         /**
          * 文件写入
          * @param file
@@ -71,11 +68,11 @@ class FileUtils {
             } catch (e: IOException) {
                 throw RuntimeException("IOException occurred. ", e)
             } finally {
-                    try {
-                        writer?.close()
-                    } catch (e: IOException) {
-                        throw RuntimeException("IOException occurred. ", e)
-                    }
+                try {
+                    writer?.close()
+                } catch (e: IOException) {
+                    throw RuntimeException("IOException occurred. ", e)
+                }
             }
         }
 
@@ -102,13 +99,12 @@ class FileUtils {
             } catch (e: IOException) {
                 throw RuntimeException("IOException occurred. ", e)
             } finally {
-                if (reader != null) {
                     try {
-                        reader.close()
+                        reader?.close()
                     } catch (e: IOException) {
                         throw RuntimeException("IOException occurred. ", e)
                     }
-                }
+
             }
         }
 
@@ -134,12 +130,10 @@ class FileUtils {
             } catch (e: IOException) {
                 throw RuntimeException("IOException occurred. ", e)
             } finally {
-                if (reader != null) {
-                    try {
-                        reader.close()
-                    } catch (e: IOException) {
-                        throw RuntimeException("IOException occurred. ", e)
-                    }
+                try {
+                    reader?.close()
+                } catch (e: IOException) {
+                    throw RuntimeException("IOException occurred. ", e)
                 }
             }
         }
@@ -162,13 +156,10 @@ class FileUtils {
             } catch (e: IOException) {
                 throw RuntimeException("IOException occurred. ", e)
             } finally {
-                if (input != null) {
-                    try {
-                        input.close()
-                    } catch (e: IOException) {
-                        throw RuntimeException("IOException occurred. ", e)
-                    }
-
+                try {
+                    input?.close()
+                } catch (e: IOException) {
+                    throw RuntimeException("IOException occurred. ", e)
                 }
             }
         }
@@ -269,14 +260,21 @@ class FileUtils {
 
             } finally {
                 try {
-                    if (digest != null) {
-                        digest.close()
-                    }
+                    digest?.close()
                 } catch (e: IOException) {
 
                 }
             }
             return byteArrayOf()
+        }
+
+        /**
+         * 获取文件夹下文件列表
+         * @param file
+         * @return
+         */
+        fun getDirFiles(file: File): MutableList<File>? {
+            return if (file.isDirectory) file.listFiles().toMutableList() else null
         }
     }
 }

@@ -3,6 +3,7 @@ package com.nice.baselibrary.base.utils
 import android.content.Context
 
 /**
+ * 资源管理类
  * @author JPlus
  * @date 2019/3/28.
  */

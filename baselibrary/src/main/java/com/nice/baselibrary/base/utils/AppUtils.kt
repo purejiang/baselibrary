@@ -15,8 +15,8 @@ import java.util.*
 
 
 /**
- *
- * @author Administrator
+ *  App工具类
+ * @author JPlus
  * @date 2019/2/22.
  */
 class AppUtils {
@@ -55,7 +55,7 @@ class AppUtils {
                 packageManager = context.applicationContext.packageManager
                 applicationInfo = packageManager.getApplicationInfo(context.packageName, 0)
             } catch (e: PackageManager.NameNotFoundException) {
-                return Constant.Companion.Message.DEFAULT_APP_NAME
+                return Constant.Message.DEFAULT_APP_NAME
             }
             return packageManager.getApplicationLabel(applicationInfo) as String
         }

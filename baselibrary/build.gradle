@@ -32,9 +32,9 @@ dependencies {
     //导入retrofit
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     //Gson 库
-    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.google.code.gson:gson:2.8.2'
     //okhttp
-    compile 'com.squareup.okhttp3:okhttp:3.9.1'
+    compile 'com.squareup.okhttp3:okhttp:3.10.0'
     compile 'com.squareup.okio:okio:1.13.0'
     //下面两个是RxJava 和 RxAndroid
     compile 'io.reactivex.rxjava2:rxandroid:2.0.2'
@@ -43,9 +43,12 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     //配合Rxjava 使用
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    //图片加载框架
+    implementation 'com.github.bumptech.glide:glide:4.6.0'
     //内存泄漏检测
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.6.3'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+
 }
 repositories {
     mavenCentral()
