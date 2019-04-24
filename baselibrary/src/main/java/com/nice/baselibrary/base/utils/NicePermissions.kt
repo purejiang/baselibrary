@@ -25,36 +25,36 @@ import java.lang.RuntimeException
  * @author JPlus
  * @date 2019/2/27.
  */
-class PermissionUtils private constructor() {
+class NicePermissions private constructor() {
 
     companion object {
-        private val REQUEST_CODE_ASK_PERMISSIONS = 1024
-        private var mPermissionUtils: PermissionUtils? = null
-        fun getInstance(): PermissionUtils {
+        private const val REQUEST_CODE_ASK_PERMISSIONS = 1024
+
+        private var mPermissionUtils: NicePermissions? = null
+        fun getInstance(): NicePermissions {
             if (mPermissionUtils == null) {
-                synchronized(PermissionUtils::class.java) {
-                    mPermissionUtils = PermissionUtils()
+                synchronized(NicePermissions::class.java) {
+                    mPermissionUtils = NicePermissions()
                 }
             }
             return mPermissionUtils!!
         }
 
     }
-
-    private var mContext: Context? = null
     private var mNiceDialog: NiceDialog? = null
     private var mOpenWindow: Boolean = false
     private var mIsCancelable: Boolean = false
-    private var mPerMap: HashMap<String, HashMap<String,List<String>>> ?= null
+    private var mPerMap: HashMap<String, HashMap<String, List<String>>>? = null
+    private var mContext:Context?=null
+
     fun init(context: Context, openWindow: Boolean, isCancelable: Boolean) {
-        mContext = context
         mOpenWindow = openWindow
         mIsCancelable = isCancelable
         //获取json文件中的权限信息
         try {
             val input = context.resources.assets.open("permissions.json")
             val perContent = FileUtils.readFile2String(input, "UTF-8")
-            mPerMap = Gson().fromJson<HashMap<String,HashMap<String,List<String>>>>(perContent, object : TypeToken<HashMap<String, HashMap<String, List<String>>>>() {}.type)
+            mPerMap = Gson().fromJson<HashMap<String, HashMap<String, List<String>>>>(perContent, object : TypeToken<HashMap<String, HashMap<String, List<String>>>>() {}.type)
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -88,18 +88,18 @@ class PermissionUtils private constructor() {
      * @param params
      * @return 未通过的权限列表
      */
-    private fun getNoPermission(params: Array<String>?): Array<String> {
+    private fun getNoPermission(context: Context, params: Array<String>?): Array<String> {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || params == null || params.isEmpty()) {
             return arrayOf()
         }
         val sb = StringBuilder("getNoPermission").append("\n")
         val noPermission: MutableList<String> = ArrayList()
-        params.filter { ContextCompat.checkSelfPermission(mContext!!, it) != PackageManager.PERMISSION_GRANTED }//筛选未通过的权限
+        params.filter { ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED && isDangerPermission(it) }//筛选未通过的权限
                 .forEach {
                     noPermission.add(it)
                     sb.append(it).append("\n")
                 }
-        LogUtils.getInstance().d(sb.toString())
+        LogUtils.getInstance().d(sb.toString(), "pipa")
         return noPermission.toTypedArray()
     }
 
@@ -108,18 +108,18 @@ class PermissionUtils private constructor() {
      * @param params
      * @return 被忽略的权限列表
      */
-    private fun shouldShowRequestPermissions(params: Array<String>): Array<String> {
+    private fun checkIgnorePermissions(context: Context, params: Array<String>): Array<String> {
         val sb = StringBuilder("shouldShowRequestPermissions").append("\n")
         if (params.isEmpty()) {
             return arrayOf()
         }
         val ignorePermissions: MutableList<String> = ArrayList()
-        params.filter { !ActivityCompat.shouldShowRequestPermissionRationale(mContext as Activity, it)&& isDangerPermission(it) }//筛选被用户忽略的权限
+        params.filter { !ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, it) && isDangerPermission(it) }//筛选被用户忽略的权限
                 .forEach {
                     ignorePermissions.add(it)
                     sb.append(it).append("\n")
                 }
-        LogUtils.getInstance().d(sb.toString())
+        LogUtils.getInstance().d(sb.toString(), "pipa")
         return ignorePermissions.toTypedArray()//返回数组
     }
 
@@ -127,17 +127,19 @@ class PermissionUtils private constructor() {
      * 判断是否危险权限
      * @param permission
      */
-    fun isDangerPermission(permission:String):Boolean{
+    private fun isDangerPermission(permission: String): Boolean {
         val dangerPermission = mPerMap!!["danger_permissions"]
-        for (perInfoList:List<String> in dangerPermission?.values!!){
+        for (perInfoList: List<String> in dangerPermission?.values!!) {
             perInfoList
                     .filter { it.contains(permission) }
                     .forEach {
                         LogUtils.getInstance().e(it)
-                        return true }
+                        return true
+                    }
         }
         return false
     }
+
     /**
      * 跳转到应用的设置界面
      * @param activity
@@ -160,49 +162,23 @@ class PermissionUtils private constructor() {
 
 
     /**
-     * 请求所有权限
-     */
-    fun requestPermissions() {
-        requestPermissions(mContext!!)
-    }
-
-    /**
-     * 请求所有权限
+     * 请求权限
      * @param context
      */
-    fun requestPermissions(context: Context) {
-        LogUtils.getInstance().e("requestPermissions", "manyfunction")
-        val mNoPermission = getNoPermission(getAllPermissions(context))
+    fun requestPermissions(context: Context, permissions: Array<String>?) {
+        mContext =context
+        LogUtils.getInstance().d("requestPermissions", "pipa")
+        val mNoPermission = if(permissions!=null&&permissions.isNotEmpty()){
+            getNoPermission(context, permissions)
+        } else{
+            getNoPermission(context, getAllPermissions(context))
+        }
+        LogUtils.getInstance().d(context.packageName, "pipa")
         if (mNoPermission.isNotEmpty()) {
             ActivityCompat.requestPermissions(context as Activity, mNoPermission, REQUEST_CODE_ASK_PERMISSIONS)
         }
     }
 
-    /**
-     * 请求单个权限后能够获取整组权限
-     *
-     * @param permission 需要请求的权限
-     */
-    fun requestPermissions(permission: String) {
-        requestPermissions(permission, mContext!!)
-    }
-
-    /**
-     * 请求单个权限后能够获取整组权限
-     *
-     * @param permission 需要请求的权限
-     * @param context 上下文
-     */
-    fun requestPermissions(permission: String?, context: Context) {
-        if (permission == null) {
-            return
-        }
-        val permissions = arrayOf(permission)
-        val noPermissions = getNoPermission(permissions)
-        if (permissions.isNotEmpty() && noPermissions.isNotEmpty()) {
-            ActivityCompat.requestPermissions(context as Activity, permissions, REQUEST_CODE_ASK_PERMISSIONS)
-        }
-    }
 
     /**
      * 弹出权限设置提醒框
@@ -211,13 +187,13 @@ class PermissionUtils private constructor() {
      * @return
      */
     private fun showPermissionDialog(context: Context, permissions: Array<String>): NiceDialog {
-        LogUtils.getInstance().e("showPermissionDialog", "manyfunction")
+        LogUtils.getInstance().e("showPermissionDialog", "pipa")
         val sb = StringBuilder("您有已忽略的权限，请到设置中开启:\n\n")
 
         //获取危险权限信息
         for (per in permissions) {
             val dangerPermission = mPerMap!!["danger_permissions"]
-            for (perInfoList:List<String> in dangerPermission?.values!!){
+            for (perInfoList: List<String> in dangerPermission?.values!!) {
                 perInfoList
                         .filter { it.contains(per) }
                         .forEach { sb.append("\t\t\t\t").append(it.split(" ")[1]).append("\n") }
@@ -243,8 +219,8 @@ class PermissionUtils private constructor() {
      * 避免内存泄漏
      */
     fun destroy() {
-        if (mContext != null) {
-            mContext = null
+        if(mContext!=null){
+            mContext=null
         }
         if (mNiceDialog != null) {
             mNiceDialog?.dismiss()
@@ -254,24 +230,14 @@ class PermissionUtils private constructor() {
 
     /**
      * 是否请求到权限
-     * @param requestCode
-     * @param permissions
-     * @param grantResult
-     */
-    fun handleRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResult: IntArray) {
-        handleRequestPermissionsResult(mContext!!, requestCode, permissions, grantResult)
-    }
-
-    /**
-     * 是否请求到权限
-     * @param context 上下文
      * @param requestCode 请求码
      * @param permissions 请求的权限数组
      * @param grantResult 请求的结果码
      */
-    fun handleRequestPermissionsResult(context: Context, requestCode: Int, permissions: Array<out String>, grantResult: IntArray) {
+    fun handleRequestPermissionsResult(permissionListener: PermissionListener, requestCode: Int, permissions: Array<out String>, grantResult: IntArray) {
         var result = true
-        val noPermissionList:MutableList<String> = ArrayList()
+        val noPermissionList: MutableList<String> = ArrayList()
+        val grantPermissionList: MutableList<String> = ArrayList()
         when (requestCode) {
             REQUEST_CODE_ASK_PERMISSIONS -> {
                 for (i in grantResult.indices) {
@@ -279,13 +245,16 @@ class PermissionUtils private constructor() {
                     if (grantResult[i] != PackageManager.PERMISSION_GRANTED) {
                         //未通过的权限
                         noPermissionList.add(permissions[i])
+                    } else {
+                        //通过的权限
+                        grantPermissionList.add(permissions[i])
                     }
                 }
                 //是否请求到全部权限的
                 if (result) {
-                    LogUtils.getInstance().d("success", "tag")
+                    LogUtils.getInstance().d("success", "pipa")
                 } else {
-                    LogUtils.getInstance().d("failed", "tag")
+                    LogUtils.getInstance().d("failed","pipa")
                 }
             }
             else -> {
@@ -293,15 +262,25 @@ class PermissionUtils private constructor() {
         }
 
         val noPermissions = noPermissionList.toTypedArray()
-        val ignorePermissions = shouldShowRequestPermissions(noPermissions)
+        val grantPermissions = grantPermissionList.toTypedArray()
+        val ignorePermissions = checkIgnorePermissions(mContext!!, noPermissions)
+
+        if (grantPermissions.isNotEmpty()) {
+            permissionListener.permissionGrantedCallback(grantPermissions)
+        }
+        if (noPermissions.isNotEmpty()) {
+            permissionListener.permissionDeniedCallback(noPermissions)
+        }
         if (ignorePermissions.isNotEmpty()) {
-            if (mOpenWindow) {
+            if(mOpenWindow) {
                 if (mNiceDialog == null) {
-                    mNiceDialog = showPermissionDialog(context, ignorePermissions)
+                    mNiceDialog = showPermissionDialog(mContext!!, ignorePermissions)
                 }
                 mNiceDialog?.show()
             }
+            permissionListener.permissionIgnoreCallback(ignorePermissions)
         }
+
         val sb = StringBuilder("handleRequestPermissionsResult").append("\n")
         for (per in noPermissions) {
             sb.append(per).append("\n")
@@ -310,7 +289,7 @@ class PermissionUtils private constructor() {
         for (grant in grantResult) {
             sb.append("" + grant).append("\n")
         }
-        LogUtils.getInstance().d(sb.toString(), "manyfunction")
+        LogUtils.getInstance().d(sb.toString(), "pipa")
     }
 
     /**
@@ -347,8 +326,28 @@ class PermissionUtils private constructor() {
         }
         audioRecord.stop()
         audioRecord.release()
-        audioRecord = null
         return true
+    }
+
+
+    interface PermissionListener {
+        /**
+         * 成功的回调
+         * @param permissions
+         */
+        fun permissionGrantedCallback(permissions: Array<out String>)
+
+        /**
+         * 失败的回调
+         * @param permissions
+         */
+        fun permissionDeniedCallback(permissions: Array<out String>)
+
+        /**
+         * 忽略的回调,只提供危险权限
+         * @param permissions
+         */
+        fun permissionIgnoreCallback(permissions: Array<out String>)
     }
 }
 
