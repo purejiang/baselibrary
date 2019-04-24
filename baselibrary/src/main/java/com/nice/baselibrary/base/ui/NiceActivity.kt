@@ -120,8 +120,9 @@ abstract class NiceActivity : AppCompatActivity() {
                 ActivityCollect.removeAll()
                 System.exit(0)
             }
+        }else {
+            super.onBackPressed()
         }
-        super.onBackPressed()
     }
 
 }
