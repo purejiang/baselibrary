@@ -11,7 +11,9 @@ import android.view.ViewGroup
  * @author JPlus
  * @date 2019/1/16.
  */
-abstract class NiceAdapter<T>(private val mItems:ArrayList<T>): RecyclerView.Adapter<NiceAdapter.VH>() {
+abstract class NiceAdapter<T>(private val mItems:MutableList<T>): RecyclerView.Adapter<NiceAdapter.VH>() {
+    private var mItemClickListener:ItemClickListener?=null
+
     /**
      * 获取Layout
      * @param viewType
@@ -23,79 +25,90 @@ abstract class NiceAdapter<T>(private val mItems:ArrayList<T>): RecyclerView.Ada
      * @param item
      * @param position
      */
-    abstract fun convert(holder:VH, item:T, position: Int)
+    abstract fun convert(holder:VH, item:T, position: Int, payloads: MutableList<Any>?)
     /**
-     * 添加删除item
+     * 添加item
      * @param item
      */
-    abstract  fun addItem(item:T)
-    /**
-     * 添加列表中所有item
-     * @param items
-     */
-    abstract  fun addItems(items:ArrayList<T>)
+    open  fun addItem(item:T, position:Int){
+        mItems.add(position, item)
+        notifyItemInserted(position)
+    }
+
     /**
      * 删除item
      * @param item
      */
-    abstract  fun deleteItem(item:T)
+    open  fun deleteItem(item:T){
+
+    }
 
     /**
      * 删除指定位置的item
      * @param position
      */
-    abstract  fun deleteItem(position: Int)
+    open  fun deleteItem(position: Int){
+        mItems.removeAt(position)
+        notifyItemRemoved(position)
+    }
 
-    /**
-     * 删除列表中所有item
-     * @param items
-     */
-    abstract  fun deleteItems(items:ArrayList<T>)
     /**
      * 获取指定位置的item
      * @param position
      */
-    abstract  fun getItem(position:Int):T
+    open  fun getItem(position:Int):T{
+        return mItems[position]
+    }
+
+
     /**
-     * 刷新所有item
-     * @param items
+     * 设置条目的点击监听
+     * @param itemClickListener
      */
-    abstract  fun refreshItems(items:ArrayList<T>)
+     open fun setItemClickListener(itemClickListener: ItemClickListener?){
+        this.mItemClickListener = itemClickListener
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): VH {
         return VH.get(parent, getLayout(viewType))
     }
 
-    override fun onBindViewHolder(holder: VH?, position: Int, payloads: MutableList<Any>?) {
-        super.onBindViewHolder(holder, position, payloads)
+    override fun onBindViewHolder(holder: VH, position: Int, payloads: MutableList<Any>?) {
+        convert(holder, mItems[position], position, payloads)
+
+        holder.itemView.setOnClickListener {
+            mItemClickListener!!.setItemClick(holder, position)
+        }
+        holder.itemView.setOnLongClickListener{
+            mItemClickListener!!.setItemLongClick(holder, position)
+        }
+
     }
     override fun onBindViewHolder(holder: VH, position: Int) {
-        convert(holder, mItems[position], position)
+
     }
 
     override fun getItemCount(): Int {
         return mItems.size
     }
 
-    interface ItemClickListener<in T>{
+    interface ItemClickListener{
         /**
          * item的点击事件
          * @param holder
-         * @param item
          * @param position
          */
-        fun setItemClick(holder:VH, item:T, position:Int)
+        fun setItemClick(holder:VH, position:Int)
         /**
          * item的长按事件
          * @param holder
-         * @param item
          * @param position
          * @return
          */
-        fun setItemLongClick(holder:VH, item:T, position:Int):Boolean
+        fun setItemLongClick(holder:VH, position:Int):Boolean
     }
 
-    abstract fun setItemClickListener(itemClickListener: ItemClickListener<T>)
 
 
     class VH(private val mContentView: View): RecyclerView.ViewHolder(mContentView) {
