@@ -224,7 +224,7 @@ class PhotoUtils constructor(private val mActivity:Activity) {
                 }
             }
             mCameraCropCode -> {
-                onRunCallback(mPhotoCallBack,mImageUri)
+                onRunCallback(mCameraCallBack,mImageUri)
             }
             mPhotoCropCode->{
                 onRunCallback(mPhotoCallBack, parseUri(data))
