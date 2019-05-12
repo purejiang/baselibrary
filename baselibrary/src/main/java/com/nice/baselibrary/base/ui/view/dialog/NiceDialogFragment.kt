@@ -57,7 +57,7 @@ abstract class NiceDialogFragment : DialogFragment() {
         return view
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         LogUtils.getInstance().e("====onViewCreated====")
         super.onViewCreated(view, savedInstanceState)
         dialog.run {

@@ -91,10 +91,10 @@ open class NiceAlertDialog : NiceDialogFragment() {
     }
 
 
-    private fun getBindViewListener(): NiceAlertDialog.OnBindViewListener? {
+    private fun getBindViewListener(): OnBindViewListener? {
         return mController!!.getOnBindViewListener()
     }
-    private fun getViewClickListener(): NiceAlertDialog.OnViewClickListener? {
+    private fun getViewClickListener(): OnViewClickListener? {
         return mController!!.getOnViewClickListener()
     }
 
@@ -266,7 +266,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @param clickListener
          * @return Builder
          */
-        fun setViewClickListener(clickListener: NiceAlertDialog.OnViewClickListener): Builder {
+        fun setViewClickListener(clickListener: OnViewClickListener): Builder {
             params?.mOnViewClickListener = clickListener
             return this
         }
@@ -284,7 +284,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @param bindViewListener
          * @return Builder
          */
-        fun setBindViewListener(bindViewListener: NiceAlertDialog.OnBindViewListener): Builder {
+        fun setBindViewListener(bindViewListener: OnBindViewListener): Builder {
             params?.mOnBindViewListener = bindViewListener
             return this
         }

@@ -1,10 +1,13 @@
-package com.nice.baselibrary.base.ui.view
+package com.nice.baselibrary.base.ui.view.dialog
 
 import android.content.Context
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import com.nice.baselibrary.R
+import com.nice.baselibrary.base.ui.view.NiceCircleProgress
+import com.nice.baselibrary.base.ui.view.NiceTextView
+import com.nice.baselibrary.base.ui.view.NiceTitleBar
 import com.nice.baselibrary.base.utils.LogUtils
 
 /**
