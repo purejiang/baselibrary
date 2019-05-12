@@ -85,7 +85,7 @@ class NiceCircleProgress : NiceLoadingView {
         circlePaint?.style = Paint.Style.STROKE //设置画笔风格为描边
         circlePaint?.strokeWidth = mStrokeWidth //设置画笔粗细
 
-        LogUtils.getInstance().e("color:"+progressColor)
+        LogUtils.getInstance().e("color:$progressColor")
 
         //进度条画笔
         progressPaint = Paint()
@@ -109,7 +109,7 @@ class NiceCircleProgress : NiceLoadingView {
                 override fun onTick(millisUntilFinished: Long) {
                     val radio =  millisUntilFinished / 1500f
                     mStartAngle = mDefaultAngle
-                    mStartAngle = mDefaultAngle + (360-360*radio)
+                    mStartAngle = mDefaultAngle + (360-360*radio) //
                     invalidate()
                 }
                 override  fun onFinish() {
@@ -193,7 +193,7 @@ class NiceCircleProgress : NiceLoadingView {
                 canvas.drawArc(mRect, -90f, 360f, false, circlePaint)
                 canvas.drawArc(mRect, -90f, angle, false, progressPaint)
                 if(isShowNum) {
-                    canvas.drawText(progress.toString() + "%", mWidth / 2.0f, mCenterHeight, textPaint)
+                    canvas.drawText("$progress%", mWidth / 2.0f, mCenterHeight, textPaint)
                 }else{
                     canvas.drawText(mLoadingText, mWidth / 2.0f, mCenterHeight, textPaint)
                 }
@@ -207,9 +207,9 @@ class NiceCircleProgress : NiceLoadingView {
      */
     private fun getRealSize(measureSpec: Int): Int {
         val result: Int
-        val mode = View.MeasureSpec.getMode(measureSpec)
-        val size = View.MeasureSpec.getSize(measureSpec)
-        result = if (mode == View.MeasureSpec.AT_MOST || mode == View.MeasureSpec.UNSPECIFIED) {
+        val mode = MeasureSpec.getMode(measureSpec)
+        val size = MeasureSpec.getSize(measureSpec)
+        result = if (mode == MeasureSpec.AT_MOST || mode == MeasureSpec.UNSPECIFIED) {
             (mRadius * 2 + mStrokeWidth).toInt()
         } else {
             size
@@ -218,7 +218,7 @@ class NiceCircleProgress : NiceLoadingView {
     }
 
     /**
-     * 初始化RectF
+     * 初始化RectF,用于定义弧的形状和大小
      */
     private fun initRectF() {
         if (mRect == null) {

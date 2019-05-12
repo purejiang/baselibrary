@@ -25,7 +25,7 @@ class StringUtils {
          * @return 返回B、K、M、G
          */
         fun parseByteSize(size: Long): String {
-            return if (size >= 0 && size < 1024) {
+            return if (size in 0..1023) {
                 String.format("%dB", size)
             } else if (size >= 1024 && size < 1024 * 1024) {
                 String.format("%dK", size / 1024)

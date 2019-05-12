@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.Gravity
 import android.widget.Toast
 import com.nice.baselibrary.R
+import com.nice.baselibrary.base.ui.view.dialog.NiceDialog
 
 /**
  * 弹出控件类

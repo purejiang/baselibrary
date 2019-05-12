@@ -13,10 +13,10 @@ import android.view.MotionEvent
 class NiceTextView : AppCompatTextView {
 
     companion object {
-        private val DRAWABLE_LEFT = 0
-        private val DRAWABLE_TOP = 1
-        private val DRAWABLE_RIGHT = 2
-        private val DRAWABL_BOTTOM = 3
+        private const val DRAWABLE_LEFT = 0
+        private const val DRAWABLE_TOP = 1
+        private const val DRAWABLE_RIGHT = 2
+        private const val DRAWABL_BOTTOM = 3
     }
 
     private var mLeftDrawableListener: LeftDrawableListener? = null

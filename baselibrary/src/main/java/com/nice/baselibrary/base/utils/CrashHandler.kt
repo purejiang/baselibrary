@@ -54,7 +54,7 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
         exceptionInfo.append(sw.toString())
         //新线程写入文件
         Thread(Runnable {
-            FileUtils.writeFile(File(filePath, date + ".log"), ByteArrayInputStream(exceptionInfo.toString().toByteArray()), false)
+            FileUtils.writeFile(File(filePath, "$date.log"), ByteArrayInputStream(exceptionInfo.toString().toByteArray()), false)
         }).start()
         //返回给系统处理异常
         mDefaultCrashHandler?.uncaughtException(thread, exception)

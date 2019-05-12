@@ -166,6 +166,29 @@ class FileUtils {
 
         /**
          * 文件读取
+         * @param file
+         * @return
+         */
+        fun readFile2InputStream(file: File): InputStream {
+            var input: FileInputStream? = null
+            try {
+                input = FileInputStream(file)
+                return input
+            } catch (e: FileNotFoundException) {
+                throw RuntimeException("FileNotFoundException occurred. ", e)
+            } catch (e: IOException) {
+                throw RuntimeException("IOException occurred. ", e)
+            } finally {
+                try {
+                    input?.close()
+                } catch (e: IOException) {
+                    throw RuntimeException("IOException occurred. ", e)
+                }
+            }
+        }
+
+        /**
+         * 文件读取
          * @param input
          * @param charsetName
          * @return
@@ -217,7 +240,7 @@ class FileUtils {
 
         /**
          * 生成文件夹
-         * @param file
+         * @param folder
          * @return
          */
         fun createOrExistsDir(folder: File): Boolean {

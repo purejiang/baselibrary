@@ -70,11 +70,11 @@ abstract class NiceAdapter<T>(private val mItems:MutableList<T>): RecyclerView.A
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): VH {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         return VH.get(parent, getLayout(viewType))
     }
 
-    override fun onBindViewHolder(holder: VH, position: Int, payloads: MutableList<Any>?) {
+    override fun onBindViewHolder(holder: VH, position: Int, payloads: MutableList<Any>) {
         convert(holder, mItems[position], position, payloads)
 
         holder.itemView.setOnClickListener {

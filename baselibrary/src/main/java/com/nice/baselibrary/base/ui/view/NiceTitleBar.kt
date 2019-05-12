@@ -57,15 +57,15 @@ class NiceTitleBar :RelativeLayout,View.OnClickListener {
      * @param color
      */
      fun setTitleTextColor(color: Int) {
-        mTitleNiceTextView?.setTextColor(ContextCompat.getColor(mContext, color))
+        mTitleNiceTextView?.setTextColor(ContextCompat.getColor(mContext!!, color))
     }
     /**
      * 设置左右标题文字颜色
      * @param color
      */
     fun setTextColor(color: Int) {
-        mBackNiceTextView?.setTextColor(ContextCompat.getColor(mContext, color))
-        mMenuNiceTextView?.setTextColor(ContextCompat.getColor(mContext, color))
+        mBackNiceTextView?.setTextColor(ContextCompat.getColor(mContext!!, color))
+        mMenuNiceTextView?.setTextColor(ContextCompat.getColor(mContext!!, color))
     }
 
     /**
@@ -73,7 +73,7 @@ class NiceTitleBar :RelativeLayout,View.OnClickListener {
      * @param color
      */
     fun setTitleBarColor(color: Int) {
-        this.setBackgroundColor(ContextCompat.getColor(mContext, color))
+        this.setBackgroundColor(ContextCompat.getColor(mContext!!, color))
     }
 
     /**
@@ -114,12 +114,12 @@ class NiceTitleBar :RelativeLayout,View.OnClickListener {
         var leftDrawable: Drawable? = null
         var left2Drawable: Drawable? = null
         if (leftId != null) {
-            leftDrawable = ContextCompat.getDrawable(mContext, leftId)
+            leftDrawable = ContextCompat.getDrawable(mContext!!, leftId)
 //            leftDrawable.setBounds(0, 0, leftDrawable.minimumWidth, leftDrawable.minimumHeight)//根据icon的大小自动调整
             leftDrawable?.setBounds(0, 0, iconSize, iconSize) //限定icon的大小
         }
         if (left2Id != null) {
-            left2Drawable = ContextCompat.getDrawable(mContext, left2Id)
+            left2Drawable = ContextCompat.getDrawable(mContext!!, left2Id)
 //            left2Drawable.setBounds(0, 0, left2Drawable.minimumWidth, left2Drawable.minimumHeight)
             left2Drawable?.setBounds(0, 0, iconSize, iconSize)
 
@@ -152,13 +152,13 @@ class NiceTitleBar :RelativeLayout,View.OnClickListener {
         var rightDrawable: Drawable? = null
         var right2Drawable: Drawable? = null
         if (rightId != null) {
-            rightDrawable = ContextCompat.getDrawable(mContext, rightId)
+            rightDrawable = ContextCompat.getDrawable(mContext!!, rightId)
 //            rightDrawable.setBounds(0, 0, rightDrawable.minimumWidth, rightDrawable.minimumHeight)
             rightDrawable?.setBounds(0, 0, iconSize, iconSize)
         }
 
         if (right2Id != null) {
-            right2Drawable = ContextCompat.getDrawable(mContext, right2Id)
+            right2Drawable = ContextCompat.getDrawable(mContext!!, right2Id)
 //            right2Drawable.setBounds(0, 0, right2Drawable.minimumWidth, right2Drawable.minimumHeight)
             right2Drawable?.setBounds(0, 0, iconSize, iconSize)
         }

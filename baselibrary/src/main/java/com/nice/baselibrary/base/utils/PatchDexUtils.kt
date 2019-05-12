@@ -37,7 +37,7 @@ class PatchDexUtils {
          */
         private fun mergeDex(context: Context){
             //应用内私有文件夹
-            val dexFileInApp = File(context.filesDir.absolutePath, Constant.Path.PATCH_DEX_PATH)
+            val dexFileInApp = File(context.filesDir.absolutePath, Constant.Path.PATCH_DEX_DIR)
             if (!dexFileInApp.exists()) {
                 dexFileInApp.mkdirs()
             }

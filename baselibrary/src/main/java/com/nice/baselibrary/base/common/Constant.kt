@@ -34,8 +34,9 @@ class Constant {
                 val ROOT_DIR = Environment.getExternalStoragePublicDirectory("").absolutePath
                 val CRASH_INFO_DIR = "crash"
                 val LOGCAT_INFO_DIR = "logcat"
-                val DOWNLOAD_PATH = "download"
-                val PATCH_DEX_PATH = "patch"
+                val DOWNLOAD_DIR = "download"
+                val PATCH_DEX_DIR = "patch"
+                val CAMERA_DIR = "pic"
             }
         }
 

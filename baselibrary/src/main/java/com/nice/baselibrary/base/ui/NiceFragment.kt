@@ -39,8 +39,8 @@ abstract class NiceFragment :Fragment() {
         mNiceActivity = context as NiceActivity
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater?.inflate(getLayoutId(), container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(getLayoutId(), container, false)
         getInitView(view, savedInstanceState)
         return view
     }

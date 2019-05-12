@@ -41,7 +41,7 @@ class LogUtils private constructor() {
     private var mTag = "tag"
 
     fun init(context:Context, debug:Boolean){
-        init(context, debug, AppUtils.getInstance().getPackageName(context))
+        init(context, debug, " --log: "+AppUtils.getInstance().getPackageName(context))
     }
 
     fun init(context:Context, debug:Boolean, tag:String){
