@@ -153,6 +153,13 @@ class AppUtils {
                 -1
             }
         }
+    /**
+     * 获取当前App最大可用内存
+     * @return
+     */
+    fun getMaxMemory(): Int {
+        return (Runtime.getRuntime().maxMemory()/1024).toInt()
+    }
 
         /**
          * 获取当前手机Android API版本
