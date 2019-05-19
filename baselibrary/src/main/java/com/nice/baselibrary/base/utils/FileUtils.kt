@@ -1,6 +1,7 @@
 package com.nice.baselibrary.base.utils
 
 import android.content.Context
+import android.util.Log
 import java.io.*
 import java.security.DigestInputStream
 import java.security.MessageDigest
@@ -25,6 +26,7 @@ class FileUtils {
          */
         fun writeFile(file: File, stream: InputStream, append: Boolean): Boolean {
             var outputStream: OutputStream? = null
+            Log.d("--log:", "writeFile:"+file.absoluteFile)
             try {
                 createOrExistsFile(file)
                 outputStream = FileOutputStream(file, append)
@@ -40,12 +42,12 @@ class FileUtils {
             } catch (e: IOException) {
                 throw RuntimeException("IOException occurred. ", e)
             } finally {
-                    try {
-                        outputStream?.close()
-                        stream.close()
-                    } catch (e: IOException) {
-                        throw RuntimeException("IOException occurred. ", e)
-                    }
+                try {
+                    outputStream?.close()
+                    stream.close()
+                } catch (e: IOException) {
+                    throw RuntimeException("IOException occurred. ", e)
+                }
             }
         }
 
@@ -99,11 +101,11 @@ class FileUtils {
             } catch (e: IOException) {
                 throw RuntimeException("IOException occurred. ", e)
             } finally {
-                    try {
-                        reader?.close()
-                    } catch (e: IOException) {
-                        throw RuntimeException("IOException occurred. ", e)
-                    }
+                try {
+                    reader?.close()
+                } catch (e: IOException) {
+                    throw RuntimeException("IOException occurred. ", e)
+                }
 
             }
         }
@@ -245,6 +247,24 @@ class FileUtils {
          */
         fun createOrExistsDir(folder: File): Boolean {
             return if (folder.exists() && folder.isDirectory) true else folder.mkdirs()
+        }
+
+        /**
+         * 删除文件或文件夹
+         * @param file
+         * @return
+         */
+        fun delFileOrDir(file: File): Boolean {
+            var tag = true
+
+            if (file.isFile) {
+                tag = tag && file.delete()
+            } else {
+                for (f: File in file.listFiles()) {
+                    tag = tag &&delFileOrDir(f)
+                }
+            }
+            return tag
         }
 
         /**

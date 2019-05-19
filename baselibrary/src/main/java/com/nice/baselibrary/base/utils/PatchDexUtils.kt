@@ -92,8 +92,8 @@ class PatchDexUtils {
             val componentType:Class<*> = newDexElements.javaClass.componentType
 
             //新建数组
-            val new = java.lang.reflect.Array.getLength(newDexElements)
-            val old = java.lang.reflect.Array.getLength(oldDexElements)
+            val new = Array.getLength(newDexElements)
+            val old = Array.getLength(oldDexElements)
 
             val result = new+old
             val componentList = Array.newInstance(componentType, result)

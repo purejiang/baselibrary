@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ContentUris
 import android.content.Intent
 import android.database.CursorIndexOutOfBoundsException
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -19,12 +20,12 @@ import java.io.File
  * @author JPlus
  * @date 2019/4/24.
  */
-class PhotoUtils constructor(private val mActivity:Activity) {
+class PhotoUtils constructor(private val mActivity:Activity, private val mIsCache:Boolean) {
     private var mCameraCode = 0
     private var mPhotoCode = 1
     private var mCameraCropCode = 2
     private var mPhotoCropCode = 3
-    private var mImageUri: Uri? = null
+    private var mImagePath: String? = null
     private var mCameraCallBack:ChoosePictureCallback?=null
     private var mPhotoCallBack:ChoosePictureCallback?=null
     private var mCameraIsCrop = false
@@ -49,7 +50,8 @@ class PhotoUtils constructor(private val mActivity:Activity) {
                 NiceShowView.getInstance().NormalToast("无法生成文件夹,请检查权限").show()
                 return
             }
-            mImageUri = getUriByPath(File(it, fileName).path)
+            mImagePath = File(it, fileName).absolutePath
+            LogUtils.getInstance().d(mImagePath.toString())
         }
 
         Intent().let {
@@ -57,7 +59,7 @@ class PhotoUtils constructor(private val mActivity:Activity) {
                 it.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION   // 临时赋予该Intent对uri的可读权限
             }
             it.action = MediaStore.ACTION_IMAGE_CAPTURE
-            it.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri)  // 保存拍照的图片到uri而不是系统相册
+            it.putExtra(MediaStore.EXTRA_OUTPUT, getUriByPath(mImagePath))  // 保存拍照的图片到uri而不是系统相册
             LogUtils.getInstance().e("openCamera")
             mActivity.startActivityForResult(it, requestCode)
         }
@@ -118,7 +120,7 @@ class PhotoUtils constructor(private val mActivity:Activity) {
             it.putExtra("outputY", 720) // 输出图片的高度
             it.putExtra("return-data", false)  //是否直接以Bitmap的形式缓存到内存中（会导致OOM问题）
 //            it.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(File(Environment.getExternalStorageDirectory(), "pic_"+System.currentTimeMillis()+".jpg")))
-//            it.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
+            it.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
             it.putExtra("noFaceDetection", true)
             mActivity.startActivityForResult(it, requestCode)
         }
@@ -164,9 +166,9 @@ class PhotoUtils constructor(private val mActivity:Activity) {
      * @param data
      * @return String
      */
-    private fun parseUri(data: Intent?): Uri? {
+    private fun parseUri(uri: Uri?): String? {
         var imgPath: String? = null
-        data?.data?.let {
+        uri?.let {
             if (DocumentsContract.isDocumentUri(mActivity, it)) {
                 val docId = DocumentsContract.getDocumentId(it)
                 if ("com.android.providers.media.documents" == it.authority) {
@@ -191,16 +193,18 @@ class PhotoUtils constructor(private val mActivity:Activity) {
             LogUtils.getInstance().d("imgPath:$imgPath")
         }
 
-        return  getUriByPath(imgPath)
+        return  imgPath
     }
 
-    private fun onRunCallback(callBack: ChoosePictureCallback?, uri: Uri?){
-            if (uri != null) {
+    private fun onRunCallback(callBack: ChoosePictureCallback?, path: String?){
+            if (path != null) {
                 Log.d("--log", "callBack.onSuccess")
-                callBack?.onSuccess(uri)
+                callBack?.onSuccess(path)
+
             } else {
                 Log.d("--log", "callBack.onFail")
                 callBack?.onFail()
+
             }
     }
 
@@ -210,24 +214,24 @@ class PhotoUtils constructor(private val mActivity:Activity) {
             mCameraCode -> {
                 //是否执行裁剪
                 if(mCameraIsCrop){
-                    cropImage(mCameraCropCode, mImageUri)
+                    cropImage(mCameraCropCode, getUriByPath(mImagePath))
                 }else {
                     //回调通知
-                    onRunCallback(mCameraCallBack, mImageUri)
+                    onRunCallback(mCameraCallBack, mImagePath)
                 }
             }
             mPhotoCode -> {
                 if(mPhotoIsCrop){
-                    cropImage(mPhotoCropCode, parseUri(data))
+                    cropImage(mPhotoCropCode, getUriByPath(parseUri(data?.data)))
                 }else {
-                    onRunCallback(mPhotoCallBack, parseUri(data))
+                    onRunCallback(mPhotoCallBack, parseUri(data?.data))
                 }
             }
             mCameraCropCode -> {
-                onRunCallback(mCameraCallBack,mImageUri)
+                onRunCallback(mCameraCallBack, mImagePath)
             }
             mPhotoCropCode->{
-                onRunCallback(mPhotoCallBack, parseUri(data))
+                onRunCallback(mPhotoCallBack, parseUri(data?.data))
             }
         }
     }
@@ -235,9 +239,9 @@ class PhotoUtils constructor(private val mActivity:Activity) {
     interface ChoosePictureCallback {
         /**
          * 选择图片成功
-         * @param uri
+         * @param path
          */
-        fun onSuccess(uri: Uri)
+        fun onSuccess(path: String)
 
         /**
          * 选择图片失败

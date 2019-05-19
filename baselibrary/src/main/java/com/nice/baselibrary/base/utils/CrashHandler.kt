@@ -46,7 +46,7 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
      */
     override fun uncaughtException(thread: Thread?, exception: Throwable?) {
         val date = StringUtils.getDateTime()
-        val filePath = Constant.Path.ROOT_DIR + AppUtils.getInstance().getPackageName(mContext) + Constant.Path.CRASH_INFO_DIR
+        val filePath = Constant.Path.ROOT_DIR + File.separator +AppUtils.getInstance().getPackageName(mContext) + File.separator +Constant.Path.CRASH_INFO_DIR
         val exceptionInfo = StringBuilder(date + "\n" + exception?.message + "\n")
         val sw = StringWriter()
         val pw = PrintWriter(sw)
