@@ -64,6 +64,7 @@ class NicePermissions private constructor() {
     private var mIsCancelable: Boolean = false
     private var mPerMap: MutableMap<String, HashMap<String, List<String>>>? = null
     private var mPer2Listener:MutableMap<MutableSet<String>, PermissionListener>?=null
+    private var mPerListener:PermissionListener?=null
     private var mContext:Context?=null
     private var mAllPermissions:Array<String>?= null
 
@@ -114,7 +115,7 @@ class NicePermissions private constructor() {
                     noPermission.add(it)
                     sb.append(it).append("\n")
                 }
-        LogUtils.getInstance().d(sb.toString(), "pipa")
+        LogUtils.getInstance().d(sb.toString())
         return noPermission.toTypedArray()
     }
 
@@ -134,7 +135,7 @@ class NicePermissions private constructor() {
                     ignorePermissions.add(it)
                     sb.append(it).append("\n")
                 }
-        LogUtils.getInstance().d(sb.toString(), "pipa")
+        LogUtils.getInstance().d(sb.toString())
         return ignorePermissions.toTypedArray()//返回数组
     }
 
@@ -194,16 +195,18 @@ class NicePermissions private constructor() {
      */
     fun requestPermissions(context: Context, permissions: MutableSet<String>?, permissionListener:PermissionListener) {
         mContext =context
-        LogUtils.getInstance().d("requestPermissions", "pipa")
+        mPerListener = permissionListener
+
+        LogUtils.getInstance().d("requestPermissions")
             //判断请求权限是否为空
             val mNoPermission = if(permissions!=null&&permissions.isNotEmpty()){
-                var isExist = false //是否存在该权限
-                mPer2Listener?.keys?.forEach {
-                    isExist = isExist || it.containsAll(permissions)
-                }
-                if (!isExist) mPer2Listener?.let { it[permissions] = permissionListener }  //设置相应权限组的监听
-
-                //返回指定请求的权限
+//                var isExist = false //是否存在该权限
+//                mPer2Listener?.keys?.forEach {
+//                    isExist = isExist || it.containsAll(permissions)
+//                }
+//                if (!isExist) mPer2Listener?.let { it[permissions] = permissionListener }  //设置相应权限组的监听
+//
+//                //返回指定请求的权限
                 permissions.toTypedArray()
             } else{
                 //返回所有权限
@@ -224,7 +227,7 @@ class NicePermissions private constructor() {
      * @return
      */
     private fun showPermissionDialog(context: Context, permissions: Array<String>): NiceDialog {
-        LogUtils.getInstance().e("showPermissionDialog", "pipa")
+        LogUtils.getInstance().e("showPermissionDialog")
         val sb = StringBuilder("您有已忽略的权限，请到设置中开启:\n\n")
 
         //获取危险权限信息
@@ -267,31 +270,38 @@ class NicePermissions private constructor() {
      * @param grantResult 请求的结果码
      */
     fun handleRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResult: IntArray) {
+        LogUtils.getInstance().e("handleRequestPermissionsResult")
         var result = true
+        val grantedList:MutableList<String> = ArrayList()
+        val deniedList:MutableList<String> = ArrayList()
         when (requestCode) {
             REQUEST_CODE_ASK_PERMISSIONS -> {
                 for (i in grantResult.indices) {
                     result = result && grantResult[i] == PackageManager.PERMISSION_GRANTED
                     if (grantResult[i] != PackageManager.PERMISSION_GRANTED) {
                         //权限未通过
-                        LogUtils.getInstance().d("------"+permissions[i]+"::failed", "pipa")
+                        deniedList.add(permissions[i])
+                        LogUtils.getInstance().d("------"+permissions[i]+"::failed")
                     }else{
                         //权限通过
-                        LogUtils.getInstance().d("------"+permissions[i]+"::success", "pipa")
+                        grantedList.add(permissions[i])
+                        LogUtils.getInstance().d("------"+permissions[i]+"::success")
                     }
                 }
-                //是否请求到全部权限的
-                if (result) {
 
-                } else {
-
-                }
-            }
-            else -> {
-
+                //已同意的权限回调
+//                for(per:String in grantedList){
+                    mPerListener?.grantedCallback(grantedList)
+//                }
+                //未同意的权限回调
+//                for(per:String in deniedList){
+                LogUtils.getInstance().e("handleRequestPermissionsResult")
+                    mPerListener?.deniedCallback(deniedList)
+//                }
+                //result是否请求到全部权限的
+//                mPerListener?.isRequestAll(result)
             }
         }
-        setListener(mContext!!, mPer2Listener!!, permissions.toMutableSet())
     }
     /**
      * 遍历储存权限监听的Map
@@ -309,12 +319,12 @@ class NicePermissions private constructor() {
 
                 if(yes.isNotEmpty()) {
                     for (permission: String in yes) {
-                        per2Listener[it]?.GrantedCallback(permission)
+//                        per2Listener[it]?.grantedCallback(permission)
                     }
                 }
                 if(no.isNotEmpty()) {
                     for (permission: String in no) {
-                        per2Listener[it]?.DeniedCallback(permission)
+//                        per2Listener[it]?.deniedCallback(permission)
                     }
                 }
 
@@ -361,16 +371,18 @@ class NicePermissions private constructor() {
         /**
          * 权限请求成功的回调
          */
-        fun GrantedCallback(permissions:String)
+        fun grantedCallback(permissions:MutableList<String>)
 
         /**
          * 权限请求失败的回调
          */
-        fun DeniedCallback(permissions:String)
+        fun deniedCallback(permissions:MutableList<String>)
+
+
 
     }
 
-    interface PermissionsListener {
+    interface PermissionsCallBack {
         /**
          * 成功的回调
          * @param permissions
