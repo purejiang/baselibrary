@@ -5,17 +5,10 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Configuration
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentTransaction
 import android.view.*
-import com.nice.baselibrary.R
-import com.nice.baselibrary.base.ui.view.NiceCircleProgress
-import com.nice.baselibrary.base.ui.view.NiceTextView
-import com.nice.baselibrary.base.ui.view.NiceTitleBar
 import com.nice.baselibrary.base.utils.LogUtils
 
 /**
@@ -45,7 +38,7 @@ abstract class NiceDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        LogUtils.getInstance().e("pipa", "====onCreateDialog====")
+        LogUtils.getInstance().e("====onCreateDialog====")
         return super.onCreateDialog(savedInstanceState)
 
     }

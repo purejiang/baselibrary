@@ -85,7 +85,6 @@ class NiceCircleProgress : NiceLoadingView {
         circlePaint?.style = Paint.Style.STROKE //设置画笔风格为描边
         circlePaint?.strokeWidth = mStrokeWidth //设置画笔粗细
 
-        LogUtils.getInstance().e("color:$progressColor")
 
         //进度条画笔
         progressPaint = Paint()

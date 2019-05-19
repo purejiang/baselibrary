@@ -1,5 +1,6 @@
 package com.nice.baselibrary.download
 
+import android.annotation.SuppressLint
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
@@ -10,8 +11,9 @@ import okhttp3.ResponseBody
  * @author JPlus
  * @date 2019/3/6.
  */
-class NiceDownloadSubscriber(private val niceDownloadInfo: NiceDownloadInfo, private val niceDownloadListener: NiceDownloadListener, private val niceDownloadDataSource: NiceDownloadDataSource) : DisposableObserver<ResponseBody>(), NiceDownloadProgressListener {
+class NiceDownloadSubscriber(private val niceDownloadInfo: NiceDownloadInfo, private val niceDownloadListener: NiceDownloadListener, private val niceDownloadDataSource: NiceDownloadDataSource?) : DisposableObserver<ResponseBody>(), NiceDownloadProgressListener {
 
+    @SuppressLint("CheckResult")
     override fun update(read: Long, count: Long, done: Boolean) {
         //更新下载信息实例的内容
         var reads = read
@@ -45,7 +47,7 @@ class NiceDownloadSubscriber(private val niceDownloadInfo: NiceDownloadInfo, pri
 
     override fun onComplete() {
         //同步下载进度数据
-        niceDownloadDataSource.modifyData(niceDownloadInfo)
+        niceDownloadDataSource?.modifyData(niceDownloadInfo)
         //通知下载成功
         niceDownloadListener.downloadSuccess()
     }

@@ -33,6 +33,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
 
     override fun bindView(view: View) {
         val viewHolder = NiceAdapter.VH(view)
+        //设置是否可点击
         mController!!.getIds()?.forEach {
             val view2 = viewHolder.getView<View>(it)
             view2.isClickable =true

@@ -54,7 +54,7 @@ class NiceDownloadManager private constructor() {
      * @param niceDownloadInfo
      * @param niceDownloadListener
      */
-    fun startNewDownload(niceDownloadInfo: NiceDownloadInfo, niceDownloadListener: NiceDownloadListener, niceDownloadDataSource: NiceDownloadDataSource) {
+    fun startNewDownload(niceDownloadInfo: NiceDownloadInfo, niceDownloadListener: NiceDownloadListener, niceDownloadDataSource: NiceDownloadDataSource?) {
         val subscriber = NiceDownloadSubscriber(niceDownloadInfo, niceDownloadListener, niceDownloadDataSource)
         mInfo2Subscribe?.put(niceDownloadInfo.url, subscriber)
         val okHttpClient = OkHttpClient.Builder()
@@ -70,7 +70,7 @@ class NiceDownloadManager private constructor() {
      * @param niceDownloadInfo
      * @param niceDownloadListener
      */
-    fun reStartDownload(niceDownloadInfo: NiceDownloadInfo, niceDownloadListener: NiceDownloadListener, niceDownloadDataSource: NiceDownloadDataSource) {
+    fun reStartDownload(niceDownloadInfo: NiceDownloadInfo, niceDownloadListener: NiceDownloadListener, niceDownloadDataSource: NiceDownloadDataSource?) {
         //列表包含该url则复用map中指向的service对象，不包含该url则重新构建service进行下载
         if(mInfo2ServiceNice?.containsKey(niceDownloadInfo.url)!!){
             val subscriber =  NiceDownloadSubscriber(niceDownloadInfo, niceDownloadListener, niceDownloadDataSource)
