@@ -1,6 +1,5 @@
-package com.nice.baselibrary.upload
+package com.nice.baselibrary.base.net
 
-import com.nice.baselibrary.download.NiceDownloadService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory

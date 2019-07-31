@@ -1,4 +1,4 @@
-package com.nice.baselibrary.upload
+package com.nice.baselibrary.base.net
 
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
