@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.ui
+package com.nice.baselibrary.base.rx
 
 /**
  * @author JPlus

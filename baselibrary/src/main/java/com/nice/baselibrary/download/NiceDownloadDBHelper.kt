@@ -13,13 +13,14 @@ import java.util.ArrayList
 class NiceDownloadDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 
     companion object {
-        val DB_NAME = "download.db"
-        private val TABLE_NAME = "download"
-        val DB_VERSION = 1
-        val DOWNLOAD_SQL = "create table " + TABLE_NAME + "(" +
+        const val DB_NAME = "download.db"
+        private const val TABLE_NAME = "download"
+        const val DB_VERSION = 1
+        const val DOWNLOAD_SQL = "create table " + TABLE_NAME + "(" +
                 "id integer primary key autoincrement," +
                 "name text not null," +
                 "url text not null," +
+                "path text not null," +
                 "date text not null," +
                 "read long not null," +
                 "count long not null," +
@@ -46,6 +47,7 @@ class NiceDownloadDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME
                     cursor.getInt(cursor.getColumnIndex("id"))
                     , cursor.getString(cursor.getColumnIndex("name"))
                     , cursor.getString(cursor.getColumnIndex("url"))
+                    , cursor.getString(cursor.getColumnIndex("path"))
                     , cursor.getString(cursor.getColumnIndex("date"))
                     , cursor.getLong(cursor.getColumnIndex("read"))
                     , cursor.getLong(cursor.getColumnIndex("count"))
@@ -67,6 +69,7 @@ class NiceDownloadDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME
                     cursor.getInt(cursor.getColumnIndex("id"))
                     , cursor.getString(cursor.getColumnIndex("name"))
                     , cursor.getString(cursor.getColumnIndex("url"))
+                    , cursor.getString(cursor.getColumnIndex("path"))
                     , cursor.getString(cursor.getColumnIndex("date"))
                     , cursor.getLong(cursor.getColumnIndex("read"))
                     , cursor.getLong(cursor.getColumnIndex("count"))
@@ -86,6 +89,7 @@ class NiceDownloadDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME
                     cursor.getInt(cursor.getColumnIndex("id"))
                     , cursor.getString(cursor.getColumnIndex("name"))
                     , cursor.getString(cursor.getColumnIndex("url"))
+                    , cursor.getString(cursor.getColumnIndex("path"))
                     , cursor.getString(cursor.getColumnIndex("date"))
                     , cursor.getLong(cursor.getColumnIndex("read"))
                     , cursor.getLong(cursor.getColumnIndex("count"))
@@ -105,6 +109,7 @@ class NiceDownloadDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME
                     cursor.getInt(cursor.getColumnIndex("id"))
                     , cursor.getString(cursor.getColumnIndex("name"))
                     , cursor.getString(cursor.getColumnIndex("url"))
+                    , cursor.getString(cursor.getColumnIndex("path"))
                     , cursor.getString(cursor.getColumnIndex("date"))
                     , cursor.getLong(cursor.getColumnIndex("read"))
                     , cursor.getLong(cursor.getColumnIndex("count"))
@@ -116,7 +121,7 @@ class NiceDownloadDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME
     }
 
     fun add(niceDownload: NiceDownloadInfo, mDatabase: SQLiteDatabase?): NiceDownloadInfo? {
-        mDatabase?.execSQL("insert into download values (null, ?, ?, ?, ?, ?, ?)", arrayOf(niceDownload.name, niceDownload.url, niceDownload.date, niceDownload.read, niceDownload.count, niceDownload.status))
+        mDatabase?.execSQL("insert into download values (null, ?,?, ?, ?, ?, ?, ?)", arrayOf(niceDownload.name, niceDownload.url, niceDownload.path, niceDownload.date, niceDownload.read, niceDownload.count, niceDownload.status))
         return queryByName(niceDownload.name, mDatabase)
     }
     fun update(niceDownload: NiceDownloadInfo, mDatabase: SQLiteDatabase?): NiceDownloadInfo? {

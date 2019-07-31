@@ -1,20 +1,14 @@
-package com.nice.baselibrary.base.ui.view.dialog
+package com.nice.baselibrary.base.ui.view
 
 
 import android.content.Context
 import android.content.DialogInterface
-import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
-import android.util.Log
 import android.view.View
 import com.nice.baselibrary.base.adapter.NiceAdapter
-import android.R
-import android.hardware.SensorManager.getOrientation
 import android.support.v7.widget.RecyclerView
-import com.leniu.assist.ln.entity.AppInfo
 import android.support.v7.widget.LinearLayoutManager
-
-
+import com.nice.baselibrary.base.utils.AppUtils
 
 
 /**
@@ -195,7 +189,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setScreenWidthPercent(context: Context, percent: Float): Builder {
-            params?.mDialogWidth = (getScreenWidth(context) * percent).toInt()
+            params?.mDialogWidth = (AppUtils.getInstance().getScreenWidth(context) * percent).toInt()
             return this
         }
         /**
@@ -205,7 +199,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setScreenHeightPercent(context: Context, percent: Float): Builder {
-            params?.mDialogHeight = (getScreenHeight(context) * percent).toInt()
+            params?.mDialogHeight = (AppUtils.getInstance().getScreenHeight(context) * percent).toInt()
             return this
         }
         /**
@@ -295,7 +289,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @param orientation
          * @return Builder
          */
-        fun setListRes(recyclerId:Int, orientation:Int):Builder {
+        fun setListRes(recyclerId:Int, orientation:Int): Builder {
             params?.mListRecyclerId =recyclerId
             params?.mListOrientation = orientation
             return this
@@ -305,7 +299,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @param adapter
          * @return Builder
          */
-        fun setAdapter(adapter: NiceAdapter<*>):Builder {
+        fun setAdapter(adapter: NiceAdapter<*>): Builder {
             params?.mAdapter = adapter
             return this
         }

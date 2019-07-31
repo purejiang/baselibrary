@@ -163,7 +163,7 @@ class PhotoUtils constructor(private val mActivity:Activity, private val mIsCach
 
     /**
      * 解析系统返回的uri
-     * @param data
+     * @param uri
      * @return String
      */
     private fun parseUri(uri: Uri?): String? {
@@ -198,11 +198,11 @@ class PhotoUtils constructor(private val mActivity:Activity, private val mIsCach
 
     private fun onRunCallback(callBack: ChoosePictureCallback?, path: String?){
             if (path != null) {
-                Log.d("--log", "callBack.onSuccess")
+                LogUtils.getInstance().d( " ChoosePictureCallBack.onSuccess")
                 callBack?.onSuccess(path)
 
             } else {
-                Log.d("--log", "callBack.onFail")
+                LogUtils.getInstance().d(" ChoosePictureCallBack.onFail")
                 callBack?.onFail()
 
             }

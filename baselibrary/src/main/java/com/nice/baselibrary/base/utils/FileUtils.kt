@@ -3,6 +3,7 @@ package com.nice.baselibrary.base.utils
 import android.content.Context
 import android.util.Log
 import java.io.*
+import java.lang.Exception
 import java.security.DigestInputStream
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -26,7 +27,7 @@ class FileUtils {
          */
         fun writeFile(file: File, stream: InputStream, append: Boolean): Boolean {
             var outputStream: OutputStream? = null
-            Log.d("--log:", "writeFile:"+file.absoluteFile)
+            LogUtils.getInstance().d( "writeFile:"+file.absoluteFile)
             try {
                 createOrExistsFile(file)
                 outputStream = FileOutputStream(file, append)
@@ -59,6 +60,7 @@ class FileUtils {
          * @return
          */
         fun writeFile(file: File, content: String, append: Boolean): Boolean {
+            LogUtils.getInstance().d( "writeFile:"+file.absoluteFile)
             var writer: BufferedWriter? = null
             try {
                 createOrExistsFile(file)
@@ -209,9 +211,18 @@ class FileUtils {
          * @param content
          */
         fun writePrivateFile(filePath: String, context: Context, content: String) {
-            val output = context.openFileOutput(filePath, Context.MODE_APPEND)
+            val output = context.openFileOutput(filePath, Context.MODE_PRIVATE)
             output.write(content.toByteArray())
             output.close()
+        }
+        /**
+         * 生成私有文件夹
+         * @param dir
+         * @param context
+         * return
+         */
+        fun writePrivateDir(dir: String, context: Context):File {
+            return context.getDir(dir, Context.MODE_PRIVATE)
         }
 
         /**
@@ -317,7 +328,13 @@ class FileUtils {
          * @return
          */
         fun getDirFiles(file: File): MutableList<File>? {
-            return if (file.isDirectory) file.listFiles().toMutableList() else null
+            return try {
+                if(file.isDirectory) file.listFiles().toMutableList() else null
+            }catch (e:Exception){
+                e.printStackTrace()
+                 null
+            }
+
         }
     }
 }

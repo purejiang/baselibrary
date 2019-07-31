@@ -1,10 +1,11 @@
 package com.nice.baselibrary.base.ui.view
 
+import android.app.Activity
 import android.content.Context
+import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.widget.Toast
 import com.nice.baselibrary.R
-import com.nice.baselibrary.base.ui.view.dialog.NiceDialog
 
 /**
  * 弹出控件类
@@ -25,7 +26,7 @@ class NiceShowView {
     }
 
     private var mContext: Context? = null
-
+    private var mNiceAlertBuilder:NiceAlertDialog.Builder?=null
     fun init(context: Context) {
         mContext = context
     }
@@ -39,6 +40,16 @@ class NiceShowView {
      */
     fun createDialog(context: Context,  resInt: Int ,resIntArray: Array<Int>, styleable: Int): NiceDialog {
         return NiceDialog(context, resInt, resIntArray, styleable)
+    }
+
+    /**
+     * 返回一个弹出框Builder
+     * @param activity
+     * @return Builder
+     */
+    fun getAlertDialog(activity: AppCompatActivity):NiceAlertDialog.Builder{
+        mNiceAlertBuilder = NiceAlertDialog.Builder(activity.supportFragmentManager.beginTransaction())
+        return mNiceAlertBuilder!!
     }
     /**
      * 创建一个弹出框

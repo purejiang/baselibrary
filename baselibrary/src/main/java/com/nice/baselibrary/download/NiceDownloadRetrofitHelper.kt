@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  */
 class NiceDownloadRetrofitHelper {
     companion object {
-        val baseUrl = "http://www.google.com/"
+        const val baseUrl = "http://www.google.com/"
     }
     private var downloadRetrofit:Retrofit?=null
 

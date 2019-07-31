@@ -22,16 +22,18 @@ import java.nio.channels.FileChannel
 class NiceDownloadManager private constructor() {
     companion object {
         private var mNiceDownloadManager: NiceDownloadManager? = null
-        private val DOWNLOAD_FILE_DIR = Environment.getExternalStoragePublicDirectory("").absolutePath + File.separator + "downloadFile"
         /**
          * 单例获取
          * @return
          */
-        fun getInstance(): NiceDownloadManager? {
-            mNiceDownloadManager ?: NiceDownloadManager()
-            return mNiceDownloadManager
-        }
-
+        fun getInstance(): NiceDownloadManager{
+                if (mNiceDownloadManager == null) {
+                    synchronized(NiceDownloadManager::class.java) {
+                        mNiceDownloadManager = NiceDownloadManager()
+                    }
+                }
+                return mNiceDownloadManager!!
+            }
     }
 
     private var mInfo2ServiceNice: HashMap<String, NiceDownloadService>? = null
@@ -100,12 +102,13 @@ class NiceDownloadManager private constructor() {
      * @param subscriberNice
      */
     private fun startDownload(downloadServiceNice: NiceDownloadService, niceDownloadInfo: NiceDownloadInfo, subscriberNice: NiceDownloadSubscriber) {
+        LogUtils.getInstance().d("startDownload:" + niceDownloadInfo.status+"-"+niceDownloadInfo.url)
         niceDownloadInfo.run{
             LogUtils.getInstance().d("download+:" + toString())
             downloadServiceNice.downloadFile("bytes=" + read.toString() + "-", url)
                     .subscribeOn(Schedulers.io())
                     ?.doOnNext { t: ResponseBody ->
-                        writeRandomAccessFile(t, File(DOWNLOAD_FILE_DIR, name), niceDownloadInfo)
+                        writeRandomAccessFile(t, File(path), niceDownloadInfo)
                     }
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.subscribe(subscriberNice)

@@ -8,6 +8,7 @@ package com.nice.baselibrary.download
 data class NiceDownloadInfo(var id:Int,
                             var name:String,
                             var url:String,
+                            var path:String,
                             var date:String,
                             var read:Long,
                             var count:Long,

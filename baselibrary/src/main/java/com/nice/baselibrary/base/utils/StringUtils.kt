@@ -38,13 +38,7 @@ class StringUtils {
             }
         }
 
-        /**
-         * 获取当前时间
-         * @return yyyy-MM-dd|HH:mm:ss格式的时间
-         */
-        fun getDateTime(): String {
-            return SimpleDateFormat("yyyy-MM-dd|HH:mm:ss").format(Date(System.currentTimeMillis()))
-        }
+
 
 
     }

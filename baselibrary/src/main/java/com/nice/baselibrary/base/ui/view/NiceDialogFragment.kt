@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.ui.view.dialog
+package com.nice.baselibrary.base.ui.view
 
 
 import android.app.Dialog
@@ -20,21 +20,7 @@ abstract class NiceDialogFragment : DialogFragment() {
         private const val AMOUNT_DEFAULT = 0.2f
         private const val DIALOG_TAG = "niceDialog"
 
-        /**
-         *  获取设备屏幕宽度
-         *  @param context
-         */
 
-        fun getScreenWidth(context: Context): Int {
-            return context.resources.displayMetrics.widthPixels
-        }
-        /**
-         *  获取设备屏幕高度
-         *  @param context
-         */
-        fun getScreenHeight(context: Context): Int {
-            return context.resources.displayMetrics.heightPixels
-        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

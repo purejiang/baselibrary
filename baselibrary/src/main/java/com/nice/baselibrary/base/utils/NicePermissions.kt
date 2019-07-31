@@ -14,7 +14,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.nice.baselibrary.base.ui.view.dialog.NiceDialog
+import com.nice.baselibrary.base.ui.view.NiceDialog
 import com.nice.baselibrary.base.ui.view.NiceShowView
 import java.io.IOException
 import java.lang.RuntimeException
@@ -200,12 +200,6 @@ class NicePermissions private constructor() {
         LogUtils.getInstance().d("requestPermissions")
             //判断请求权限是否为空
             val mNoPermission = if(permissions!=null&&permissions.isNotEmpty()){
-//                var isExist = false //是否存在该权限
-//                mPer2Listener?.keys?.forEach {
-//                    isExist = isExist || it.containsAll(permissions)
-//                }
-//                if (!isExist) mPer2Listener?.let { it[permissions] = permissionListener }  //设置相应权限组的监听
-//
 //                //返回指定请求的权限
                 permissions.toTypedArray()
             } else{
@@ -280,7 +274,9 @@ class NicePermissions private constructor() {
                     result = result && grantResult[i] == PackageManager.PERMISSION_GRANTED
                     if (grantResult[i] != PackageManager.PERMISSION_GRANTED) {
                         //权限未通过
-                        deniedList.add(permissions[i])
+                        if(isDangerPermission(permissions[i])){
+                            deniedList.add(permissions[i])
+                        }
                         LogUtils.getInstance().d("------"+permissions[i]+"::failed")
                     }else{
                         //权限通过
@@ -290,47 +286,18 @@ class NicePermissions private constructor() {
                 }
 
                 //已同意的权限回调
-//                for(per:String in grantedList){
-                    mPerListener?.grantedCallback(grantedList)
-//                }
+                mPerListener?.grantedCallback(grantedList)
+
                 //未同意的权限回调
-//                for(per:String in deniedList){
                 LogUtils.getInstance().e("handleRequestPermissionsResult")
                     mPerListener?.deniedCallback(deniedList)
-//                }
+
                 //result是否请求到全部权限的
-//                mPerListener?.isRequestAll(result)
+                //mPerListener?.isRequestAll(result)
             }
         }
     }
-    /**
-     * 遍历储存权限监听的Map
-     * @param context
-     * @param per2Listener
-     * @param permissions
-     */
-    private fun setListener(context: Context, per2Listener:MutableMap<MutableSet<String>, PermissionListener>, permissions: MutableSet<String>){
-        //遍历储存权限监听的Map
-        per2Listener.keys.forEach{
-            //查找是否包含权限组
-            if(it.containsAll(permissions.toMutableSet())){
-                val no = getNoPermission(context, it.toTypedArray()) //未通过的权限
-                val yes = it.subtract(no.toMutableSet())//通过subtract()方法得出差集，获取已通过的权限
 
-                if(yes.isNotEmpty()) {
-                    for (permission: String in yes) {
-//                        per2Listener[it]?.grantedCallback(permission)
-                    }
-                }
-                if(no.isNotEmpty()) {
-                    for (permission: String in no) {
-//                        per2Listener[it]?.deniedCallback(permission)
-                    }
-                }
-
-            }
-        }
-    }
     /**
      * 获取app的录音权限是否打开
      * 兼容Android 6.0 以下版本

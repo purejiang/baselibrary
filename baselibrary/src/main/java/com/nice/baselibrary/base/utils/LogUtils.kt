@@ -1,6 +1,5 @@
 package com.nice.baselibrary.base.utils
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.nice.baselibrary.base.common.Constant
@@ -39,15 +38,20 @@ class LogUtils private constructor() {
      * log的tag
      */
     private var mTag = "tag"
+    /**
+     * 上传log文件地址
+     */
+    private var mLogUrl = ""
 
-    fun init(context:Context, debug:Boolean){
-        init(context, debug, " --log: "+AppUtils.getInstance().getPackageName(context))
+    fun init(context:Context, logUrl:String, debug:Boolean){
+        init(context, logUrl, debug, " --log: "+AppUtils.getInstance().getPackageName(context))
     }
 
-    fun init(context:Context, debug:Boolean, tag:String){
+    fun init(context:Context, logUrl:String, debug:Boolean, tag:String){
         mDebug = debug
         mContext = context
         mTag = tag
+        mLogUrl = logUrl
     }
 
     fun e(message:String, tag:String=mTag){
@@ -84,14 +88,18 @@ class LogUtils private constructor() {
         //执行命令行
         val exec = ExcCommand.exc(running)
         //子线程写文件
-        Thread(Runnable {
-            FileUtils.writeFile(file, exec, false)
-        }).start()
-
+        if(mDebug) {
+            Thread(Runnable {
+                FileUtils.writeFile(file, exec, false)
+            })
+        }
     }
+    /**
+     * 保存log
+     */
     fun saveLog(){
         val filePath = Constant.Path.ROOT_DIR + File.separator + AppUtils.getInstance().getPackageName(mContext!!) + File.separator + Constant.Path.LOGCAT_INFO_DIR
-        val file = File(filePath, StringUtils.getDateTime()+".log")
+        val file = File(filePath, DateUtils.getDateTimeByMillis(false)+".log")
         saveLog(file)
     }
 }

@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.ui.view.dialog
+package com.nice.baselibrary.base.ui.view
 
 
 import android.content.DialogInterface
