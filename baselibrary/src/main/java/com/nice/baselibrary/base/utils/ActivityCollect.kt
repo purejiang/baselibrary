@@ -1,6 +1,6 @@
 package com.nice.baselibrary.base.utils
 
-import com.nice.baselibrary.base.ui.NiceActivity
+import com.nice.baselibrary.base.ui.BaseActivity
 import java.util.*
 
 /**
@@ -10,12 +10,12 @@ import java.util.*
  */
 class ActivityCollect {
     companion object {
-        private val M_ACTIVITY_LIST: MutableList<NiceActivity> = ArrayList()
+        private val M_ACTIVITY_LIST: MutableList<BaseActivity> = ArrayList()
         /**
          * 添加Activity
          * @param activity
          */
-        fun add(activity: NiceActivity) {
+        fun add(activity: BaseActivity) {
             M_ACTIVITY_LIST.add(activity)
         }
 
@@ -23,15 +23,14 @@ class ActivityCollect {
          * 移除Activity
          * @param activity
          */
-        fun remove(activity: NiceActivity) {
+        fun remove(activity: BaseActivity) {
             M_ACTIVITY_LIST.remove(activity)
         }
         /**
          * 销毁所有Activity
          */
         fun removeAll() {
-            M_ACTIVITY_LIST
-                    .filterNot { it.isFinishing }
+            M_ACTIVITY_LIST.filterNot { it.isFinishing }
                     .forEach { it.finish() }
         }
     }

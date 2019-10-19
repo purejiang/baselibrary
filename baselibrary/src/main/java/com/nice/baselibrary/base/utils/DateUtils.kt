@@ -4,7 +4,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * Created by Jplus on 2019/6/11.
+ * 日期工具类
+ * @author JPlus
+ * @date 2019/6/11.
  */
 class DateUtils {
     companion object {

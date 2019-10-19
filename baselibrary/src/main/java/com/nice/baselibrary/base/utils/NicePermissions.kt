@@ -10,12 +10,12 @@ import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.nice.baselibrary.base.ui.view.NiceDialog
-import com.nice.baselibrary.base.ui.view.NiceShowView
+import com.nice.baselibrary.widget.dialog.NiceDialog
+import com.nice.baselibrary.widget.NiceShowView
 import java.io.IOException
 import java.lang.RuntimeException
 

@@ -1,12 +1,5 @@
 package com.nice.baselibrary.base.common
 
-import android.content.Context
-import com.nice.baselibrary.base.ui.view.NiceShowView
-import com.nice.baselibrary.base.utils.AppUtils
-import com.nice.baselibrary.base.utils.CrashHandler
-import com.nice.baselibrary.base.utils.LogUtils
-import com.nice.baselibrary.base.utils.NicePermissions
-
 
 /**
  * 依赖入口

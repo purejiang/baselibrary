@@ -21,7 +21,7 @@ class Constant {
          */
          class Message{
              companion object {
-                 val DEFAULT_APP_NAME = "Application"
+
              }
 
         }
@@ -45,6 +45,7 @@ class Constant {
          */
         class Persistence {
             companion object {
+                val DEFAULT_APP_NAME = "Application"
                 val DEFAULT = "setting"
             }
         }

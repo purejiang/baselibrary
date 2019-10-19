@@ -6,12 +6,12 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 
 /**
+ * 编码解码工具类
  * @author JPlus
  * @date 2019/3/26.
  */
 
 class DeCodeUtils {
-    companion object {
         /**
          * url编码
          * @param content
@@ -61,5 +61,4 @@ class DeCodeUtils {
             return if(content.isEmpty()) Base64.decode(content, Base64.NO_WRAP) else byteArrayOf()
         }
 
-    }
 }

@@ -24,6 +24,7 @@ import java.util.*
 class AppUtils {
     companion object {
         private var mAppUtils: AppUtils? = null
+
         fun getInstance(): AppUtils {
             if (mAppUtils == null) {
                 synchronized(AppUtils::class.java) {

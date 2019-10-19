@@ -2,20 +2,16 @@ package com.nice.baselibrary.base.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.google.gson.Gson
-import com.nice.baselibrary.base.net.OkhttpManager
+import com.nice.baselibrary.base.net.upload.OkhttpManager
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
-import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.lang.Exception
-import kotlin.collections.HashMap
 
 
 /**
@@ -23,21 +19,8 @@ import kotlin.collections.HashMap
  * @author JPlus
  * @date 2019/3/14.
  */
-class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
-    companion object {
-        @SuppressLint("StaticFieldLeak")
-        private var mCrashHandler: CrashHandler? = null
-
-        fun getInstance(): CrashHandler {
-            if (mCrashHandler == null) {
-                synchronized(CrashHandler::class.java) {
-                    mCrashHandler = CrashHandler()
-                }
-            }
-            return mCrashHandler!!
-        }
-    }
-
+@SuppressLint("StaticFieldLeak")
+object CrashHandler : Thread.UncaughtExceptionHandler {
     private var mDefaultCrashHandler: Thread.UncaughtExceptionHandler? = null
     private var mContext: Context? = null
     private var mSaveFile = false

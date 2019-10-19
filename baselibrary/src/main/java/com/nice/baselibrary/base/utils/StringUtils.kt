@@ -10,6 +10,8 @@ import java.util.*
  */
 class StringUtils {
     companion object {
+        private val hexDigits = charArrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
+
         /**
          * 解析URL中的文件名
          */
@@ -38,7 +40,22 @@ class StringUtils {
             }
         }
 
-
+        /**
+         * 字节数组转为字符串
+         * @param bytes
+         * @return String
+         */
+        fun byte2HexString(bytes: ByteArray): String {
+            val len = bytes.size
+            if (len == 0) return ""
+            val ret = CharArray(len.shl(1))
+            var j = 0
+            for (i in bytes) {
+                ret[j++] = hexDigits[i.toInt().shr(4) and 0x0f]
+                ret[j++] = hexDigits[i.toInt() and 0x0f]
+            }
+            return String(ret)
+        }
 
 
     }

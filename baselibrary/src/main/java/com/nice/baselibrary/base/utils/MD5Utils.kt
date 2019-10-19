@@ -7,16 +7,15 @@ import java.security.NoSuchAlgorithmException
  * @author JPlus
  * @date 2019/3/1.
  */
-class MD5Utils {
-    companion object {
+object MD5Utils {
         /**
          * byte数组转MD5字符串
          * @param byteStr
          * @return
          */
-        fun  encryptionMD5(byteStr:ByteArray):String{
-            var messageDigest: MessageDigest
-            var md5StrBuff = StringBuffer()
+        fun encryptionMD5(byteStr:ByteArray):String{
+            val messageDigest: MessageDigest
+            val md5StrBuff = StringBuffer()
             try {
                 messageDigest = MessageDigest.getInstance("MD5")
                 messageDigest.reset()
@@ -35,6 +34,4 @@ class MD5Utils {
             }
             return md5StrBuff.toString()
         }
-    }
-
 }

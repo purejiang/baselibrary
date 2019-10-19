@@ -10,13 +10,13 @@ import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import android.support.v4.content.FileProvider
-import android.util.Log
-import com.nice.baselibrary.base.ui.view.NiceShowView
+import androidx.core.content.FileProvider
+import com.nice.baselibrary.widget.NiceShowView
 import java.io.File
 
 
 /**
+ * 相机工具类
  * @author JPlus
  * @date 2019/4/24.
  */
@@ -155,6 +155,7 @@ class PhotoUtils constructor(private val mActivity:Activity, private val mIsCach
     private fun getUriByPath(filePath: String?): Uri? {
         LogUtils.getInstance().d("getUriByPath:$filePath")
         return  if (AppUtils.getInstance().getApiLevel() >= Build.VERSION_CODES.N) {
+            //android 7.0 开始只能使用provider获取uri
             FileProvider.getUriForFile(mActivity, AppUtils.getInstance().getPackageName() + ".provider", File(filePath))
         } else {
             Uri.fromFile(File(filePath))

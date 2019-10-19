@@ -7,6 +7,7 @@ import com.nice.baselibrary.base.common.Constant
 
 
 /**
+ * SharePreference工具类
  * @author JPlus
  * @date 2019/3/4.
  */
