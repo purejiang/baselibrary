@@ -284,7 +284,7 @@ class FileUtils {
          * @return String
          */
         fun getFileMD5(filePath: String): String {
-            return ConvertUtils.byte2HexString(getFileMD5(File(filePath)))
+            return MD5Utils.encryptionMD5(getFileMD5(File(filePath)))
         }
 
         /**

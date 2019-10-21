@@ -45,5 +45,6 @@
 
     <!-- 其它 -->
     <dimen name="line_width">1dp</dimen>
+    <dimen name="line_width_small">0.5dp</dimen>
 
 </resources>

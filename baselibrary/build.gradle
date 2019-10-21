@@ -1,16 +1,17 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion 28
 
 
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.versionCode
-        versionName rootProject.ext.versionName
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
 
 
     }
@@ -25,15 +26,15 @@ android {
 }
 
 dependencies {
-
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:28.0.0'
-    compile 'com.android.support:recyclerview-v7:28.0.0'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'androidx.appcompat:appcompat:1.1.0'
+    compile 'androidx.recyclerview:recyclerview:1.0.0'
+    annotationProcessor 'androidx.annotation:annotation:1.1.0'
+    compile 'com.google.android.material:material:1.0.0'
     //导入retrofit
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     //Gson 库
-    compile 'com.google.code.gson:gson:2.8.2'
+    compile 'com.google.code.gson:gson:2.8.5'
     //okhttp
     compile 'com.squareup.okhttp3:okhttp:3.10.0'
     compile 'com.squareup.okio:okio:1.14.0'
@@ -49,6 +50,7 @@ dependencies {
     //内存泄漏检测
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.6.3'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+    compile "androidx.core:core-ktx:1.1.0"
 
 }
 repositories {

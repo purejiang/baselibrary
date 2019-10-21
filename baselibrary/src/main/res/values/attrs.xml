@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="NiceCircleProgress">
+    <declare-styleable name="BaseCircleProgress">
         <attr name="circleColor" format="reference|color" />
         <attr name="progressColor" format="reference|color"/>
         <attr name="textColor" format="reference|color"/>
