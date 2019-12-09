@@ -27,7 +27,7 @@ class PatchDexUtils {
             FileUtils.getDirFiles(dexFile)?.forEach{
                 if(it.name.endsWith(".dex")) { // .dex结尾
                     mDexList.add(it)
-                    LogUtils.getInstance().d( "loadDex:"+it.absolutePath)
+                    LogUtils.instance.d( "loadDex:"+it.absolutePath)
                 }
             }
             mergeDex(context)
@@ -45,7 +45,7 @@ class PatchDexUtils {
             }
 
             mDexList.forEach {
-                LogUtils.getInstance().d( "mergeDex:" + it.absolutePath)
+                LogUtils.instance.d( "mergeDex:" + it.absolutePath)
                 //PathClassLoader只能加载系统已安装的apk
                 val pathLoader = context.classLoader as PathClassLoader
                 //DexClassLoader用来加载外部的dex、apk、jar
@@ -65,7 +65,7 @@ class PatchDexUtils {
                 //重新设置属性
                 val pathPathList2 = getPathList(pathLoader)// 一定要重新获取，不要用pathPathList，会报错
                 setFiled(pathPathList2, pathPathList2.javaClass, "dexElements", dexElements)
-                LogUtils.getInstance().d( "mergeDex finish.")
+                LogUtils.instance.d( "mergeDex finish.")
             }
 
         }

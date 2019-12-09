@@ -9,15 +9,9 @@ import android.content.Context
  */
 class ResourceUtils private constructor(){
     companion object {
-        private var mResourceUtils:ResourceUtils?=null
-        fun getInstance():ResourceUtils{
-            if(mResourceUtils==null){
-                synchronized(ResourceUtils::class.java) {
-                    mResourceUtils = ResourceUtils()
-                }
-            }
-            return mResourceUtils!!
-        }
+    val instance:ResourceUtils by lazy (mode = LazyThreadSafetyMode.SYNCHRONIZED){
+        ResourceUtils()
+    }
     }
     private var mContext:Context?=null
 

@@ -22,7 +22,7 @@ object MD5Utils {
                 messageDigest.update(byteStr)
                 val byteArray = messageDigest.digest()
 //            return Base64.encodeToString(byteArray,Base64.NO_WRAP);
-                for (i in 0 until byteArray.size) {
+                for (i in byteArray.indices) {
                     if (Integer.toHexString(0xFF  and byteArray[i].toInt()).length == 1) {
                         md5StrBuff.append("0").append(Integer.toHexString(0xFF and byteArray[i].toInt()))
                     } else {

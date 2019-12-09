@@ -1,8 +1,5 @@
 package com.nice.baselibrary.base.utils
 
-import java.text.SimpleDateFormat
-import java.util.*
-
 /**
  * String工具类
  * @author JPlus

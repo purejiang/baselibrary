@@ -23,15 +23,8 @@ import java.util.*
  */
 class AppUtils {
     companion object {
-        private var mAppUtils: AppUtils? = null
-
-        fun getInstance(): AppUtils {
-            if (mAppUtils == null) {
-                synchronized(AppUtils::class.java) {
-                    mAppUtils = AppUtils()
-                }
-            }
-            return mAppUtils!!
+        val instance:AppUtils by lazy (mode = LazyThreadSafetyMode.SYNCHRONIZED){
+            AppUtils()
         }
     }
 
@@ -229,7 +222,7 @@ class AppUtils {
      * @return
      */
     fun getMacAddress(context: Context): String {
-        val wm = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val wm = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         return wm.connectionInfo.macAddress
     }
 

@@ -1,7 +1,9 @@
 package com.nice.baselibrary.base.utils
 
+import android.app.Activity
 import com.nice.baselibrary.base.ui.BaseActivity
 import java.util.*
+import kotlin.system.exitProcess
 
 /**
  * Activity管理类
@@ -10,12 +12,12 @@ import java.util.*
  */
 class ActivityCollect {
     companion object {
-        private val M_ACTIVITY_LIST: MutableList<BaseActivity> = ArrayList()
+        private val M_ACTIVITY_LIST: MutableList<Activity> = ArrayList()
         /**
          * 添加Activity
          * @param activity
          */
-        fun add(activity: BaseActivity) {
+        fun add(activity: Activity) {
             M_ACTIVITY_LIST.add(activity)
         }
 
@@ -23,13 +25,14 @@ class ActivityCollect {
          * 移除Activity
          * @param activity
          */
-        fun remove(activity: BaseActivity) {
+        fun remove(activity: Activity) {
             M_ACTIVITY_LIST.remove(activity)
         }
         /**
          * 销毁所有Activity
          */
         fun removeAll() {
+            LogUtils.instance.saveLog()
             M_ACTIVITY_LIST.filterNot { it.isFinishing }
                     .forEach { it.finish() }
         }

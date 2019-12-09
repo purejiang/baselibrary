@@ -1,13 +1,10 @@
 package com.nice.baselibrary.base.utils
 
 import android.content.Context
-import android.util.Log
 import java.io.*
-import java.lang.Exception
 import java.security.DigestInputStream
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import java.nio.file.Files.exists
 
 
 /**
@@ -27,7 +24,7 @@ class FileUtils {
          */
         fun writeFile(file: File, stream: InputStream, append: Boolean): Boolean {
             var outputStream: OutputStream? = null
-            LogUtils.getInstance().d( "writeFile:"+file.absoluteFile)
+            LogUtils.instance.d("writeFile:" + file.absoluteFile)
             try {
                 createOrExistsFile(file)
                 outputStream = FileOutputStream(file, append)
@@ -60,7 +57,7 @@ class FileUtils {
          * @return
          */
         fun writeFile(file: File, content: String, append: Boolean): Boolean {
-            LogUtils.getInstance().d( "writeFile:"+file.absoluteFile)
+            LogUtils.instance.d("writeFile:" + file.absoluteFile)
             var writer: BufferedWriter? = null
             try {
                 createOrExistsFile(file)
@@ -94,7 +91,7 @@ class FileUtils {
                 val input = InputStreamReader(FileInputStream(file), charsetName)
                 reader = BufferedReader(input)
                 var line: String? = null
-                while ({ line = reader!!.readLine();line }() != null) {
+                while ({ line = reader.readLine();line }() != null) {
                     fileContent.add(line!!)
                 }
                 return fileContent
@@ -125,8 +122,9 @@ class FileUtils {
                 val input = InputStreamReader(inputs, charsetName)
                 reader = BufferedReader(input)
                 var line: String? = null
-                while ({ line = reader!!.readLine();line }() != null) {
+                while ({ line = reader.readLine();line }() != null) {
                     fileContent.add(line!!)
+
                 }
                 return fileContent
             } catch (e: FileNotFoundException) {
@@ -215,13 +213,14 @@ class FileUtils {
             output.write(content.toByteArray())
             output.close()
         }
+
         /**
          * 生成私有文件夹
          * @param dir
          * @param context
          * return
          */
-        fun writePrivateDir(dir: String, context: Context):File {
+        fun writePrivateDir(dir: String, context: Context): File {
             return context.getDir(dir, Context.MODE_PRIVATE)
         }
 
@@ -272,7 +271,7 @@ class FileUtils {
                 tag = tag && file.delete()
             } else {
                 for (f: File in file.listFiles()) {
-                    tag = tag &&delFileOrDir(f)
+                    tag = tag && delFileOrDir(f)
                 }
             }
             return tag
@@ -329,10 +328,10 @@ class FileUtils {
          */
         fun getDirFiles(file: File): MutableList<File>? {
             return try {
-                if(file.isDirectory) file.listFiles().toMutableList() else null
-            }catch (e:Exception){
+                if (file.isDirectory) file.listFiles().toMutableList() else null
+            } catch (e: Exception) {
                 e.printStackTrace()
-                 null
+                null
             }
 
         }

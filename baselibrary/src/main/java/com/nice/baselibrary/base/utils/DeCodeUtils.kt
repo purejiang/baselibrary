@@ -20,7 +20,7 @@ class DeCodeUtils {
          */
         @Throws(UnsupportedEncodingException::class)
         fun urlEncode(content:String, charsetName:String ="UTF-8"):String{
-             return if(content.isEmpty()) URLEncoder.encode(content, charsetName) else ""
+             return if(content.isNotEmpty()) URLEncoder.encode(content, charsetName) else ""
         }
 
         /**
@@ -31,7 +31,7 @@ class DeCodeUtils {
          */
         @Throws(UnsupportedEncodingException::class)
         fun urlDecode(content:String, charsetName:String ="UTF-8"):String{
-            return if(content.isEmpty()) URLDecoder.decode(content, charsetName) else ""
+            return if(content.isNotEmpty()) URLDecoder.decode(content, charsetName) else ""
         }
 
         /**
