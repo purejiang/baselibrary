@@ -15,7 +15,13 @@ import com.nice.baselibrary.base.utils.LogUtils
  * @author JPlus
  * @date 2019/3/18.
  */
-class NiceDialog : AlertDialog {
+class NiceDialog
+/**
+ * 构造函数
+ * @param context 上下文
+ * @param resInt dialog使用的布局
+ * @param resIntArray 控件的id
+ */(context: Context, resInt: Int, resIntArray: Array<Int>, styleable: Int) : AlertDialog(context, styleable) {
     companion object {
 
         val DIALOG_NORMAL = "normal"
@@ -30,30 +36,14 @@ class NiceDialog : AlertDialog {
     private var mConfirm: NiceTextView? = null
     private var mProgress: BaseCircleProgress?=null
 
-    /**
-     * 构造函数
-     * @param context 上下文
-     * @param resInt dialog使用的布局
-     * @param resIntArray 控件的id
-     */
-    constructor(context: Context, resInt:Int, resIntArray:Array<Int>, styleable:Int) : super(context, styleable) {
-        init(context, resInt, resIntArray)
-    }
-
-    /**
-     * 初始化
-     * @param context
-     * @param resInt
-     * @param resIntArray
-     */
-    private fun init(context: Context, resInt:Int, resIntArray:Array<Int>) {
+    init {
         val layout: LayoutInflater = LayoutInflater.from(context)
         val view: View = layout.inflate(resInt, null)
         setView(view)
         //去掉圆角四周的默认背景色
-        window.setBackgroundDrawableResource(R.drawable.bg_circle_view)
+        window?.setBackgroundDrawableResource(R.drawable.bg_circle_view)
         //去掉默认dialog弹出后的半透明背景
-        window.setDimAmount(0f)
+        window?.setDimAmount(0f)
 
         mTitle = view.findViewById(resIntArray[0])
         mMessage = view.findViewById(resIntArray[1])
@@ -135,13 +125,13 @@ class NiceDialog : AlertDialog {
 
     override fun cancel() {
         super.cancel()
-        LogUtils.getInstance().e("cancel")
+        LogUtils.instance.e("cancel")
         mProgress?.close()
     }
 
     override fun dismiss() {
         super.dismiss()
-        LogUtils.getInstance().e("dismiss")
+        LogUtils.instance.e("dismiss")
         mProgress?.close()
     }
 

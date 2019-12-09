@@ -24,7 +24,7 @@ abstract class NiceDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        LogUtils.getInstance().e("====onCreateDialog====")
+        LogUtils.instance.d("====onCreateDialog====")
         return super.onCreateDialog(savedInstanceState)
 
     }
@@ -32,12 +32,12 @@ abstract class NiceDialogFragment : DialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(getLayoutRes(), container, false)
         bindView(view)
-        LogUtils.getInstance().e("====onCreateView====")
+        LogUtils.instance.d("====onCreateView====")
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        LogUtils.getInstance().e("====onViewCreated====")
+        LogUtils.instance.d("====onViewCreated====")
         super.onViewCreated(view, savedInstanceState)
         dialog?.run {
             requestWindowFeature(Window.FEATURE_NO_TITLE) // 去除标题栏
@@ -46,14 +46,14 @@ abstract class NiceDialogFragment : DialogFragment() {
                 setOnKeyListener(it)
             }
             if (getAnimationRes() > 0) {
-                window.setWindowAnimations(getAnimationRes())
+                window?.setWindowAnimations(getAnimationRes())
             }
         }
 
     }
 
     override fun onStart() {
-        LogUtils.getInstance().e("====onStart====")
+        LogUtils.instance.d("====onStart====")
         super.onStart()
         dialog?.window?.run {
             //设置窗体背景
@@ -69,41 +69,41 @@ abstract class NiceDialogFragment : DialogFragment() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        LogUtils.getInstance().e("====onConfigurationChanged====")
+        LogUtils.instance.d("====onConfigurationChanged====")
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LogUtils.getInstance().e("====onCreate====")
+        LogUtils.instance.d("====onCreate====")
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        LogUtils.getInstance().e("====onAttach====")
+        LogUtils.instance.d("====onAttach====")
     }
 
     override fun onPause() {
         super.onPause()
-        LogUtils.getInstance().e("====onPause====")
+        LogUtils.instance.d("====onPause====")
     }
 
     override fun onResume() {
         super.onResume()
-        LogUtils.getInstance().e("====onResume====")
+        LogUtils.instance.d("====onResume====")
     }
 
     override fun onStop() {
         super.onStop()
-        LogUtils.getInstance().e("====onStop====")
+        LogUtils.instance.d("====onStop====")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        LogUtils.getInstance().e("====onDestroy====")
+        LogUtils.instance.d("====onDestroy====")
     }
 
     override fun onDetach() {
         super.onDetach()
-        LogUtils.getInstance().e("====onDetach====")
+        LogUtils.instance.d("====onDetach====")
     }
 
     /**

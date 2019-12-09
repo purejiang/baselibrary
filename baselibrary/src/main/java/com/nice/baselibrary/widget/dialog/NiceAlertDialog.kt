@@ -18,17 +18,15 @@ import com.nice.baselibrary.base.utils.AppUtils
  */
 
 open class NiceAlertDialog : NiceDialogFragment() {
-    private var mController: NiceDialogController? = null
-
-    init {
-        mController = NiceDialogController.create()
+    private val mController: NiceDialogController by lazy {
+        NiceDialogController.create()
     }
 
 
     override fun bindView(view: View) {
         val viewHolder = NiceAdapter.VH(view)
         //设置是否可点击
-        mController!!.getIds()?.forEach {
+        mController.getIds()?.forEach {
             val view2 = viewHolder.getView<View>(it)
             view2.isClickable =true
             view2.setOnClickListener {
@@ -51,67 +49,67 @@ open class NiceAlertDialog : NiceDialogFragment() {
     }
 
     override fun getLayoutRes(): Int {
-        return mController!!.getLayoutRes()
+        return mController.getLayoutRes()
     }
 
     override fun getGravity(): Int {
-        return mController!!.getGravity()
+        return mController.getGravity()
     }
 
     override fun getCancelable(): Boolean {
-        return mController!!.getCancelable()
+        return mController.getCancelable()
     }
 
     override fun getAnimationRes(): Int {
-        return mController!!.getAnimationRes()
+        return mController.getAnimationRes()
     }
 
     override fun getDialogHeight(): Int {
-        return mController!!.getDialogHeight()
+        return mController.getDialogHeight()
     }
 
     override fun getDialogWidth(): Int {
-        return mController!!.getDialogWidth()
+        return mController.getDialogWidth()
     }
 
     override fun getDimAmount(): Float {
-        return mController!!.getDimAmount()
+        return mController.getDimAmount()
     }
 
     override fun getKeyListener(): DialogInterface.OnKeyListener? {
-        return mController!!.getKeyListener()
+        return mController.getKeyListener()
     }
     override fun getBackgroundDrawableRes():Int{
-        return mController!!.getBackgroundRes()
+        return mController.getBackgroundRes()
     }
 
 
     private fun getBindViewListener(): OnBindViewListener? {
-        return mController!!.getOnBindViewListener()
+        return mController.getOnBindViewListener()
     }
     private fun getViewClickListener(): OnViewClickListener? {
-        return mController!!.getOnViewClickListener()
+        return mController.getOnViewClickListener()
     }
 
     private fun getListItemClickListener(): NiceAdapter.ItemClickListener? {
-        return mController!!.getListItemClickListener()
+        return mController.getListItemClickListener()
     }
 
     private fun getListAdapter():NiceAdapter<*>?{
-        return mController!!.getAdapter()
+        return mController.getAdapter()
     }
 
     private fun getListRecyclerId():Int{
-        return mController!!.getListRecyclerId()
+        return mController.getListRecyclerId()
     }
     private fun getListOreation():Int{
-        return mController!!.getListOrientation()
+        return mController.getListOrientation()
     }
 
     open fun show(): NiceAlertDialog {
         try {
-            mController?.getFragmentTransaction()?.let {
-                it.add(this, mController?.getTag())
+            mController.getFragmentTransaction()?.let {
+                it.add(this, mController.getTag())
                 it.commitAllowingStateLoss()
             }
 
@@ -189,7 +187,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setScreenWidthPercent(context: Context, percent: Float): Builder {
-            params?.mDialogWidth = (AppUtils.getInstance().getScreenWidth(context) * percent).toInt()
+            params?.mDialogWidth = ( AppUtils.instance.getScreenWidth(context) * percent).toInt()
             return this
         }
         /**
@@ -199,7 +197,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setScreenHeightPercent(context: Context, percent: Float): Builder {
-            params?.mDialogHeight = (AppUtils.getInstance().getScreenHeight(context) * percent).toInt()
+            params?.mDialogHeight = ( AppUtils.instance.getScreenHeight(context) * percent).toInt()
             return this
         }
         /**
