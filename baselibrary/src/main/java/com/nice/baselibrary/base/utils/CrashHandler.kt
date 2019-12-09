@@ -1,17 +1,11 @@
 package com.nice.baselibrary.base.utils
 
-import android.annotation.SuppressLint
 import android.content.Context
-import com.nice.baselibrary.base.net.upload.OkhttpManager
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.ResponseBody
-import retrofit2.Callback
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
-import java.lang.Exception
 
 
 /**
@@ -19,27 +13,62 @@ import java.lang.Exception
  * @author JPlus
  * @date 2019/3/14.
  */
-@SuppressLint("StaticFieldLeak")
-object CrashHandler : Thread.UncaughtExceptionHandler {
+
+class CrashHandler : Thread.UncaughtExceptionHandler {
+    companion object {
+        val instance: CrashHandler by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+            CrashHandler()
+        }
+    }
+
     private var mDefaultCrashHandler: Thread.UncaughtExceptionHandler? = null
     private var mContext: Context? = null
-    private var mSaveFile = false
-    private var mDir: File? = null
+    private var mDirPath: String? = null
+    private var mMaxNum = 0
     /**
      * 初始化
      * @param context 上下文
-     * @param url 上传地址
-     * @param saveFile 是否保存并上传崩溃日志
+     * @param maxNum 最大保存文件数量，默认为1
+     * @param dir 存储文件的目录，默认为应用私有文件夹下crash目录
      */
-    fun init(context: Context, url: String, saveFile: Boolean, callback: Callback<ResponseBody>, dir: File=File(FileUtils.writePrivateDir("crash", context).absolutePath)) {
+    fun init(context: Context, maxNum: Int = 1, dir: String = FileUtils.writePrivateDir("crash", context).absolutePath) {
         mContext = context
-        mSaveFile = saveFile
-        mDir = dir
-        if(mSaveFile) {
-            uploadBugFile(url, dir, callback)
-        }
+        mDirPath = dir
+        mMaxNum = maxNum
         mDefaultCrashHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler(this)
+    }
+
+    /**
+     * 获取所有崩溃日志
+     * @return 日志文件列表
+     */
+    fun getAllFiles(): MutableList<File>? {
+        return FileUtils.getDirFiles(File(mDirPath))
+    }
+
+    /**
+     * 获取最新崩溃日志
+     * @return 最新文件
+     */
+    fun getNewFile(): File? {
+        //筛选出最近最新的一次崩溃日志
+        return FileUtils.getDirFiles(File(mDirPath))?.let {
+            if (it.size>0) it.reversed()[0] else null
+        }
+    }
+
+    private fun writeNewFile(path: String, name: String, body: String) {
+        FileUtils.getDirFiles(File(mDirPath))?.let {
+            if (it.size >= mMaxNum) {
+                //大于设置的数量则删除最旧文件
+                FileUtils.delFileOrDir(it.sorted()[0])
+            }
+            //继续存崩溃日志，新线程写入文件
+            GlobalScope.launch{
+                FileUtils.writeFile(File(path, name), body, false)
+            }
+        }
     }
 
     /**
@@ -48,14 +77,13 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
      * @param exception
      */
     override fun uncaughtException(thread: Thread?, exception: Throwable?) {
-        val name = AppUtils.getInstance().getDeviceImei(mContext!!) + "_" + DateUtils.getDateTimeByMillis(false).replace(":", "-")
+        val name = AppUtils.instance.getDeviceImei(mContext!!) + "_" + DateUtils.getDateTimeByMillis(false).replace(":", "-")
         val exceptionInfo = StringBuilder(name + "\n\n" + getSysInfo() + "\n\n" + exception?.message)
         exceptionInfo.append("\n" + getExceptionInfo(exception))
-        //新线程写入文件
-        if (mSaveFile) {
-            Thread(Runnable {
-                FileUtils.writeFile(File(mDir, "$name.log"), exceptionInfo.toString(), false)
-            }).start()
+        mDirPath?.let {
+            if (mMaxNum > 0) {
+                writeNewFile(it, "$name.log", exceptionInfo.toString())
+            }
         }
         // 系统默认处理
         mDefaultCrashHandler?.uncaughtException(thread, exception)
@@ -63,17 +91,17 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
 
     private fun getSysInfo(): String {
         val map = hashMapOf<String, String>()
-        map["versionName"] = AppUtils.getInstance().getAppVersionName(mContext)
-        map["versionCode"] = "" + AppUtils.getInstance().getAppVersionCode(mContext)
-        map["androidApi"] = "" + AppUtils.getInstance().getOsLevel()
-        map["product"] = "" + AppUtils.getInstance().getDeviceProduct()
-        map["mobileInfo"] = AppUtils.getInstance().getDeviceInfo()
-        map["cpuABI"] = AppUtils.getInstance().getCpuABI()
-        val str = StringBuilder("=".repeat(10)+"PhoneInfo"+"=".repeat(10)+"\n")
-        for(item in map){
+        map["versionName"] = AppUtils.instance.getAppVersionName(mContext)
+        map["versionCode"] = "" + AppUtils.instance.getAppVersionCode(mContext)
+        map["androidApi"] = "" + AppUtils.instance.getOsLevel()
+        map["product"] = "" + AppUtils.instance.getDeviceProduct()
+        map["mobileInfo"] = AppUtils.instance.getDeviceInfo()
+        map["cpuABI"] = AppUtils.instance.getCpuABI()
+        val str = StringBuilder("=".repeat(10) + "PhoneInfo" + "=".repeat(10) + "\n")
+        for (item in map) {
             str.append(item.key).append(" = ").append(item.value).append("\n")
         }
-        str.append("=".repeat(10)+"=".repeat(10)+"\n")
+        str.append("=".repeat(10) + "=".repeat(10) + "\n")
         return str.toString()
     }
 
@@ -84,17 +112,4 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
         return sw.toString()
     }
 
-    private fun uploadBugFile(url:String, dir:File, callback:Callback<ResponseBody>) {
-        val body: MultipartBody.Part
-        try {
-            //筛选出最近的一次崩溃日志
-            val file = FileUtils.getDirFiles(dir)!!.reversed()[0]
-            val request = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-            body = MultipartBody.Part.createFormData("crash", file.name, request)
-        } catch (e:Exception) {
-            e.printStackTrace()
-            return
-        }
-        OkhttpManager.uploadFile(url, body, callback)
-    }
 }

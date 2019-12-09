@@ -3,7 +3,10 @@ package com.nice.baselibrary.base.utils
 import android.content.Context
 import android.util.Log
 import com.nice.baselibrary.base.common.Constant
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
+import java.io.InputStream
 
 /**
  * 日志工具类
@@ -12,19 +15,8 @@ import java.io.File
  */
 class LogUtils private constructor() {
     companion object {
-        private var mLogUtils:LogUtils?=null
-        /**
-         * 通过单例获取
-         * @return
-         */
-         fun getInstance():LogUtils{
-            if(mLogUtils ==null){
-                synchronized(LogUtils::class.java) {
-                    mLogUtils = LogUtils()
-                }
-            }
-            return mLogUtils!!
-        }
+        val instance: LogUtils by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+            LogUtils() }
     }
 
     /**
@@ -39,20 +31,23 @@ class LogUtils private constructor() {
      * log的tag
      */
     private var mTag = "tag"
-    /**
-     * 上传log文件地址
-     */
-    private var mLogUrl = ""
+    private var mMaxNum = 0
+    private var mDirPath = Constant.Path.ROOT_DIR
 
-    fun init(context:Context, logUrl:String, debug:Boolean){
-        init(context, logUrl, debug, " --log: "+AppUtils.getInstance().getPackageName(context))
+    fun init(context:Context, debug:Boolean){
+        val maxNum =1
+        val dir = Constant.Path.ROOT_DIR + File.separator + AppUtils.instance.getPackageName(context)+ File.separator + Constant.Path.LOGCAT_INFO_DIR
+        val tag = " --log: "+AppUtils.instance.getPackageName(context)
+        init(context, debug, maxNum, tag, dir)
     }
 
-    fun init(context:Context, logUrl:String, debug:Boolean, tag:String){
+    fun init(context:Context, debug:Boolean, maxNum:Int, tag:String, dir:String){
         mDebug = debug
         mContext = context
         mTag = tag
-        mLogUrl = logUrl
+        mDirPath = dir
+        mMaxNum = maxNum
+        FileUtils.createOrExistsDir(File(mDirPath))
     }
 
     fun e(message:String, tag:String=mTag){
@@ -82,25 +77,48 @@ class LogUtils private constructor() {
     }
     /**
      * 保存log到文件
+     * @param file 默认为根目录下
      */
-    fun saveLog(file:File){
+    fun saveLog(file:File= File(mDirPath, DateUtils.getDateTimeByMillis(false)+".log")){
         //要过滤的类型 *:W表示warm ，我们也可以换成 *:D ：debug， *:I：info，*:E：error等等,*后不加代表全部
-        val running = arrayOf("logcat", "-s", "adb logcat *")
+        val running = arrayOf("logcat", "-s", "adb logcat *:V")
         //执行命令行
         val exec = ExcCommand.exc(running)
-        //子线程写文件
-        if(mDebug) {
-            Thread(Runnable {
-                FileUtils.writeFile(file, exec, false)
-            })
+        Log.e("pipa", "exec$exec")
+        //协程写文件
+        writeNewFile(file, exec)
+    }
+
+    /**
+     * 获取所有崩溃日志
+     * @return 日志文件列表
+     */
+    fun getAllFiles(): MutableList<File>? {
+        return FileUtils.getDirFiles(File(mDirPath))
+    }
+
+    /**
+     * 获取最新崩溃日志
+     * @return 最新文件
+     */
+    fun getNewFile(): File? {
+        //筛选出最近最新的一次崩溃日志
+        return FileUtils.getDirFiles(File(mDirPath))?.let {
+            if (it.size>0) it.reversed()[0] else null
         }
     }
-    /**
-     * 保存log
-     */
-    fun saveLog(){
-        val filePath = Constant.Path.ROOT_DIR + File.separator + AppUtils.getInstance().getPackageName(mContext!!) + File.separator + Constant.Path.LOGCAT_INFO_DIR
-        val file = File(filePath, DateUtils.getDateTimeByMillis(false)+".log")
-        saveLog(file)
+
+    private fun writeNewFile(file: File, input: InputStream) {
+        FileUtils.getDirFiles(File(mDirPath))?.let {
+            if (it.size >= mMaxNum) {
+                //大于设置的数量则删除最旧文件
+                FileUtils.delFileOrDir(it.sorted()[0])
+            }
+            //继续存崩溃日志，协程写入文件
+            GlobalScope.launch{
+                FileUtils.writeFile(file, input, false)
+            }
+        }
     }
+
 }
