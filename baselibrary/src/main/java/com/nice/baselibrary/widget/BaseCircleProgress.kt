@@ -1,14 +1,16 @@
 package com.nice.baselibrary.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.CountDownTimer
-import androidx.core.content.ContextCompat
 import android.util.AttributeSet
+import androidx.core.content.ContextCompat
 import com.nice.baselibrary.R
 import com.nice.baselibrary.base.ui.BaseLoadingView
+import com.nice.baselibrary.base.utils.LogUtils
 
 /**
  * 带下载进度的圆形进度条
@@ -16,7 +18,7 @@ import com.nice.baselibrary.base.ui.BaseLoadingView
  * @date 2018\1\11
  */
 
-class BaseCircleProgress : BaseLoadingView {
+class BaseCircleProgress(context: Context, attrs: AttributeSet?) : BaseLoadingView(context, attrs) {
     companion object {
         private val LOADING_SUCCESS = 100.0
         private val LOADING_FAILED = -2.0
@@ -37,43 +39,37 @@ class BaseCircleProgress : BaseLoadingView {
     private var mRect: RectF? = null
 
     private var mStartText = "加载"
-    private var mLoadingText = "加载中"
-    private var mFailedText = "加载失败"
+    private var mLoadingText = "下载中"
+    private var mFailedText = "下载失败"
     private var mPauseText = "暂停"
-    private var mSuccessText = "加载完成"
+    private var mSuccessText = "下载完成"
     private var mCancelText = "取消"
 
     private var mWidth: Int = 0
     private var mHeight: Int = 0
-    private var mCenterHeight:Float = 0f
-    
+    private var mCenterHeight: Float = 0f
+
     private var mShowNumProgress = true
     private var mIsNoProgress = false
 
-    private var mCountTimer:CountDownTimer?=null
+    private var mCountTimer: CountDownTimer? = null
     private var mDefaultAngle = 0f
     private var mStartAngle = 0f
 
-    constructor(context: Context) : super(context) {
-        init(context, null)
-    }
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+    init {
         init(context, attrs)
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init(context, attrs)
-    }
-
+    @SuppressLint("Recycle")
     private fun init(context: Context, attrs: AttributeSet?) {
         val typeArray = context.obtainStyledAttributes(attrs, R.styleable.BaseCircleProgress)
         val circleColor = typeArray.getColor(R.styleable.BaseCircleProgress_circleColor, ContextCompat.getColor(context, R.color.colorGrey_light))
-        val progressColor = typeArray.getColor(R.styleable.BaseCircleProgress_progressColor, ContextCompat.getColor(context, R.color.colorGrey_light))
+        val progressColor = typeArray.getColor(R.styleable.BaseCircleProgress_progressColor, ContextCompat.getColor(context, R.color.black))
         val textSize = typeArray.getFloat(R.styleable.BaseCircleProgress_textSize, 21f)
         val textColor = typeArray.getColor(R.styleable.BaseCircleProgress_textColor, ContextCompat.getColor(context, R.color.colorGrey_light))
 
-        mShowNumProgress =typeArray.getBoolean(R.styleable.BaseCircleProgress_showNumProgress, true)
+        mShowNumProgress = typeArray.getBoolean(R.styleable.BaseCircleProgress_showNumProgress, true)
         mIsNoProgress = typeArray.getBoolean(R.styleable.BaseCircleProgress_isNoProgress, false)
 
         //背景画笔
@@ -100,28 +96,30 @@ class BaseCircleProgress : BaseLoadingView {
         textPaint?.textSize = textSize
         textPaint?.textAlign = Paint.Align.CENTER
 
-        if(mIsNoProgress) {
+        if (mIsNoProgress) {
             //倒计时，第一个参数为总时长，第二个为每次执行onTick的间隔时间
-            mCountTimer = object :CountDownTimer(3000, 10) {
+            mCountTimer = object : CountDownTimer(3000, 10) {
                 override fun onTick(millisUntilFinished: Long) {
-                    val radio =  millisUntilFinished / 1500f
+                    val radio = millisUntilFinished / 1500f
                     mStartAngle = mDefaultAngle
-                    mStartAngle = mDefaultAngle + (360-360*radio) //
+                    mStartAngle = mDefaultAngle + (360 - 360 * radio) //
                     invalidate()
                 }
-                override  fun onFinish() {
-                    if(mCountTimer != null){
+
+                override fun onFinish() {
+                    if (mCountTimer != null) {
                         mCountTimer?.start()
                     }
-                     }
-                 }.start()
+                }
+            }.start()
         }
     }
+
     /**
      * 避免长时间重绘，导致的内存泄漏
      */
-    fun close(){
-        if(mCountTimer!=null){
+    fun close() {
+        if (mCountTimer != null) {
             mCountTimer?.cancel()
             mCountTimer?.onFinish()
             mCountTimer = null
@@ -134,16 +132,18 @@ class BaseCircleProgress : BaseLoadingView {
         mWidth = getRealSize(widthMeasureSpec)
         mHeight = getRealSize(heightMeasureSpec)
         setMeasuredDimension(mWidth, mHeight) //储存测量的宽度
-        mCenterHeight = mHeight/2.0f + ( textPaint?.fontMetrics!!.descent -  textPaint?.fontMetrics!!.ascent)/2.0f -  textPaint?.fontMetrics!!.descent //调整text居中显示
+        textPaint?.let{
+            mCenterHeight = mHeight / 2.0f + (it.fontMetrics!!.descent - it.fontMetrics!!.ascent) / 2.0f - it.fontMetrics!!.descent //调整text居中显示
+        }
         initRectF()
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if(!mIsNoProgress){
+        if (!mIsNoProgress) {
             //绘制带进度的进度条，通过传入mProgress作为进度
             drawByProgress(mProgress, canvas, mShowNumProgress)
-        }else{
+        } else {
             //绘制无进度的loading条
             drawNoProgress(canvas)
         }
@@ -153,8 +153,12 @@ class BaseCircleProgress : BaseLoadingView {
      * loading模式
      * @param canvas
      */
-    private fun drawNoProgress(canvas: Canvas){
-        canvas.drawArc(mRect, mStartAngle, mStartAngle, false, progressPaint)
+    private fun drawNoProgress(canvas: Canvas) {
+        mRect?.let {
+            progressPaint?.let { paint ->
+                canvas.drawArc(it, mStartAngle, mStartAngle, false, paint)
+            }
+        }
     }
 
 
@@ -164,35 +168,35 @@ class BaseCircleProgress : BaseLoadingView {
      * @param canvas
      * @param isShowNum
      */
-    private fun drawByProgress(progress:Double, canvas: Canvas, isShowNum:Boolean){
+    private fun drawByProgress(progress: Double, canvas: Canvas, isShowNum: Boolean) {
         when (progress) {
             LOADING_NORMAL -> {
                 //未下载
-                canvas.drawText(mStartText, mWidth/2.0f, mCenterHeight, textPaint)
-                canvas.drawArc(mRect, -90f, 360f, false, circlePaint)
+                canvas.drawText(mStartText, mWidth / 2.0f, mCenterHeight, textPaint!!)
+                canvas.drawArc(mRect!!, -90f, 360f, false, circlePaint!!)
             }
             LOADING_SUCCESS -> {
                 //下载成功
-                canvas.drawText(mLoadingText, mWidth / 2.0f, mCenterHeight, textPaint)
+                canvas.drawText(mSuccessText, mWidth / 2.0f, mCenterHeight, textPaint!!)
             }
             LOADING_FAILED -> {
                 //下载失败
-                canvas.drawText(mFailedText, mWidth/2.0f, mCenterHeight, textPaint)
+                canvas.drawText(mFailedText, mWidth / 2.0f, mCenterHeight, textPaint!!)
             }
             LOADING_CANCEL -> {
                 //下载取消
-                canvas.drawArc(mRect, -90f, 360f, false, circlePaint)
-                canvas.drawText(mCancelText, mWidth/2.0f, mCenterHeight, textPaint)
+                canvas.drawArc(mRect!!, -90f, 360f, false, circlePaint!!)
+                canvas.drawText(mCancelText, mWidth / 2.0f, mCenterHeight, textPaint!!)
             }
             else -> {
                 //下载中
                 val angle = (progress / 100 * 360).toFloat()
-                canvas.drawArc(mRect, -90f, 360f, false, circlePaint)
-                canvas.drawArc(mRect, -90f, angle, false, progressPaint)
-                if(isShowNum) {
-                    canvas.drawText("$progress%", mWidth / 2.0f, mCenterHeight, textPaint)
-                }else{
-                    canvas.drawText(mLoadingText, mWidth / 2.0f, mCenterHeight, textPaint)
+                canvas.drawArc(mRect!!, -90f, 360f, false, circlePaint!!)
+                canvas.drawArc(mRect!!, -90f, angle, false, progressPaint!!)
+                if (isShowNum) {
+                    canvas.drawText("$progress%", mWidth / 2.0f, mCenterHeight, textPaint!!)
+                } else {
+                    canvas.drawText(mLoadingText, mWidth / 2.0f, mCenterHeight, textPaint!!)
                 }
             }
         }
@@ -254,6 +258,7 @@ class BaseCircleProgress : BaseLoadingView {
      * @param progress
      */
     override fun loading(progress: Double) {
+        LogUtils.instance.d("progress:$progress")
         if (progress <= 100.0) {
             mProgress = progress
         }

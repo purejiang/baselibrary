@@ -15,14 +15,8 @@ import com.nice.baselibrary.widget.dialog.NiceDialog
  */
 class NiceShowView {
     companion object {
-        private var mNiceShowView: NiceShowView? = null
-
-        @Synchronized
-        fun getInstance(): NiceShowView {
-            if (mNiceShowView == null) {
-                mNiceShowView = NiceShowView()
-            }
-            return mNiceShowView!!
+        val instance: NiceShowView by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+            NiceShowView()
         }
     }
 
