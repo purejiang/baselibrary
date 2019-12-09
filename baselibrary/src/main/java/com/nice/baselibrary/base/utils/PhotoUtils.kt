@@ -20,14 +20,14 @@ import java.io.File
  * @author JPlus
  * @date 2019/4/24.
  */
-class PhotoUtils constructor(private val mActivity:Activity, private val mIsCache:Boolean) {
+class PhotoUtils constructor(private val mActivity: Activity, private val mIsCache: Boolean) {
     private var mCameraCode = 0
     private var mPhotoCode = 1
     private var mCameraCropCode = 2
     private var mPhotoCropCode = 3
     private var mImagePath: String? = null
-    private var mCameraCallBack:ChoosePictureCallback?=null
-    private var mPhotoCallBack:ChoosePictureCallback?=null
+    private var mCameraCallBack: ChoosePictureCallback? = null
+    private var mPhotoCallBack: ChoosePictureCallback? = null
     private var mCameraIsCrop = false
     private var mPhotoIsCrop = false
 
@@ -39,28 +39,30 @@ class PhotoUtils constructor(private val mActivity:Activity, private val mIsCach
      * @param requestCode
      * @param cropCode
      */
-    fun openCamera(fileName: String, isCrop:Boolean, cameraCallBack:ChoosePictureCallback, requestCode: Int, cropCode:Int) {
+    fun openCamera(fileName: String, isCrop: Boolean, cameraCallBack: ChoosePictureCallback, requestCode: Int, cropCode: Int) {
         mCameraCallBack = cameraCallBack
         mCameraCode = requestCode
         mCameraCropCode = cropCode
         mCameraIsCrop = isCrop
         File(Environment.getExternalStorageDirectory(), "pic").let {
-            LogUtils.getInstance().d(it.toString())
+            LogUtils.instance.d(it.toString())
             if (!FileUtils.createOrExistsDir(it)) {
-                NiceShowView.getInstance().NormalToast("无法生成文件夹,请检查权限").show()
+                NiceShowView.instance.NormalToast("无法生成文件夹,请检查权限").show()
                 return
             }
             mImagePath = File(it, fileName).absolutePath
-            LogUtils.getInstance().d(mImagePath.toString())
+            LogUtils.instance.d(mImagePath.toString())
         }
 
         Intent().let {
-            if (AppUtils.getInstance().getApiLevel() >= Build.VERSION_CODES.N) {
+            if (AppUtils.instance.getApiLevel() >= Build.VERSION_CODES.N) {
                 it.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION   // 临时赋予该Intent对uri的可读权限
             }
             it.action = MediaStore.ACTION_IMAGE_CAPTURE
-            it.putExtra(MediaStore.EXTRA_OUTPUT, getUriByPath(mImagePath))  // 保存拍照的图片到uri而不是系统相册
-            LogUtils.getInstance().e("openCamera")
+            mImagePath?.let { path ->
+                it.putExtra(MediaStore.EXTRA_OUTPUT, UriUtils.getUriByPath(path, mActivity))  // 保存拍照的图片到uri而不是系统相册
+            }
+            LogUtils.instance.e("openCamera")
             mActivity.startActivityForResult(it, requestCode)
         }
     }
@@ -72,7 +74,7 @@ class PhotoUtils constructor(private val mActivity:Activity, private val mIsCach
      * @param requestCode
      * @param cropCode
      */
-    fun openPhoto(isCrop: Boolean, photoCallBack:ChoosePictureCallback, requestCode: Int, cropCode:Int) {
+    fun openPhoto(isCrop: Boolean, photoCallBack: ChoosePictureCallback, requestCode: Int, cropCode: Int) {
         mPhotoCallBack = photoCallBack
         mPhotoCode = requestCode
         mPhotoCropCode = cropCode
@@ -106,9 +108,9 @@ class PhotoUtils constructor(private val mActivity:Activity, private val mIsCach
         outputFormat	                String	    输出格式                      intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         noFaceDetection	                boolean	    是否取消人脸识别功能          intent.putExtra("noFaceDetection", true);
          */
-        LogUtils.getInstance().d("--crop--")
+        LogUtils.instance.d("--crop--")
         Intent("com.android.camera.action.CROP").let {
-            if (AppUtils.getInstance().getApiLevel() >= Build.VERSION_CODES.N) {
+            if (AppUtils.instance.getApiLevel() >= Build.VERSION_CODES.N) {
                 it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // 临时权限
             }
             it.setDataAndType(uri, "image/*") // 图片类型
@@ -126,115 +128,56 @@ class PhotoUtils constructor(private val mActivity:Activity, private val mIsCach
         }
     }
 
-    /**
-     * 通过uri获取文件的原本路径
-     * @param uri
-     * @param selection
-     * @return String
-     */
-    @Throws(CursorIndexOutOfBoundsException::class)
-    private fun getPathByUri(uri: Uri?, selection: String?): String? {
-        LogUtils.getInstance().d("getPathByUri:$uri")
-        var path: String? = null
-        val cursor = mActivity.contentResolver.query(uri, null, selection, null, null)
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
-            }
-            cursor.close()
-        }
-        return path
-    }
 
-    /**
-     * 将path转换为uri
-     * @param filePath
-     * @return Uri
-     */
-    @Throws(IllegalArgumentException::class)
-    private fun getUriByPath(filePath: String?): Uri? {
-        LogUtils.getInstance().d("getUriByPath:$filePath")
-        return  if (AppUtils.getInstance().getApiLevel() >= Build.VERSION_CODES.N) {
-            //android 7.0 开始只能使用provider获取uri
-            FileProvider.getUriForFile(mActivity, AppUtils.getInstance().getPackageName() + ".provider", File(filePath))
+    private fun onRunCallback(callBack: ChoosePictureCallback?, path: String?) {
+        if (path != null) {
+            LogUtils.instance.d(" ChoosePictureCallBack.onSuccess")
+            callBack?.onSuccess(path)
+
         } else {
-            Uri.fromFile(File(filePath))
+            LogUtils.instance.d(" ChoosePictureCallBack.onFail")
+            callBack?.onFail()
+
         }
-    }
-
-    /**
-     * 解析系统返回的uri
-     * @param uri
-     * @return String
-     */
-    private fun parseUri(uri: Uri?): String? {
-        var imgPath: String? = null
-        uri?.let {
-            if (DocumentsContract.isDocumentUri(mActivity, it)) {
-                val docId = DocumentsContract.getDocumentId(it)
-                if ("com.android.providers.media.documents" == it.authority) {
-                    val id = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
-                    val selection = MediaStore.Images.Media._ID + "=" + id
-                    imgPath = getPathByUri(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection)
-                } else if ("com.android.providers.downloads.documents" == it.authority) {
-                    val contentUri = ContentUris.withAppendedId(
-                            Uri.parse("content://downloads/public_downloads"),
-                            docId.toLong())
-                    imgPath = getPathByUri(contentUri, null)
-                }
-            } else if ("content".equals(it.scheme, true)) {
-                imgPath = if("com.google.android.apps.photos.content" ==it.authority){
-                    it.lastPathSegment
-                }else {
-                    getPathByUri( it, null)
-                }
-            } else if ("file".equals(it.scheme, true)) {
-                imgPath = it.path
-            }
-            LogUtils.getInstance().d("imgPath:$imgPath")
-        }
-
-        return  imgPath
-    }
-
-    private fun onRunCallback(callBack: ChoosePictureCallback?, path: String?){
-            if (path != null) {
-                LogUtils.getInstance().d( " ChoosePictureCallBack.onSuccess")
-                callBack?.onSuccess(path)
-
-            } else {
-                LogUtils.getInstance().d(" ChoosePictureCallBack.onFail")
-                callBack?.onFail()
-
-            }
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK)
-        when (requestCode) {
-            mCameraCode -> {
-                //是否执行裁剪
-                if(mCameraIsCrop){
-                    cropImage(mCameraCropCode, getUriByPath(mImagePath))
-                }else {
-                    //回调通知
+            when (requestCode) {
+                mCameraCode -> {
+                    //是否执行裁剪
+                    if (mCameraIsCrop) {
+                        mImagePath?.let {
+                            cropImage(mCameraCropCode, UriUtils.getUriByPath(it, mActivity))
+                        }
+
+                    } else {
+                        //回调通知
+                        onRunCallback(mCameraCallBack, mImagePath)
+                    }
+                }
+                mPhotoCode -> {
+                    if (mPhotoIsCrop) {
+                        data?.data?.let {
+                            cropImage(mPhotoCropCode, UriUtils.getUriByPath(UriUtils.parseUri(it, mActivity), mActivity))
+                        }
+
+                    } else {
+                        data?.data?.let {
+                            onRunCallback(mPhotoCallBack, UriUtils.parseUri(it, mActivity))
+                        }
+
+                    }
+                }
+                mCameraCropCode -> {
                     onRunCallback(mCameraCallBack, mImagePath)
                 }
-            }
-            mPhotoCode -> {
-                if(mPhotoIsCrop){
-                    cropImage(mPhotoCropCode, getUriByPath(parseUri(data?.data)))
-                }else {
-                    onRunCallback(mPhotoCallBack, parseUri(data?.data))
+                mPhotoCropCode -> {
+                    data?.data?.let {
+                        onRunCallback(mPhotoCallBack, UriUtils.parseUri(it, mActivity))
+                    }
                 }
             }
-            mCameraCropCode -> {
-                onRunCallback(mCameraCallBack, mImagePath)
-            }
-            mPhotoCropCode->{
-                onRunCallback(mPhotoCallBack, parseUri(data?.data))
-            }
-        }
     }
 
     interface ChoosePictureCallback {
