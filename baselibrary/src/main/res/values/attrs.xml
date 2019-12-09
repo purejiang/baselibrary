@@ -14,4 +14,18 @@
         <attr name="showNumProgress" format="boolean"/>
         <attr name="isNoProgress" format="boolean"/>
     </declare-styleable>
+
+    <declare-styleable name="CircleLoadingView">
+        <attr name="out_progress_color" format="color" />
+        <attr name="in_progress_color" format="color" />
+        <attr name="has_in_progress" format="boolean" />
+        <attr name="width" format="float"/>
+        <attr name="out_angle" format="float"/>
+        <attr name="in_angle" format="float"/>
+    </declare-styleable>
+
+    <declare-styleable name="LinesLoadingView">
+        <attr name="lines_color" format="color" />
+        <attr name="rate" format="float" />
+    </declare-styleable>
 </resources>
