@@ -38,7 +38,7 @@ class NiceDownloadSubscriber(private val niceDownloadInfo: NiceDownloadInfo, pri
     }
 
     override fun onNext(responseBody: ResponseBody) {
-//       LogUtils.getInstance().d("onNext:"+responseBody.string())
+//       LogUtils.instance.d("onNext:"+responseBody.string())
     }
 
     override fun onError(e: Throwable) {

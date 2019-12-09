@@ -10,19 +10,19 @@ import retrofit2.converter.gson.GsonConverterFactory
  * @author JPlus
  * @date 2019/2/22.
  */
-class NiceDownloadRetrofitHelper {
+class NiceDownloadRetrofitHelper(okHttpClient: OkHttpClient) {
     companion object {
         const val baseUrl = "http://www.google.com/"
     }
     private var downloadRetrofit:Retrofit?=null
 
-    constructor(okHttpClient: OkHttpClient){
-             downloadRetrofit = Retrofit.Builder()
-                     .client(okHttpClient)
-                     .baseUrl(baseUrl)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .build()
+    init {
+        downloadRetrofit = Retrofit.Builder()
+                .client(okHttpClient)
+                .baseUrl(baseUrl)
+               .addConverterFactory(GsonConverterFactory.create())
+               .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+               .build()
     }
 
     /**

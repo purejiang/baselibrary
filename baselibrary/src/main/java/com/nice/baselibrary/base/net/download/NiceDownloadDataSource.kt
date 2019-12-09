@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import java.util.ArrayList
 
 /**
+ * 下载数据源
  * @author JPlus
  * @date 2019/3/7.
  */
@@ -54,6 +55,7 @@ class NiceDownloadDataSource(context: Context) {
     }
 
     fun refreshData(): MutableList<NiceDownloadInfo>? {
+
         return null
     }
 

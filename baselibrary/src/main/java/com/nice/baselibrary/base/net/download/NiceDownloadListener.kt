@@ -8,9 +8,9 @@ package com.nice.baselibrary.base.net.download
 interface NiceDownloadListener {
     /**
      * 下载中
-     * @param read
-     * @param count
-     * @param done
+     * @param read 读取中的大小
+     * @param count 下载文件大小
+     * @param done 是否读取完成
      */
     fun update(read:Long, count:Long, done:Boolean)
     /**

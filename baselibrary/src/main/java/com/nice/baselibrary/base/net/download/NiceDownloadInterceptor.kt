@@ -13,7 +13,7 @@ class NiceDownloadInterceptor(private val niceDownloadListener: NiceDownloadProg
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.proceed(chain.request())
-        LogUtils.getInstance().d("responseHeaders:"+original.headers().toString())
+        LogUtils.instance.d("responseHeaders:\n"+original.headers().toString())
         return original.newBuilder().body(NiceDownloadResponseBody(original.body()!!, niceDownloadListener)).build()
     }
 }

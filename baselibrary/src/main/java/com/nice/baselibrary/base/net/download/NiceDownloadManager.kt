@@ -20,25 +20,18 @@ import java.nio.channels.FileChannel
  */
 class NiceDownloadManager private constructor() {
     companion object {
-        private var mNiceDownloadManager: NiceDownloadManager? = null
-        /**
-         * 单例获取
-         * @return
-         */
-        fun getInstance(): NiceDownloadManager{
-                if (mNiceDownloadManager == null) {
-                    synchronized(NiceDownloadManager::class.java) {
-                        mNiceDownloadManager = NiceDownloadManager()
-                    }
-                }
-                return mNiceDownloadManager!!
-            }
+        val instance: NiceDownloadManager by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+            NiceDownloadManager() }
     }
 
-    private var mInfo2ServiceNice: HashMap<String, NiceDownloadService>? = null
-    private var mInfo2Subscribe: HashMap<String, NiceDownloadSubscriber>? = null
     private var mContext: Context? = null
 
+    private val mInfo2ServiceNice: HashMap<String, NiceDownloadService> by lazy {
+        HashMap<String, NiceDownloadService>()
+    }
+    private val mInfo2Subscribe: HashMap<String, NiceDownloadSubscriber>by lazy {
+        HashMap<String, NiceDownloadSubscriber>()
+    }
 
     /**
      * 初始化
@@ -46,23 +39,26 @@ class NiceDownloadManager private constructor() {
      */
     fun init(context: Context) {
         mContext = context
-        mInfo2Subscribe = HashMap()
-        mInfo2ServiceNice = HashMap()
     }
 
     /**
      * 新增下载
      * @param niceDownloadInfo
      * @param niceDownloadListener
+     * @param niceDownloadDataSource
      */
     fun startNewDownload(niceDownloadInfo: NiceDownloadInfo, niceDownloadListener: NiceDownloadListener, niceDownloadDataSource: NiceDownloadDataSource?) {
+        LogUtils.instance.d("download[start——new]:info:${niceDownloadInfo}")
+        //新建绑定，添加对应关系
         val subscriber = NiceDownloadSubscriber(niceDownloadInfo, niceDownloadListener, niceDownloadDataSource)
-        mInfo2Subscribe?.put(niceDownloadInfo.url, subscriber)
+        mInfo2Subscribe[niceDownloadInfo.url] = subscriber
         val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(NiceDownloadInterceptor(subscriber))
                 .build()
+        //新建下载服务，添加对应关系
         val downloadService = NiceDownloadRetrofitHelper(okHttpClient).getService()!!
-        mInfo2ServiceNice?.put(niceDownloadInfo.url, downloadService)
+        mInfo2ServiceNice[niceDownloadInfo.url] = downloadService
+        //开始下载
         startDownload(downloadService, niceDownloadInfo, subscriber)
     }
 
@@ -72,11 +68,12 @@ class NiceDownloadManager private constructor() {
      * @param niceDownloadListener
      */
     fun reStartDownload(niceDownloadInfo: NiceDownloadInfo, niceDownloadListener: NiceDownloadListener, niceDownloadDataSource: NiceDownloadDataSource?) {
+        LogUtils.instance.d("download[restart]: info:${niceDownloadInfo}")
         //列表包含该url则复用map中指向的service对象，不包含该url则重新构建service进行下载
-        if(mInfo2ServiceNice?.containsKey(niceDownloadInfo.url)!!){
+        if(mInfo2ServiceNice.containsKey(niceDownloadInfo.url)){
             val subscriber =  NiceDownloadSubscriber(niceDownloadInfo, niceDownloadListener, niceDownloadDataSource)
-            mInfo2Subscribe?.put(niceDownloadInfo.url, subscriber)
-            startDownload(mInfo2ServiceNice?.get(niceDownloadInfo.url)!!, niceDownloadInfo, subscriber)
+            mInfo2Subscribe[niceDownloadInfo.url] = subscriber
+            startDownload(mInfo2ServiceNice[niceDownloadInfo.url]!!, niceDownloadInfo, subscriber)
         }else{
             startNewDownload(niceDownloadInfo, niceDownloadListener, niceDownloadDataSource)
         }
@@ -87,11 +84,13 @@ class NiceDownloadManager private constructor() {
      * @param niceDownloadInfo
      */
     fun pauseDownload(niceDownloadInfo: NiceDownloadInfo) {
-        mInfo2Subscribe?.let {
-            it[niceDownloadInfo.url]?.dispose() //通过url获取HashMap中NiceDownloadSubscriber的实例并取消订阅
-            it.remove(niceDownloadInfo.url) //从list中移除
+        LogUtils.instance.d("download[pause]: status:${ niceDownloadInfo.status}")
+        mInfo2Subscribe.let {
+            //通过url获取HashMap中NiceDownloadSubscriber的实例并取消订阅
+            it[niceDownloadInfo.url]?.dispose()
+            // 从list中移除
+            it.remove(niceDownloadInfo.url)
         }
-        LogUtils.getInstance().d("download+pause:" + niceDownloadInfo.status)
     }
 
     /**
@@ -101,10 +100,10 @@ class NiceDownloadManager private constructor() {
      * @param subscriberNice
      */
     private fun startDownload(downloadServiceNice: NiceDownloadService, niceDownloadInfo: NiceDownloadInfo, subscriberNice: NiceDownloadSubscriber) {
-        LogUtils.getInstance().d("startDownload:" + niceDownloadInfo.status+"-"+niceDownloadInfo.url)
+        LogUtils.instance.d("download[start]:status:${niceDownloadInfo.status}-url:${niceDownloadInfo.url}")
         niceDownloadInfo.run{
-            LogUtils.getInstance().d("download+:" + toString())
-            downloadServiceNice.downloadFile("bytes=" + read.toString() + "-", url)
+            LogUtils.instance.d("download[start]: info:${toString()}")
+            downloadServiceNice.downloadFile("bytes=$read-", url)
                     .subscribeOn(Schedulers.io())
                     ?.doOnNext { t: ResponseBody ->
                         writeRandomAccessFile(t, File(path), niceDownloadInfo)
@@ -123,6 +122,7 @@ class NiceDownloadManager private constructor() {
      */
     @Throws(IOException::class)
     private fun writeRandomAccessFile(responseBody: ResponseBody, file: File, infoNice: NiceDownloadInfo) {
+        LogUtils.instance.d("download[access_file]: response:${responseBody}-file_path:${file.absolutePath}\ndownloadInfo:${infoNice}")
         if (!file.parentFile.exists())
             file.parentFile.mkdirs()
         val allLength: Long = if (infoNice.count == 0L) {
