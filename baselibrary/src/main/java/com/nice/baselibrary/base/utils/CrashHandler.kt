@@ -25,6 +25,7 @@ class CrashHandler : Thread.UncaughtExceptionHandler {
     private var mContext: Context? = null
     private var mDirPath: String? = null
     private var mMaxNum = 0
+
     /**
      * 初始化
      * @param context 上下文
@@ -77,7 +78,7 @@ class CrashHandler : Thread.UncaughtExceptionHandler {
      * @param exception
      */
     override fun uncaughtException(thread: Thread?, exception: Throwable?) {
-        val name = AppUtils.instance.getDeviceImei(mContext!!) + "_" + DateUtils.getDateTimeByMillis(false).replace(":", "-")
+        val name = mContext?.getDeviceImei() + "_" + DateUtils.getDateTimeByMillis(false).replace(":", "-")
         val exceptionInfo = StringBuilder(name + "\n\n" + getSysInfo() + "\n\n" + exception?.message)
         exceptionInfo.append("\n" + getExceptionInfo(exception))
         mDirPath?.let {
@@ -91,8 +92,8 @@ class CrashHandler : Thread.UncaughtExceptionHandler {
 
     private fun getSysInfo(): String {
         val map = hashMapOf<String, String>()
-        map["versionName"] = AppUtils.instance.getAppVersionName(mContext)
-        map["versionCode"] = "" + AppUtils.instance.getAppVersionCode(mContext)
+        map["versionName"] = mContext.getAppVersionName()
+        map["versionCode"] = "" + AppUtils.instance.mContext.getAppVersionCode()
         map["androidApi"] = "" + AppUtils.instance.getOsLevel()
         map["product"] = "" + AppUtils.instance.getDeviceProduct()
         map["mobileInfo"] = AppUtils.instance.getDeviceInfo()

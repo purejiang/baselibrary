@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/big_space">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/biggest_space"
+        android:orientation="vertical">
+        <!--android.support.design:hintAnimationEnabled | 是否显示hint的动画,默认true-->
+        <!--android.support.design:hintEnabled | 是否使用hint属性,默认true-->
+        <!--android.support.design:hintTextAppearance | 设置hint的文字样式(指运行动画效果之后的样式)-->
+        <!--android.support.design:counterEnabled | 是否显示计数器-->
+        <!--android.support.design:counterMaxLength | 设置计数器的最大值-->
+        <!--android.support.design:counterOverflowTextAppearance | 输入字符大于我们限定个数字符时的样式-->
+        <!--app:theme 设置浮动标签的颜色主题-->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:counterEnabled="true"
+            app:counterMaxLength="11"
+            app:hintAnimationEnabled="false"
+            app:hintEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_edit_phone_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="账号"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintAnimationEnabled="false"
+            app:hintEnabled="true"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_edit_password_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="密码"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/cb_auto_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/small_space"
+                android:text="自动登录"
+                android:textColor="@color/colorPrimary" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_login_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/normal_space"
+            android:background="@drawable/bg_circle_btn"
+            android:text="登录"
+            android:textColor="@color/white" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

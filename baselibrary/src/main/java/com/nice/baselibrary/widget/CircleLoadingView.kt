@@ -1,4 +1,4 @@
-package com.jplus.jvideoview.view
+package com.nice.baselibrary.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -80,7 +80,6 @@ class CircleLoadingView(context: Context, attrs: AttributeSet) : View(context, a
             it.strokeJoin = Paint.Join.ROUND  //画笔结合处为圆弧
             it.strokeCap = Paint.Cap.ROUND  //画笔始末端（线帽）样式为圆形
         }
-
 
     }
 

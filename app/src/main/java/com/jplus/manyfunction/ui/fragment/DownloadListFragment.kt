@@ -2,27 +2,29 @@ package com.jplus.manyfunction.ui.fragment
 
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.OrientationHelper
-import android.support.v7.widget.RecyclerView
+
 import android.view.View
 import android.widget.Button
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.OrientationHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.adapter.DownloadAdapter
 import com.jplus.manyfunction.contract.DownloadListContract
-import com.nice.baselibrary.base.ui.NiceFragment
-import com.nice.baselibrary.base.ui.view.NiceEditText
-import com.nice.baselibrary.download.NiceDownloadInfo
+import com.nice.baselibrary.base.common.Constant
+import com.nice.baselibrary.base.ui.BaseFragment
+import com.nice.baselibrary.widget.NiceEditText
+import com.nice.baselibrary.base.net.download.NiceDownloadInfo
+import java.io.File
 
 /**
  * @author JPlus
  * @date 2019/2/16.
  */
-class DownloadListFragment : NiceFragment(), DownloadListContract.ViewNice {
-
+class DownloadListFragment : BaseFragment(), DownloadListContract.ViewNice {
 
     private var mPresenter: DownloadListContract.Presenter?=null
-    private var mDownloadRecy:RecyclerView?=null
+    private var mDownloadRecy: RecyclerView?=null
     private var mDownloadAdapter: DownloadAdapter?=null
 
     private var mEditext: NiceEditText?=null
@@ -36,14 +38,21 @@ class DownloadListFragment : NiceFragment(), DownloadListContract.ViewNice {
         mEditext = view?.findViewById(R.id.base_edt_download_name)
         mButton = view?.findViewById(R.id.btn_commit_download)
 
+
+    }
+
+    override fun bindListener() {
+        val urls = "https://cn5.3days.cc/hls/20190804/ebfd96741e2e6e854144b2e012c30755/1564883639/film_00000.ts"
+        mEditext?.setText( urls)
         mButton?.setOnClickListener {
             val url = mEditext?.text.toString()
             if(url!=""){
-                mPresenter?.addDownload(url)
+                mPresenter?.addDownload(url, File(Constant.Path.ROOT_DIR, Constant.Path.DOWNLOAD_DIR).absolutePath)
                 mEditext?.text?.clear()
             }
         }
     }
+
 
     override fun addDownload(item: NiceDownloadInfo) {
         mDownloadAdapter?.addItem(item)

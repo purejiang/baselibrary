@@ -1,21 +1,20 @@
 package com.jplus.manyfunction.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.presenter.DownloadListPresenter
-import com.nice.baselibrary.base.ui.NiceActivity
+import com.nice.baselibrary.base.ui.BaseActivity
 import com.jplus.manyfunction.ui.fragment.DownloadListFragment
-import com.nice.baselibrary.base.common.ApiEntry
-import com.nice.baselibrary.base.ui.view.NiceTitleBar
-import com.nice.baselibrary.download.NiceDownloadDataSource
+import com.nice.baselibrary.widget.NiceTitleBar
+import com.nice.baselibrary.base.net.download.NiceDownloadDataSource
 
 
 /**
  * @author JPlus
  * @date 2019/2/13.
  */
-class DownloadListActivity : NiceActivity() {
+class DownloadListActivity : BaseActivity() {
     companion object {
         private val EXIT_TIME = 2000L
     }
@@ -27,7 +26,7 @@ class DownloadListActivity : NiceActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_download)
-        ApiEntry.getInstance().init(this, true)
+
     }
 
     override fun onStart() {
@@ -47,8 +46,9 @@ class DownloadListActivity : NiceActivity() {
             mDownloadFragment = DownloadListFragment()
         }
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.fly_download, mDownloadFragment)
+        transaction.add(R.id.fly_download, mDownloadFragment!!)
         transaction.commit()
+
 
     }
 
@@ -79,16 +79,12 @@ class DownloadListActivity : NiceActivity() {
 
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if(keyCode==KeyEvent.KEYCODE_BACK){
-            if(System.currentTimeMillis() - mExitTime >= EXIT_TIME){
-                mExitTime = System.currentTimeMillis()
-
-            }else{
-                finish()
-                System.exit(0)
-            }
-        }
-        return true
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
+
+    override fun setBackTwiceMsg(): String {
+        return "再按一次就退出了哦~"
+    }
+
 }

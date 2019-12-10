@@ -1,9 +1,10 @@
 package com.jplus.manyfunction.contract
 
+import android.net.Uri
 import com.nice.baselibrary.base.rx.NicePresenter
-import com.nice.baselibrary.base.ui.NiceBaseView
-import com.nice.baselibrary.download.NiceDownloadInfo
-import com.nice.baselibrary.download.NiceDownloadListener
+import com.nice.baselibrary.base.rx.NiceBaseView
+import com.nice.baselibrary.base.net.download.NiceDownloadInfo
+import com.nice.baselibrary.base.net.download.NiceDownloadListener
 
 /**
  * @author JPlus
@@ -37,8 +38,11 @@ interface DownloadListContract {
     interface Presenter: NicePresenter {
         /**
          * 添加新下载项
+         * @param url
+         * @param dirPath
+         * @return
          */
-        fun addDownload(url: String)
+        fun addDownload(url: String, dirPath:String): Uri
         /**
          * 开启下载
          */

@@ -1,15 +1,15 @@
 package com.jplus.manyfunction.adapter
 
-import android.support.v7.widget.RecyclerView
 import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.jplus.manyfunction.R
-import com.nice.baselibrary.base.ui.view.NiceCircleProgress
-import com.nice.baselibrary.base.ui.view.NiceTextView
-import com.nice.baselibrary.download.NiceDownloadInfo
-import com.nice.baselibrary.download.NiceDownloadListener
+import com.nice.baselibrary.widget.BaseCircleProgress
+import com.nice.baselibrary.widget.NiceTextView
+import com.nice.baselibrary.base.net.download.NiceDownloadInfo
+import com.nice.baselibrary.base.net.download.NiceDownloadListener
 
 /**
  * 下载列表适配器
@@ -57,7 +57,7 @@ class DownloadAdapter(private val mItems:MutableList<NiceDownloadInfo>): Recycle
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): VH {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         return VH.get(parent, getLayout(viewType))
     }
 
@@ -65,7 +65,7 @@ class DownloadAdapter(private val mItems:MutableList<NiceDownloadInfo>): Recycle
         val item = mItems[position]
         val name = holder.getView<NiceTextView>(R.id.btv_download_item_name)
         val url = holder.getView<NiceTextView>(R.id.btv_download_item_url)
-        holder.getView<NiceCircleProgress>(R.id.cpb_download_item).loading(String.format("%.1f", item.read * 100.0 / item.count).toDouble())
+        holder.getView<BaseCircleProgress>(R.id.cpb_download_item).loading(String.format("%.1f", item.read * 100.0 / item.count).toDouble())
         name.text = item.name
         url.text = item.url
 
@@ -135,18 +135,18 @@ class DownloadAdapter(private val mItems:MutableList<NiceDownloadInfo>): Recycle
             return view as T
         }
         override fun update(read: Long, count: Long, done: Boolean) {
-            mContentView.findViewById<NiceCircleProgress>(R.id.cpb_download_item).loading(String.format("%.1f", read * 100.0 / count).toDouble())
+            mContentView.findViewById<BaseCircleProgress>(R.id.cpb_download_item).loading(String.format("%.1f", read * 100.0 / count).toDouble())
         }
         override fun downloadSuccess() {
-            mContentView.findViewById<NiceCircleProgress>(R.id.cpb_download_item).success()
+            mContentView.findViewById<BaseCircleProgress>(R.id.cpb_download_item).success()
         }
 
         override fun downloadFailed(e: Throwable) {
-            mContentView.findViewById<NiceCircleProgress>(R.id.cpb_download_item).failed()
+            mContentView.findViewById<BaseCircleProgress>(R.id.cpb_download_item).failed()
         }
 
         override fun downloadCancel() {
-            mContentView.findViewById<NiceCircleProgress>(R.id.cpb_download_item).cancel()
+            mContentView.findViewById<BaseCircleProgress>(R.id.cpb_download_item).cancel()
         }
     }
 }

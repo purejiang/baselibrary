@@ -7,13 +7,13 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.nice.baselibrary.base.utils.FileUtils;
 import com.nice.baselibrary.base.utils.LogUtils;
-import com.nice.baselibrary.base.ui.view.NiceDialog;
-import com.nice.baselibrary.base.ui.view.NiceShowView;
+import com.nice.baselibrary.widget.dialog.NiceDialog;
+import com.nice.baselibrary.widget.NiceShowView;
 
 import java.io.IOException;
 import java.io.InputStream;

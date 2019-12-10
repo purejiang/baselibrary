@@ -1,7 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.jplus.manyfunction">
-
+    <!--网络权限-->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!--访问网络权限-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--更改网络状态-->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <!--访问wifi状态-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!--读取系统中所有的LOG的权限,4.1以上已无法获取-->
+    <!--<uses-permission android:name="android.permission.READ_LOGS" />-->
+    <!--系统弹出框,6.0以后需要用户在系统设置中同意-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!--危险权限-->
+    <!--读取手机状态-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!--读取手机存储-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!--相机权限-->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!--访问精细位置-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!--读取短信-->
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <!--录制音频-->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!--读取联系人-->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <!--读取日历-->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <!--传感器-->
+    <uses-permission android:name="android.permission.BODY_SENSORS" />
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -9,24 +40,31 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.MainActivity"
-            android:launchMode="singleTask"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="sensor">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".ui.activity.RefreshActivity">
+
+        </activity>
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.DownloadListActivity"
+        <activity
+            android:name=".ui.activity.DownloadListActivity"
             android:screenOrientation="portrait">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
     </application>
 

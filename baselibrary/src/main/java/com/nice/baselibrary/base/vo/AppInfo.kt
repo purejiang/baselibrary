@@ -1,4 +1,4 @@
-package com.leniu.assist.ln.entity
+package com.nice.baselibrary.base.vo
 
 
 import android.graphics.drawable.Drawable

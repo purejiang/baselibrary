@@ -3,17 +3,14 @@ package com.nice.baselibrary.widget
 import android.content.Context
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import androidx.core.content.ContextCompat
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
-import android.widget.EditText
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
 import com.nice.baselibrary.R
-import com.nice.baselibrary.base.utils.LogUtils
 
 /**
  * 可清空的输入框

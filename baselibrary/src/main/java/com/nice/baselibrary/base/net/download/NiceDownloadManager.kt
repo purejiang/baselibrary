@@ -24,8 +24,6 @@ class NiceDownloadManager private constructor() {
             NiceDownloadManager() }
     }
 
-    private var mContext: Context? = null
-
     private val mInfo2ServiceNice: HashMap<String, NiceDownloadService> by lazy {
         HashMap<String, NiceDownloadService>()
     }
@@ -33,13 +31,6 @@ class NiceDownloadManager private constructor() {
         HashMap<String, NiceDownloadSubscriber>()
     }
 
-    /**
-     * 初始化
-     * @param context
-     */
-    fun init(context: Context) {
-        mContext = context
-    }
 
     /**
      * 新增下载

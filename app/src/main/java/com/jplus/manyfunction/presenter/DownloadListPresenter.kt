@@ -1,10 +1,15 @@
 package com.jplus.manyfunction.presenter
 
 import android.content.Context
+import android.net.Uri
+import android.util.Log
 import com.jplus.manyfunction.contract.DownloadListContract
+import com.nice.baselibrary.base.utils.DateUtils
 
 import com.nice.baselibrary.base.utils.StringUtils
-import com.nice.baselibrary.download.*
+import com.nice.baselibrary.base.net.download.*
+import com.nice.baselibrary.base.utils.LogUtils
+import java.io.File
 
 
 /**
@@ -22,8 +27,7 @@ class DownloadListPresenter : DownloadListContract.Presenter {
         mView = view
         mDataSourceNice = dataSourceNice
         mView?.setPresenter(this)
-        mDownloadsManagerNice = NiceDownloadManager.getInstance()
-        mDownloadsManagerNice?.init(context)
+        mDownloadsManagerNice = NiceDownloadManager.instance
     }
 
     override fun subscribe() {
@@ -34,13 +38,17 @@ class DownloadListPresenter : DownloadListContract.Presenter {
 
     }
 
-    override fun addDownload(url: String) {
+    override fun addDownload(url: String, dirPath: String): Uri {
         var download = mDataSourceNice?.getData(url)
+            LogUtils.instance.d(url)
         if (download == null) {
-            download = NiceDownloadInfo(0, StringUtils.parseUrlName(url), url, StringUtils.getDateTime(), 0, 0, NiceDownloadManager.DownloadStatus.DOWNLOAD_START)
+            val name = StringUtils.parseUrlName(url)
+            download = NiceDownloadInfo(0, name, url, dirPath + File.separator + name, DateUtils.getDateTimeByMillis(false), 0, 0, NiceDownloadManager.DownloadStatus.DOWNLOAD_START)
             mDataSourceNice?.addData(download)
             mView?.addDownload(download)
+            return Uri.parse(dirPath + File.separator + name)
         }
+       return Uri.parse("")
     }
 
 

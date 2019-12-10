@@ -10,8 +10,7 @@ import kotlin.system.exitProcess
  * @author JPlus
  * @date 2019/1/16.
  */
-class ActivityCollect {
-    companion object {
+object ActivityCollect {
         private val M_ACTIVITY_LIST: MutableList<Activity> = ArrayList()
         /**
          * 添加Activity
@@ -36,7 +35,6 @@ class ActivityCollect {
             M_ACTIVITY_LIST.filterNot { it.isFinishing }
                     .forEach { it.finish() }
         }
-    }
 }
 
 

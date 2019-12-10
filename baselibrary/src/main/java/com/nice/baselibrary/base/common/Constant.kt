@@ -10,20 +10,16 @@ import java.io.File
  * @date 2019/2/22.
  */
 class Constant {
-
-
         class Api{
 
         }
-
         /**
-         *
+         * 固定消息
          */
          class Message{
              companion object {
 
              }
-
         }
 
         /**

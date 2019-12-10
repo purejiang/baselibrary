@@ -329,6 +329,7 @@ class JPermissionsUtils private constructor() {
                 mPerListener?.deniedCallback(deniedPermission)
                 mPerListener?.ignoredCallback(checkIgnorePermissions(context, deniedPermission))
                 mPerListener?.grantedCallback(grantedPermission)
+                mPerListener = null
             }
         }
     }

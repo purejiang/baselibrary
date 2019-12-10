@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/normal_space"
+        android:orientation="vertical">
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="更新提示"/>
+    </LinearLayout>
+        <TextView
+            android:id="@+id/tv_upload_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="下载更新版本：1.1.0"/>
+    <com.nice.baselibrary.widget.BaseCircleProgress
+        android:id="@+id/ncp_download_patch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+   />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btn_patch_download"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/small_size"
+            android:layout_margin="@dimen/normal_space"
+            android:background="@drawable/bg_circle_btn"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:text="download" />
+    </LinearLayout>
+
+
+</LinearLayout>

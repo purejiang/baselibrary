@@ -1,4 +1,4 @@
-package com.jplus.jvideoview.view
+package com.nice.baselibrary.widget
 
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator

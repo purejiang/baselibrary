@@ -13,7 +13,6 @@ import com.nice.baselibrary.base.utils.LogUtils
  * @date 2019/1/16.
  */
 abstract class BaseFragment : Fragment() {
-    private var mBaseActivity: BaseActivity?=null
 
     /**
      * 获取Fragment的布局
@@ -38,15 +37,12 @@ abstract class BaseFragment : Fragment() {
      * 获取连接的Activity
      */
     fun getHolderActivity(): BaseActivity{
-        return mBaseActivity!!
+        return this.activity as BaseActivity
     }
-
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         LogUtils.instance.d(this.javaClass.simpleName + " --onAttach()")
-        mBaseActivity = context as BaseActivity
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
