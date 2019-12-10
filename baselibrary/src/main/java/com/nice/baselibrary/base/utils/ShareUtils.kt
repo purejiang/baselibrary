@@ -2,8 +2,6 @@ package com.nice.baselibrary.base.utils
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
-import androidx.core.content.FileProvider
 import java.io.File
 
 /**
@@ -12,7 +10,7 @@ import java.io.File
  */
 object ShareUtils {
     fun shareFile(activity: Activity, file:File, title:String){
-        val uri = UriUtils.getUriByPath(file.absolutePath, activity)
+        val uri = activity.getUriByPath(file.absolutePath)
         var shareIntent = Intent()
         shareIntent.action = Intent.ACTION_SEND
         //其中imgUri为图片的标识符

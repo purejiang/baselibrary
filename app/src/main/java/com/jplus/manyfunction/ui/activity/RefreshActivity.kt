@@ -5,8 +5,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.jplus.manyfunction.R
 import com.nice.baselibrary.base.adapter.NiceAdapter
-import com.nice.baselibrary.widget.NiceShowView
-import kotlinx.android.synthetic.main.activity_refresh.*
+import com.nice.baselibrary.base.utils.showNormalToast
 
 
 class RefreshActivity : AppCompatActivity() {
@@ -30,11 +29,11 @@ class RefreshActivity : AppCompatActivity() {
         niceAdapter.addFootView(R.layout.view_test_foot)
         niceAdapter.setItemClickListener(object : NiceAdapter.ItemClickListener {
             override fun setItemClick(holder: NiceAdapter.VH, position: Int) {
-                NiceShowView.instance.NormalToast("setItemClick$position")
+                this@RefreshActivity.showNormalToast("setItemClick$position")
             }
 
             override fun setItemLongClick(holder: NiceAdapter.VH, position: Int): Boolean {
-                NiceShowView.instance.NormalToast("setItemLongClick$position")
+                this@RefreshActivity.showNormalToast("setItemLongClick$position")
                 return true
             }
         })

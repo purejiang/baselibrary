@@ -16,7 +16,7 @@ import java.util.*
 
 
 /**
- *  App工具类
+ *  App基本方法
  * @author JPlus
  * @date 2019/2/22.
  */
@@ -200,6 +200,7 @@ fun getDeviceInfo(): String {
  * 获取设备mac地址
  * @return
  */
+@SuppressLint("MissingPermission")
 fun Context.getMacAddress(): String {
     val wm = this.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
     return wm.connectionInfo.macAddress

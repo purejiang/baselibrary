@@ -6,6 +6,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.util.*
 
 
 /**
@@ -14,28 +15,22 @@ import java.io.StringWriter
  * @date 2019/3/14.
  */
 
-class CrashHandler : Thread.UncaughtExceptionHandler {
-    companion object {
-        val instance: CrashHandler by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
-            CrashHandler()
-        }
-    }
-
+object CrashHandler : Thread.UncaughtExceptionHandler {
     private var mDefaultCrashHandler: Thread.UncaughtExceptionHandler? = null
-    private var mContext: Context? = null
     private var mDirPath: String? = null
     private var mMaxNum = 0
-
+    private var mFileName = "crash"
+    private var mSysInfo = "暂无信息"
     /**
      * 初始化
-     * @param context 上下文
      * @param maxNum 最大保存文件数量，默认为1
      * @param dir 存储文件的目录，默认为应用私有文件夹下crash目录
      */
     fun init(context: Context, maxNum: Int = 1, dir: String = FileUtils.writePrivateDir("crash", context).absolutePath) {
-        mContext = context
         mDirPath = dir
         mMaxNum = maxNum
+        mFileName = context.getDeviceImei() + "_" + Date(System.currentTimeMillis()).getDateTimeByMillis(false).replace(":", "-")
+        mSysInfo = getSysInfo(context)
         mDefaultCrashHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler(this)
     }
@@ -55,7 +50,7 @@ class CrashHandler : Thread.UncaughtExceptionHandler {
     fun getNewFile(): File? {
         //筛选出最近最新的一次崩溃日志
         return FileUtils.getDirFiles(File(mDirPath))?.let {
-            if (it.size>0) it.reversed()[0] else null
+            if (it.size > 0) it.reversed()[0] else null
         }
     }
 
@@ -66,7 +61,7 @@ class CrashHandler : Thread.UncaughtExceptionHandler {
                 FileUtils.delFileOrDir(it.sorted()[0])
             }
             //继续存崩溃日志，新线程写入文件
-            GlobalScope.launch{
+            GlobalScope.launch {
                 FileUtils.writeFile(File(path, name), body, false)
             }
         }
@@ -78,26 +73,25 @@ class CrashHandler : Thread.UncaughtExceptionHandler {
      * @param exception
      */
     override fun uncaughtException(thread: Thread?, exception: Throwable?) {
-        val name = mContext?.getDeviceImei() + "_" + DateUtils.getDateTimeByMillis(false).replace(":", "-")
-        val exceptionInfo = StringBuilder(name + "\n\n" + getSysInfo() + "\n\n" + exception?.message)
+        val exceptionInfo = StringBuilder(mFileName + "\n\n" + mSysInfo + "\n\n" + exception?.message)
         exceptionInfo.append("\n" + getExceptionInfo(exception))
         mDirPath?.let {
             if (mMaxNum > 0) {
-                writeNewFile(it, "$name.log", exceptionInfo.toString())
+                writeNewFile(it, "$mFileName.log", exceptionInfo.toString())
             }
         }
         // 系统默认处理
         mDefaultCrashHandler?.uncaughtException(thread, exception)
     }
 
-    private fun getSysInfo(): String {
+    private fun getSysInfo(context: Context): String {
         val map = hashMapOf<String, String>()
-        map["versionName"] = mContext.getAppVersionName()
-        map["versionCode"] = "" + AppUtils.instance.mContext.getAppVersionCode()
-        map["androidApi"] = "" + AppUtils.instance.getOsLevel()
-        map["product"] = "" + AppUtils.instance.getDeviceProduct()
-        map["mobileInfo"] = AppUtils.instance.getDeviceInfo()
-        map["cpuABI"] = AppUtils.instance.getCpuABI()
+        map["versionName"] = context.getAppVersionName()
+        map["versionCode"] = "" + context.getAppVersionCode()
+        map["androidApi"] = "" + getOsLevel()
+        map["product"] = "" + getDeviceProduct()
+        map["mobileInfo"] = getDeviceInfo()
+        map["cpuABI"] = getCpuABI()
         val str = StringBuilder("=".repeat(10) + "PhoneInfo" + "=".repeat(10) + "\n")
         for (item in map) {
             str.append(item.key).append(" = ").append(item.value).append("\n")

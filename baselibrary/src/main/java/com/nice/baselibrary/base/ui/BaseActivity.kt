@@ -4,10 +4,9 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.nice.baselibrary.widget.NiceShowView
 import com.nice.baselibrary.base.utils.ActivityCollect
 import com.nice.baselibrary.base.utils.LogUtils
-import kotlin.system.exitProcess
+import com.nice.baselibrary.base.utils.showNormalToast
 
 /**
  * @author JPlus
@@ -23,7 +22,7 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityCollect.add(this)
-        LogUtils.instance.d(this.localClassName + " --onCreate()")
+        LogUtils.d(this.localClassName + " --onCreate()")
     }
 
     override fun setContentView(layoutResID: Int) {
@@ -54,53 +53,53 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        LogUtils.instance.d(this.localClassName + " --onConfigurationChanged()")
+        LogUtils.d(this.localClassName + " --onConfigurationChanged()")
     }
 
     override fun onStart() {
         super.onStart()
-        LogUtils.instance.d(this.localClassName + " --onStart()")
+        LogUtils.d(this.localClassName + " --onStart()")
     }
 
     override fun onPause() {
         super.onPause()
-        LogUtils.instance.d(this.localClassName + " --onPause()")
+        LogUtils.d(this.localClassName + " --onPause()")
     }
 
     override fun onStop() {
         super.onStop()
-        LogUtils.instance.d(this.localClassName + " --onStop()")
+        LogUtils.d(this.localClassName + " --onStop()")
     }
 
     override fun onRestart() {
         super.onRestart()
-        LogUtils.instance.d(this.localClassName + " --onRestart()")
+        LogUtils.d(this.localClassName + " --onRestart()")
     }
 
     override fun onResume() {
         super.onResume()
-        LogUtils.instance.d(this.localClassName + " --onResume()")
+        LogUtils.d(this.localClassName + " --onResume()")
     }
 
     override fun onDestroy() {
         super.onDestroy()
         ActivityCollect.remove(this)
-        LogUtils.instance.d(this.localClassName + " --onDestroy()")
+        LogUtils.d(this.localClassName + " --onDestroy()")
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        LogUtils.instance.d(this.localClassName + " --onNewIntent()")
+        LogUtils.d(this.localClassName + " --onNewIntent()")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        LogUtils.instance.d(this.localClassName + " --onActivityResult()")
+        LogUtils.d(this.localClassName + " --onActivityResult()")
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        LogUtils.instance.d(this.localClassName + " --onRequestPermissionsResult()")
+        LogUtils.d(this.localClassName + " --onRequestPermissionsResult()")
     }
 
     /**
@@ -115,7 +114,7 @@ abstract class BaseActivity : AppCompatActivity() {
         if(setBackTwiceMsg().isNotEmpty()){
             if(System.currentTimeMillis()- mBackTime>BACK_TIME){
                 mBackTime = System.currentTimeMillis()
-                NiceShowView.instance.NormalToast(setBackTwiceMsg()).show()
+                this.showNormalToast(setBackTwiceMsg())
             }else{
                 ActivityCollect.removeAll()
             }

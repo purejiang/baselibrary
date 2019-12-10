@@ -7,26 +7,20 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.InputStream
+import java.util.*
 
 /**
  * 日志工具类
  * @author JPlus
  * @date 2019/3/14.
  */
-class LogUtils private constructor() {
-    companion object {
-        val instance: LogUtils by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
-            LogUtils() }
-    }
+object LogUtils {
 
     /**
      * 是否是debug模式
      */
     private var mDebug = true
-    /**
-     * 上下文
-     */
-    private var mContext:Context?=null
+
     /**
      * log的tag
      */
@@ -36,14 +30,13 @@ class LogUtils private constructor() {
 
     fun init(context:Context, debug:Boolean){
         val maxNum =1
-        val dir = Constant.Path.ROOT_DIR + File.separator + AppUtils.instance.getPackageName(context)+ File.separator + Constant.Path.LOGCAT_INFO_DIR
-        val tag = " --log: "+AppUtils.instance.getPackageName(context)
-        init(context, debug, maxNum, tag, dir)
+        val dir = Constant.Path.ROOT_DIR + File.separator + context.packageName + File.separator + Constant.Path.LOGCAT_INFO_DIR
+        val tag = " --log: "+context.packageName
+        init(debug, maxNum, tag, dir)
     }
 
-    fun init(context:Context, debug:Boolean, maxNum:Int, tag:String, dir:String){
+    fun init(debug:Boolean, maxNum:Int, tag:String, dir:String){
         mDebug = debug
-        mContext = context
         mTag = tag
         mDirPath = dir
         mMaxNum = maxNum
@@ -79,12 +72,11 @@ class LogUtils private constructor() {
      * 保存log到文件
      * @param file 默认为根目录下
      */
-    fun saveLog(file:File= File(mDirPath, DateUtils.getDateTimeByMillis(false)+".log")){
+    fun saveLog(file:File= File(mDirPath, Date(System.currentTimeMillis()).getDateTimeByMillis(false)+".log")){
         //要过滤的类型 *:W表示warm ，我们也可以换成 *:D ：debug， *:I：info，*:E：error等等,*后不加代表全部
         val running = arrayOf("logcat", "-s", "adb logcat *:V")
         //执行命令行
         val exec = ExcCommand.exc(running)
-        Log.e("pipa", "exec$exec")
         //协程写文件
         writeNewFile(file, exec)
     }

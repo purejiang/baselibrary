@@ -24,7 +24,7 @@ class FileUtils {
          */
         fun writeFile(file: File, stream: InputStream, append: Boolean): Boolean {
             var outputStream: OutputStream? = null
-            LogUtils.instance.d("writeFile:" + file.absoluteFile)
+            LogUtils.d("writeFile:" + file.absoluteFile)
             try {
                 createOrExistsFile(file)
                 outputStream = FileOutputStream(file, append)
@@ -57,7 +57,7 @@ class FileUtils {
          * @return
          */
         fun writeFile(file: File, content: String, append: Boolean): Boolean {
-            LogUtils.instance.d("writeFile:" + file.absoluteFile)
+            LogUtils.d("writeFile:" + file.absoluteFile)
             var writer: BufferedWriter? = null
             try {
                 createOrExistsFile(file)

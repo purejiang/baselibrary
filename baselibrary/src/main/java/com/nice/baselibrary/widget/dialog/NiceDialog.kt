@@ -125,13 +125,13 @@ class NiceDialog
 
     override fun cancel() {
         super.cancel()
-        LogUtils.instance.e("cancel")
+        LogUtils.e("cancel")
         mProgress?.close()
     }
 
     override fun dismiss() {
         super.dismiss()
-        LogUtils.instance.e("dismiss")
+        LogUtils.e("dismiss")
         mProgress?.close()
     }
 

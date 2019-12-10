@@ -15,7 +15,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.nice.baselibrary.widget.NiceShowView
 import com.nice.baselibrary.widget.dialog.NiceDialog
 import java.io.IOException
 
@@ -25,14 +24,9 @@ import java.io.IOException
  * @author JPlus
  * @date 2019/2/27.
  */
-class JPermissionsUtils private constructor() {
-    companion object {
-        private const val REQUEST_CODE_ASK_PERMISSIONS = 1024
-        val instance: JPermissionsUtils by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
-            JPermissionsUtils()
-        }
-    }
+object JPermissionsUtils  {
 
+    private const val REQUEST_CODE_ASK_PERMISSIONS = 1024
     private var mOpenDialog: Boolean = true
     private var mIsCancelable: Boolean = true
     private var mHasWindow: Boolean = true
@@ -85,7 +79,7 @@ class JPermissionsUtils private constructor() {
                     noPermission.add(it)
                     sb.append(it).append("\n")
                 }
-        LogUtils.instance.d(sb.toString())
+        LogUtils.d(sb.toString())
         return noPermission
     }
 
@@ -105,7 +99,7 @@ class JPermissionsUtils private constructor() {
                     ignorePermissions.add(it)
                     sb.append(it).append("\n")
                 }
-        LogUtils.instance.d(sb.toString())
+        LogUtils.d(sb.toString())
         return ignorePermissions
     }
 
@@ -119,7 +113,7 @@ class JPermissionsUtils private constructor() {
             perInfoList
                     .filter { it.contains(permission) }
                     .forEach {
-                        LogUtils.instance.e(it)
+                        LogUtils.e(it)
                         return true
                     }
         }
@@ -148,7 +142,7 @@ class JPermissionsUtils private constructor() {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> Settings.canDrawOverlays(context)
             else -> true
         }
-        LogUtils.instance.d("hasWindowPermission:$result")
+        LogUtils.d("hasWindowPermission:$result")
         return result
     }
 
@@ -221,14 +215,14 @@ class JPermissionsUtils private constructor() {
      * @return
      */
     fun showPermissionDialog(activity: Activity, title: String, permissions: MutableSet<String>) {
-        LogUtils.instance.d("showPermissionDialog")
+        LogUtils.d("showPermissionDialog")
         val sb = StringBuilder("您有已忽略的权限，请到设置中开启:\n\n")
 
         //获取危险权限信息
         for (per in permissions) {
             sb.append("\t\t\t\t").append(getPermissionPrompt(per, mPerMap!!)).append("\n")
         }
-        NiceShowView.instance.createDialog(activity, NiceDialog.DIALOG_NORMAL)
+        activity.createDialog(NiceDialog.DIALOG_NORMAL)
                 .setTitle(title)
                 .setMessage(sb.toString())
                 .setCanceled(mIsCancelable)
@@ -251,8 +245,8 @@ class JPermissionsUtils private constructor() {
      * @param message
      */
     fun showWindowDialog(activity: Activity, title: String, message: String) {
-        LogUtils.instance.d("showWindowDialog")
-        NiceShowView.instance.createDialog(activity, NiceDialog.DIALOG_NORMAL)
+        LogUtils.d("showWindowDialog")
+        activity.createDialog(NiceDialog.DIALOG_NORMAL)
                 .setTitle(title)
                 .setMessage(message)
                 .setCanceled(mIsCancelable)
@@ -274,7 +268,7 @@ class JPermissionsUtils private constructor() {
      */
     private fun startActivityToSetting(activity: Activity) {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        intent.data = Uri.parse("package:" + AppUtils.instance.getPackageName())
+        intent.data = Uri.parse("package:" + activity.packageName)
         activity.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 
@@ -285,7 +279,7 @@ class JPermissionsUtils private constructor() {
     private fun startActivityToOverlay(activity: Activity) {
          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-            intent.data = Uri.parse("package:" + AppUtils.instance.getPackageName())
+            intent.data = Uri.parse("package:" + activity.packageName)
             activity.startActivityForResult(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), REQUEST_CODE_ASK_PERMISSIONS)
         }
     }
@@ -299,12 +293,12 @@ class JPermissionsUtils private constructor() {
      * @param grantResult 请求的结果码
      */
     fun handleRequestPermissionsResult(context: Context, requestCode: Int, permissions: Array<out String>, grantResult: IntArray) {
-        LogUtils.instance.d("handleRequestPermissionsResult")
+        LogUtils.d("handleRequestPermissionsResult")
         val sb = StringBuilder("result:\n")
         for (i in permissions.indices) {
             sb.append(permissions[i]).append(":").append(grantResult[i]).append("\n")
         }
-        LogUtils.instance.d("sb:$sb")
+        LogUtils.d("sb:$sb")
         var result = true
         val deniedPermission = mutableSetOf<String>()
         val grantedPermission = mutableSetOf<String>()
@@ -317,14 +311,14 @@ class JPermissionsUtils private constructor() {
                         when {
                             "android.permission.SYSTEM_ALERT_WINDOW" == permissions[i] -> if (mHasWindow && !hasWindowPermission(context)) deniedPermission.add(permissions[i])
                             isDangerPermission(permissions[i]) -> deniedPermission.add(permissions[i])
-                            else -> LogUtils.instance.d("not dangerous:${permissions[i]}")
+                            else -> LogUtils.d("not dangerous:${permissions[i]}")
                         }
                     } else {
                         grantedPermission.add(permissions[i])
                     }
                 }
                 val noPermissions = getNoPermission(context, grantedPermission)
-                LogUtils.instance.d("noPermissions$noPermissions")
+                LogUtils.d("noPermissions$noPermissions")
                 //是否请求到全部权限的
                 mPerListener?.deniedCallback(deniedPermission)
                 mPerListener?.ignoredCallback(checkIgnorePermissions(context, deniedPermission))

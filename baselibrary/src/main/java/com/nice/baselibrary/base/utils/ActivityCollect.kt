@@ -1,9 +1,7 @@
 package com.nice.baselibrary.base.utils
 
 import android.app.Activity
-import com.nice.baselibrary.base.ui.BaseActivity
 import java.util.*
-import kotlin.system.exitProcess
 
 /**
  * Activity管理类
@@ -31,7 +29,7 @@ object ActivityCollect {
          * 销毁所有Activity
          */
         fun removeAll() {
-            LogUtils.instance.saveLog()
+            LogUtils.saveLog()
             M_ACTIVITY_LIST.filterNot { it.isFinishing }
                     .forEach { it.finish() }
         }

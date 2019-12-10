@@ -24,7 +24,7 @@ abstract class NiceDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        LogUtils.instance.d("====onCreateDialog====")
+        LogUtils.d("====onCreateDialog====")
         return super.onCreateDialog(savedInstanceState)
 
     }
@@ -32,12 +32,12 @@ abstract class NiceDialogFragment : DialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(getLayoutRes(), container, false)
         bindView(view)
-        LogUtils.instance.d("====onCreateView====")
+        LogUtils.d("====onCreateView====")
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        LogUtils.instance.d("====onViewCreated====")
+        LogUtils.d("====onViewCreated====")
         super.onViewCreated(view, savedInstanceState)
         dialog?.run {
             requestWindowFeature(Window.FEATURE_NO_TITLE) // 去除标题栏
@@ -53,7 +53,7 @@ abstract class NiceDialogFragment : DialogFragment() {
     }
 
     override fun onStart() {
-        LogUtils.instance.d("====onStart====")
+        LogUtils.d("====onStart====")
         super.onStart()
         dialog?.window?.run {
             //设置窗体背景
@@ -69,41 +69,41 @@ abstract class NiceDialogFragment : DialogFragment() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        LogUtils.instance.d("====onConfigurationChanged====")
+        LogUtils.d("====onConfigurationChanged====")
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LogUtils.instance.d("====onCreate====")
+        LogUtils.d("====onCreate====")
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        LogUtils.instance.d("====onAttach====")
+        LogUtils.d("====onAttach====")
     }
 
     override fun onPause() {
         super.onPause()
-        LogUtils.instance.d("====onPause====")
+        LogUtils.d("====onPause====")
     }
 
     override fun onResume() {
         super.onResume()
-        LogUtils.instance.d("====onResume====")
+        LogUtils.d("====onResume====")
     }
 
     override fun onStop() {
         super.onStop()
-        LogUtils.instance.d("====onStop====")
+        LogUtils.d("====onStop====")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        LogUtils.instance.d("====onDestroy====")
+        LogUtils.d("====onDestroy====")
     }
 
     override fun onDetach() {
         super.onDetach()
-        LogUtils.instance.d("====onDetach====")
+        LogUtils.d("====onDetach====")
     }
 
     /**

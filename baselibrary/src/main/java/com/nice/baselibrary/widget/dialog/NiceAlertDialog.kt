@@ -5,10 +5,11 @@ import android.content.Context
 import android.content.DialogInterface
 import android.view.View
 import androidx.fragment.app.FragmentTransaction
-import com.nice.baselibrary.base.adapter.NiceAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nice.baselibrary.base.utils.AppUtils
+import com.nice.baselibrary.base.adapter.NiceAdapter
+import com.nice.baselibrary.base.utils.getScreenHeight
+import com.nice.baselibrary.base.utils.getScreenWidth
 
 
 /**
@@ -187,7 +188,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setScreenWidthPercent(context: Context, percent: Float): Builder {
-            params?.mDialogWidth = ( AppUtils.instance.getScreenWidth(context) * percent).toInt()
+            params?.mDialogWidth = (context.getScreenWidth() * percent).toInt()
             return this
         }
         /**
@@ -197,7 +198,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setScreenHeightPercent(context: Context, percent: Float): Builder {
-            params?.mDialogHeight = ( AppUtils.instance.getScreenHeight(context) * percent).toInt()
+            params?.mDialogHeight = (context.getScreenHeight() * percent).toInt()
             return this
         }
         /**

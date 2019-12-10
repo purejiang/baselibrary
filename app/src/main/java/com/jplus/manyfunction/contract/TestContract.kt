@@ -1,11 +1,12 @@
 package com.jplus.manyfunction.contract
 
+import android.app.Activity
 import android.content.Intent
-import com.nice.baselibrary.base.vo.AppInfo
-import com.nice.baselibrary.base.rx.NicePresenter
-import com.nice.baselibrary.base.rx.NiceBaseView
-import com.nice.baselibrary.widget.dialog.NiceAlertDialog
 import com.nice.baselibrary.base.net.download.NiceDownloadListener
+import com.nice.baselibrary.base.rx.NiceBaseView
+import com.nice.baselibrary.base.rx.NicePresenter
+import com.nice.baselibrary.base.vo.AppInfo
+import com.nice.baselibrary.widget.dialog.NiceAlertDialog
 import java.io.File
 
 /**
@@ -14,7 +15,9 @@ import java.io.File
  */
 interface TestContract {
     interface View : NiceBaseView<Presenter> {
-
+        /**
+         */
+        fun getFragActivity():Activity?
         /**
          * 未通过权限界面
          */

@@ -16,8 +16,7 @@ class MyApplication: BaseApplication() {
         super.onCreate()
         LeakCanary.install(this)
 //        InitializeManager.instance.initApplication(this)
-        BaseLibrary.instance.init(this)
-        BaseLibrary.instance.initUtils(true)
+        BaseLibrary.instance.initUtils(this, true)
     }
 
     override fun getApplicationContext(): Context {

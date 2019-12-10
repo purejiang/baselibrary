@@ -1,17 +1,12 @@
 package com.nice.baselibrary.base.utils
 
 import android.app.Activity
-import android.content.ContentUris
 import android.content.Intent
-import android.database.CursorIndexOutOfBoundsException
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.provider.DocumentsContract
 import android.provider.MediaStore
-import androidx.core.content.FileProvider
-import com.nice.baselibrary.widget.NiceShowView
 import java.io.File
 
 
@@ -20,7 +15,7 @@ import java.io.File
  * @author JPlus
  * @date 2019/4/24.
  */
-class PhotoUtils constructor(private val mActivity: Activity, private val mIsCache: Boolean) {
+class PhotoUtils constructor(private val mIsCache: Boolean) {
     private var mCameraCode = 0
     private var mPhotoCode = 1
     private var mCameraCropCode = 2
@@ -39,31 +34,31 @@ class PhotoUtils constructor(private val mActivity: Activity, private val mIsCac
      * @param requestCode
      * @param cropCode
      */
-    fun openCamera(fileName: String, isCrop: Boolean, cameraCallBack: ChoosePictureCallback, requestCode: Int, cropCode: Int) {
+    fun openCamera(activity: Activity, fileName: String, isCrop: Boolean, cameraCallBack: ChoosePictureCallback, requestCode: Int, cropCode: Int) {
         mCameraCallBack = cameraCallBack
         mCameraCode = requestCode
         mCameraCropCode = cropCode
         mCameraIsCrop = isCrop
         File(Environment.getExternalStorageDirectory(), "pic").let {
-            LogUtils.instance.d(it.toString())
+            LogUtils.d(it.toString())
             if (!FileUtils.createOrExistsDir(it)) {
-                NiceShowView.instance.NormalToast("无法生成文件夹,请检查权限").show()
+                activity.showNormalToast("无法生成文件夹,请检查权限")
                 return
             }
             mImagePath = File(it, fileName).absolutePath
-            LogUtils.instance.d(mImagePath.toString())
+            LogUtils.d(mImagePath.toString())
         }
 
         Intent().let {
-            if (AppUtils.instance.getApiLevel() >= Build.VERSION_CODES.N) {
+            if (getApiLevel() >= Build.VERSION_CODES.N) {
                 it.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION   // 临时赋予该Intent对uri的可读权限
             }
             it.action = MediaStore.ACTION_IMAGE_CAPTURE
             mImagePath?.let { path ->
-                it.putExtra(MediaStore.EXTRA_OUTPUT, UriUtils.getUriByPath(path, mActivity))  // 保存拍照的图片到uri而不是系统相册
+                it.putExtra(MediaStore.EXTRA_OUTPUT, activity.getUriByPath(path))  // 保存拍照的图片到uri而不是系统相册
             }
-            LogUtils.instance.e("openCamera")
-            mActivity.startActivityForResult(it, requestCode)
+            LogUtils.e("openCamera")
+            activity.startActivityForResult(it, requestCode)
         }
     }
 
@@ -74,7 +69,7 @@ class PhotoUtils constructor(private val mActivity: Activity, private val mIsCac
      * @param requestCode
      * @param cropCode
      */
-    fun openPhoto(isCrop: Boolean, photoCallBack: ChoosePictureCallback, requestCode: Int, cropCode: Int) {
+    fun openPhoto(activity: Activity, isCrop: Boolean, photoCallBack: ChoosePictureCallback, requestCode: Int, cropCode: Int) {
         mPhotoCallBack = photoCallBack
         mPhotoCode = requestCode
         mPhotoCropCode = cropCode
@@ -82,7 +77,7 @@ class PhotoUtils constructor(private val mActivity: Activity, private val mIsCac
         Intent().let {
             it.type = "image/*"
             it.action = Intent.ACTION_PICK
-            mActivity.startActivityForResult(it, requestCode)
+            activity.startActivityForResult(it, requestCode)
         }
     }
 
@@ -92,7 +87,7 @@ class PhotoUtils constructor(private val mActivity: Activity, private val mIsCac
      * @param uri
      *
      */
-    private fun cropImage(requestCode: Int, uri: Uri?) {
+    private fun cropImage(activity: Activity, requestCode: Int, uri: Uri?) {
         /*
         crop	                        String      发送裁剪信号                  intent.putExtra("crop", "true");
         aspectX	                        int         X方向上的比例                 intent.putExtra("aspectX", 1);
@@ -108,9 +103,9 @@ class PhotoUtils constructor(private val mActivity: Activity, private val mIsCac
         outputFormat	                String	    输出格式                      intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         noFaceDetection	                boolean	    是否取消人脸识别功能          intent.putExtra("noFaceDetection", true);
          */
-        LogUtils.instance.d("--crop--")
+        LogUtils.d("--crop--")
         Intent("com.android.camera.action.CROP").let {
-            if (AppUtils.instance.getApiLevel() >= Build.VERSION_CODES.N) {
+            if (getApiLevel() >= Build.VERSION_CODES.N) {
                 it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // 临时权限
             }
             it.setDataAndType(uri, "image/*") // 图片类型
@@ -124,31 +119,31 @@ class PhotoUtils constructor(private val mActivity: Activity, private val mIsCac
 //            it.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(File(Environment.getExternalStorageDirectory(), "pic_"+System.currentTimeMillis()+".jpg")))
             it.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
             it.putExtra("noFaceDetection", true)
-            mActivity.startActivityForResult(it, requestCode)
+            activity.startActivityForResult(it, requestCode)
         }
     }
 
 
     private fun onRunCallback(callBack: ChoosePictureCallback?, path: String?) {
         if (path != null) {
-            LogUtils.instance.d(" ChoosePictureCallBack.onSuccess")
+            LogUtils.d(" ChoosePictureCallBack.onSuccess")
             callBack?.onSuccess(path)
 
         } else {
-            LogUtils.instance.d(" ChoosePictureCallBack.onFail")
+            LogUtils.d(" ChoosePictureCallBack.onFail")
             callBack?.onFail()
 
         }
     }
 
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK)
             when (requestCode) {
                 mCameraCode -> {
                     //是否执行裁剪
                     if (mCameraIsCrop) {
                         mImagePath?.let {
-                            cropImage(mCameraCropCode, UriUtils.getUriByPath(it, mActivity))
+                            cropImage(activity, requestCode, activity.getUriByPath(it))
                         }
 
                     } else {
@@ -159,12 +154,12 @@ class PhotoUtils constructor(private val mActivity: Activity, private val mIsCac
                 mPhotoCode -> {
                     if (mPhotoIsCrop) {
                         data?.data?.let {
-                            cropImage(mPhotoCropCode, UriUtils.getUriByPath(UriUtils.parseUri(it, mActivity), mActivity))
+                            cropImage(activity, mPhotoCropCode, activity.getUriByPath(activity.parseUri(it)))
                         }
 
                     } else {
                         data?.data?.let {
-                            onRunCallback(mPhotoCallBack, UriUtils.parseUri(it, mActivity))
+                            onRunCallback(mPhotoCallBack, activity.parseUri(it))
                         }
 
                     }
@@ -174,7 +169,7 @@ class PhotoUtils constructor(private val mActivity: Activity, private val mIsCac
                 }
                 mPhotoCropCode -> {
                     data?.data?.let {
-                        onRunCallback(mPhotoCallBack, UriUtils.parseUri(it, mActivity))
+                        onRunCallback(mPhotoCallBack, activity.parseUri(it))
                     }
                 }
             }

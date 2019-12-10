@@ -1,7 +1,6 @@
 package com.nice.baselibrary.base.net.download
 
 
-import android.content.Context
 import com.nice.baselibrary.base.utils.LogUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -39,7 +38,7 @@ class NiceDownloadManager private constructor() {
      * @param niceDownloadDataSource
      */
     fun startNewDownload(niceDownloadInfo: NiceDownloadInfo, niceDownloadListener: NiceDownloadListener, niceDownloadDataSource: NiceDownloadDataSource?) {
-        LogUtils.instance.d("download[start——new]:info:${niceDownloadInfo}")
+        LogUtils.d("download[start——new]:info:${niceDownloadInfo}")
         //新建绑定，添加对应关系
         val subscriber = NiceDownloadSubscriber(niceDownloadInfo, niceDownloadListener, niceDownloadDataSource)
         mInfo2Subscribe[niceDownloadInfo.url] = subscriber
@@ -59,7 +58,7 @@ class NiceDownloadManager private constructor() {
      * @param niceDownloadListener
      */
     fun reStartDownload(niceDownloadInfo: NiceDownloadInfo, niceDownloadListener: NiceDownloadListener, niceDownloadDataSource: NiceDownloadDataSource?) {
-        LogUtils.instance.d("download[restart]: info:${niceDownloadInfo}")
+        LogUtils.d("download[restart]: info:${niceDownloadInfo}")
         //列表包含该url则复用map中指向的service对象，不包含该url则重新构建service进行下载
         if(mInfo2ServiceNice.containsKey(niceDownloadInfo.url)){
             val subscriber =  NiceDownloadSubscriber(niceDownloadInfo, niceDownloadListener, niceDownloadDataSource)
@@ -75,7 +74,7 @@ class NiceDownloadManager private constructor() {
      * @param niceDownloadInfo
      */
     fun pauseDownload(niceDownloadInfo: NiceDownloadInfo) {
-        LogUtils.instance.d("download[pause]: status:${ niceDownloadInfo.status}")
+        LogUtils.d("download[pause]: status:${ niceDownloadInfo.status}")
         mInfo2Subscribe.let {
             //通过url获取HashMap中NiceDownloadSubscriber的实例并取消订阅
             it[niceDownloadInfo.url]?.dispose()
@@ -91,9 +90,9 @@ class NiceDownloadManager private constructor() {
      * @param subscriberNice
      */
     private fun startDownload(downloadServiceNice: NiceDownloadService, niceDownloadInfo: NiceDownloadInfo, subscriberNice: NiceDownloadSubscriber) {
-        LogUtils.instance.d("download[start]:status:${niceDownloadInfo.status}-url:${niceDownloadInfo.url}")
+        LogUtils.d("download[start]:status:${niceDownloadInfo.status}-url:${niceDownloadInfo.url}")
         niceDownloadInfo.run{
-            LogUtils.instance.d("download[start]: info:${toString()}")
+            LogUtils.d("download[start]: info:${toString()}")
             downloadServiceNice.downloadFile("bytes=$read-", url)
                     .subscribeOn(Schedulers.io())
                     ?.doOnNext { t: ResponseBody ->
@@ -113,7 +112,7 @@ class NiceDownloadManager private constructor() {
      */
     @Throws(IOException::class)
     private fun writeRandomAccessFile(responseBody: ResponseBody, file: File, infoNice: NiceDownloadInfo) {
-        LogUtils.instance.d("download[access_file]: response:${responseBody}-file_path:${file.absolutePath}\ndownloadInfo:${infoNice}")
+        LogUtils.d("download[access_file]: response:${responseBody}-file_path:${file.absolutePath}\ndownloadInfo:${infoNice}")
         if (!file.parentFile.exists())
             file.parentFile.mkdirs()
         val allLength: Long = if (infoNice.count == 0L) {

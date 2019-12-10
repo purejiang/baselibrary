@@ -1,7 +1,6 @@
 package com.jplus.manyfunction.ui.activity
 
 
-import android.Manifest
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -10,10 +9,7 @@ import com.jplus.manyfunction.R
 import com.jplus.manyfunction.presenter.TestPresenter
 import com.jplus.manyfunction.ui.fragment.TestFragment
 import com.nice.baselibrary.base.ui.BaseActivity
-import com.nice.baselibrary.base.utils.*
 import com.nice.baselibrary.widget.dialog.NiceAlertDialog
-import java.lang.RuntimeException
-import java.util.*
 
 
 class MainActivity : BaseActivity() {
@@ -28,7 +24,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 //        AppUtils.instance.init(this)
-//        LogUtils.instance.init(this, true)
+//        LogUtils.init(this, true)
 //        JPermissionsUtils.instance.init(this)
 //        CrashHandler.instance.init(this, 1)
 //        Log.d("pipa", "" + CrashHandler.instance.getAllFiles())
@@ -67,7 +63,7 @@ class MainActivity : BaseActivity() {
 //        Assist.init(this)
 //        Assist.getAutoNetWork(false).SetOnNetWorkChangeListener(object :NetWorkReceiver.OnNetWorkChangeListener{
 //            override fun getNetStatus(isOnline: Boolean) {
-//                LogUtils.instance.e("isOnline:"+isOnline)
+//                LogUtils.e("isOnline:"+isOnline)
 //            }
 //
 //            override fun getNetType(type: Int) {
@@ -84,7 +80,7 @@ class MainActivity : BaseActivity() {
 //            }
 //
 //            override fun getNetStrength(strength: Int) {
-//                LogUtils.instance.e("strength:"+strength)
+//                LogUtils.e("strength:"+strength)
 //            }
 //        })
 
@@ -103,7 +99,9 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onBindListener() {
-        TestPresenter(this, mFragment!!)
+        mFragment?.let{
+            TestPresenter(it)
+        }
     }
 
 

@@ -258,7 +258,7 @@ class BaseCircleProgress(context: Context, attrs: AttributeSet?) : BaseLoadingVi
      * @param progress
      */
     override fun loading(progress: Double) {
-        LogUtils.instance.d("progress:$progress")
+        LogUtils.d("progress:$progress")
         if (progress <= 100.0) {
             mProgress = progress
         }
