@@ -14,14 +14,14 @@ import com.jplus.manyfunction.contract.DownloadListContract
 import com.nice.baselibrary.base.common.Constant
 import com.nice.baselibrary.base.ui.BaseFragment
 import com.nice.baselibrary.widget.NiceEditText
-import com.nice.baselibrary.base.net.download.NiceDownloadInfo
+import com.nice.baselibrary.base.net.download.JDownloadInfo
 import java.io.File
 
 /**
  * @author JPlus
  * @date 2019/2/16.
  */
-class DownloadListFragment : BaseFragment(), DownloadListContract.ViewNice {
+class DownloadListFragment : BaseFragment(), DownloadListContract.View {
 
     private var mPresenter: DownloadListContract.Presenter?=null
     private var mDownloadRecy: RecyclerView?=null
@@ -54,7 +54,7 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.ViewNice {
     }
 
 
-    override fun addDownload(item: NiceDownloadInfo) {
+    override fun addDownload(item: JDownloadInfo) {
         mDownloadAdapter?.addItem(item)
     }
     override fun getLayoutId(): Int {
@@ -78,14 +78,14 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.ViewNice {
         super.onPause()
         mPresenter?.unSubscribe()
     }
-    override fun showData(items: MutableList<NiceDownloadInfo>) {
+    override fun showData(items: MutableList<JDownloadInfo>) {
         mDownloadAdapter = DownloadAdapter(items)
         mDownloadAdapter?.setItemClickListener(object : DownloadAdapter.ItemClickListener{
-            override fun setItemClick(itemView: DownloadAdapter.VH, item: NiceDownloadInfo, position:Int) {
+            override fun setItemClick(itemView: DownloadAdapter.VH, item: JDownloadInfo, position:Int) {
                 mPresenter?.startDownload(item, itemView)
             }
 
-            override fun setItemLongClick(itemView: DownloadAdapter.VH, item: NiceDownloadInfo, position:Int):Boolean {
+            override fun setItemLongClick(itemView: DownloadAdapter.VH, item: JDownloadInfo, position:Int):Boolean {
                 mPresenter?.removeDownload(position)
                 return true
             }
@@ -94,7 +94,7 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.ViewNice {
     }
 
 
-    override fun addDownloads(niceDownloads: MutableList<NiceDownloadInfo>) {
+    override fun addDownloads(jDownloads: MutableList<JDownloadInfo>) {
 
     }
 

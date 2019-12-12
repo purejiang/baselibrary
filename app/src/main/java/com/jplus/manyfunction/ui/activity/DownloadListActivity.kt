@@ -7,7 +7,7 @@ import com.jplus.manyfunction.presenter.DownloadListPresenter
 import com.nice.baselibrary.base.ui.BaseActivity
 import com.jplus.manyfunction.ui.fragment.DownloadListFragment
 import com.nice.baselibrary.widget.NiceTitleBar
-import com.nice.baselibrary.base.net.download.NiceDownloadDataSource
+import com.nice.baselibrary.base.net.download.JDownloadDataSource
 
 
 /**
@@ -48,13 +48,11 @@ class DownloadListActivity : BaseActivity() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.fly_download, mDownloadFragment!!)
         transaction.commit()
-
-
     }
 
     override fun onBindListener() {
         mDownloadTitle?.setMainTitle("下载列表")
-        DownloadListPresenter(this, mDownloadFragment, NiceDownloadDataSource(applicationContext))
+        DownloadListPresenter(mDownloadFragment, JDownloadDataSource(applicationContext))
     }
 
 

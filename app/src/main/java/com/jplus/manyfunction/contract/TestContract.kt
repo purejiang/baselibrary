@@ -2,7 +2,7 @@ package com.jplus.manyfunction.contract
 
 import android.app.Activity
 import android.content.Intent
-import com.nice.baselibrary.base.net.download.NiceDownloadListener
+import com.nice.baselibrary.base.net.download.JDownloadCallback
 import com.nice.baselibrary.base.rx.NiceBaseView
 import com.nice.baselibrary.base.rx.NicePresenter
 import com.nice.baselibrary.base.vo.AppInfo
@@ -104,7 +104,7 @@ interface TestContract {
         /**
          * 热修复dex下载
          */
-        fun downLoadPatch(url: String, dirPath:String, niceDownloadListener: NiceDownloadListener)
+        fun downLoadPatch(url: String, dirPath:String, jDownloadCallback: JDownloadCallback)
 
         /**
          * 视频流播放

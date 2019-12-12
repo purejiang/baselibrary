@@ -12,7 +12,7 @@ import retrofit2.http.Url
  * @author JPlus
  * @date 2019/2/21.
  */
-interface NiceDownloadService {
+interface JDownloadService {
     @Streaming//大文件注解，防止出现OOM
     @GET
     fun downloadFile(@Header("RANGE") start:String, @Url fileUrl: String): Observable<ResponseBody>    //start断点续传的初始下载位置 fileUrl就是文件的下载地址，通过参数形式传进来

@@ -103,7 +103,7 @@ class BaseCircleProgress(context: Context, attrs: AttributeSet?) : BaseLoadingVi
                     val radio = millisUntilFinished / 1500f
                     mStartAngle = mDefaultAngle
                     mStartAngle = mDefaultAngle + (360 - 360 * radio) //
-                    invalidate()
+                    postInvalidate()
                 }
 
                 override fun onFinish() {

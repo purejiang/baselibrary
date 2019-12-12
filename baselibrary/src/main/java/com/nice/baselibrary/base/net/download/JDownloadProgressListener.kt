@@ -5,7 +5,7 @@ package com.nice.baselibrary.base.net.download
  * @author JPlus
  * @date 2019/2/22.
  */
-interface NiceDownloadProgressListener {
+interface JDownloadProgressListener {
     /**
      * 下载中
      * @param read

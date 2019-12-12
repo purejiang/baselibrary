@@ -1,12 +1,8 @@
 package com.jplus.manyfunction.presenter
 
-import android.content.Context
 import android.net.Uri
 import com.jplus.manyfunction.contract.DownloadListContract
-import com.nice.baselibrary.base.net.download.NiceDownloadDataSource
-import com.nice.baselibrary.base.net.download.NiceDownloadInfo
-import com.nice.baselibrary.base.net.download.NiceDownloadListener
-import com.nice.baselibrary.base.net.download.NiceDownloadManager
+import com.nice.baselibrary.base.net.download.*
 import com.nice.baselibrary.base.utils.LogUtils
 import com.nice.baselibrary.base.utils.StringUtils
 import com.nice.baselibrary.base.utils.getDateTimeByMillis
@@ -18,22 +14,19 @@ import java.util.*
  * @author JPlus
  * @date 2019/2/13.
  */
-class DownloadListPresenter : DownloadListContract.Presenter {
+class DownloadListPresenter(private val mView: DownloadListContract.View?, private val mDataSource: JDownloadDataSource) : DownloadListContract.Presenter {
+    private val mDownloadsManager: JDownloadManager by lazy {
+        JDownloadManager()
+    }
 
-
-    private var mView: DownloadListContract.ViewNice? = null
-    private var mDataSourceNice: NiceDownloadDataSource? = null
-    private var mDownloadsManagerNice: NiceDownloadManager? = null
-
-    constructor(context: Context, view: DownloadListContract.ViewNice?, dataSourceNice: NiceDownloadDataSource) {
-        mView = view
-        mDataSourceNice = dataSourceNice
+    init {
         mView?.setPresenter(this)
-        mDownloadsManagerNice = NiceDownloadManager.instance
     }
 
     override fun subscribe() {
-        mView?.showData(mDataSourceNice?.getAllData()!!)
+        mDataSource.getAllData()?.let{
+            mView?.showData(it)
+        }
     }
 
     override fun unSubscribe() {
@@ -41,54 +34,51 @@ class DownloadListPresenter : DownloadListContract.Presenter {
     }
 
     override fun addDownload(url: String, dirPath: String): Uri {
-        var download = mDataSourceNice?.getData(url)
-            LogUtils.d(url)
-        if (download == null) {
-            val name = StringUtils.parseUrlName(url)
-            download = NiceDownloadInfo(0, name, url, dirPath + File.separator + name, Date(System.currentTimeMillis()).getDateTimeByMillis(false), 0, 0, NiceDownloadManager.DownloadStatus.DOWNLOAD_START)
-            mDataSourceNice?.addData(download)
+        val downloadList = mDataSource.getData(mutableMapOf(Pair("url", url)))
+        val name = StringUtils.parseUrlName(url)
+        if (downloadList.size == 0) {
+            LogUtils.d("addDownload:url:$url, path:$dirPath")
+            val download = JDownloadInfo(0, name, url, dirPath + File.separator + name, Date(System.currentTimeMillis()).getDateTimeByMillis(false), "",0, 0, JDownloadState.DOWNLOAD_READY)
+            mDataSource.addData(download)
             mView?.addDownload(download)
-            return Uri.parse(dirPath + File.separator + name)
         }
-       return Uri.parse("")
+        return Uri.parse(dirPath + File.separator + name)
     }
 
 
-    override fun startDownload(niceDownloadInfo: NiceDownloadInfo, niceDownloadListener: NiceDownloadListener) {
+    override fun startDownload(jDownloadInfo: JDownloadInfo, jDownloadCallback: JDownloadCallback) {
         //判断下载状态
         when {
             //准备下载->下载
-            niceDownloadInfo.status == NiceDownloadManager.DownloadStatus.DOWNLOAD_START -> {
-                niceDownloadInfo.status = NiceDownloadManager.DownloadStatus.DOWNLOAD_ING
-                mDataSourceNice?.modifyData(niceDownloadInfo)
-                mDownloadsManagerNice?.startNewDownload(niceDownloadInfo, niceDownloadListener, mDataSourceNice!!)
-            }
-            //暂停->继续下载
-            niceDownloadInfo.status == NiceDownloadManager.DownloadStatus.DOWNLOAD_PAUSE -> {
-                niceDownloadInfo.status = NiceDownloadManager.DownloadStatus.DOWNLOAD_ING
-                mDataSourceNice?.modifyData(niceDownloadInfo)
-                mDownloadsManagerNice?.reStartDownload(niceDownloadInfo, niceDownloadListener, mDataSourceNice!!)
+            jDownloadInfo.status == JDownloadState.DOWNLOAD_READY -> {
+                jDownloadInfo.status = JDownloadState.DOWNLOAD_ING
+                mDataSource.modifyData(jDownloadInfo)
+                mDownloadsManager.startNewDownload(jDownloadInfo, jDownloadCallback, mDataSource)
             }
             //下载->暂停
-            niceDownloadInfo.status == NiceDownloadManager.DownloadStatus.DOWNLOAD_ING -> {
-                niceDownloadInfo.status = NiceDownloadManager.DownloadStatus.DOWNLOAD_PAUSE
-                mDataSourceNice?.modifyData(niceDownloadInfo)
-                mDownloadsManagerNice?.pauseDownload(niceDownloadInfo)
+            jDownloadInfo.status == JDownloadState.DOWNLOAD_ING -> {
+                jDownloadInfo.status = JDownloadState.DOWNLOAD_PAUSE
+                mDataSource.modifyData(jDownloadInfo)
+                mDownloadsManager.pauseDownload(jDownloadInfo)
+            }
+            //暂停->继续下载
+            jDownloadInfo.status == JDownloadState.DOWNLOAD_PAUSE -> {
+                jDownloadInfo.status = JDownloadState.DOWNLOAD_ING
+                mDataSource.modifyData(jDownloadInfo)
+                mDownloadsManager.reStartDownload(jDownloadInfo, jDownloadCallback, mDataSource)
             }
         }
-
     }
 
-    override fun addDownloads(niceDownloads: MutableList<NiceDownloadInfo>) {
-        mDataSourceNice?.addDataList(niceDownloads)
-        mView?.addDownloads(niceDownloads)
+    override fun addDownloads(jDownloads: MutableList<JDownloadInfo>) {
+        mDataSource.addDataList(jDownloads)
+        mView?.addDownloads(jDownloads)
     }
-
 
     override fun removeDownload(position: Int) {
-        mDataSourceNice?.removeData(mDataSourceNice?.getAllData()?.get(position)!!)
+        mDataSource.getAllData()?.get(position)?.let{
+            mDataSource.removeData(it)
+        }
         mView?.removeDownload(position)
     }
-
-
 }

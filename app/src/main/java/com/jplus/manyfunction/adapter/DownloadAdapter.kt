@@ -8,17 +8,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jplus.manyfunction.R
 import com.nice.baselibrary.widget.BaseCircleProgress
 import com.nice.baselibrary.widget.NiceTextView
-import com.nice.baselibrary.base.net.download.NiceDownloadInfo
-import com.nice.baselibrary.base.net.download.NiceDownloadListener
+import com.nice.baselibrary.base.net.download.JDownloadInfo
+import com.nice.baselibrary.base.net.download.JDownloadCallback
+import com.nice.baselibrary.base.utils.LogUtils
 
 /**
  * 下载列表适配器
  * @author JPlus
  * @date 2019/1/16.
  */
-class DownloadAdapter(private val mItems:MutableList<NiceDownloadInfo>): RecyclerView.Adapter<DownloadAdapter.VH>() {
+class DownloadAdapter(private val mItems:MutableList<JDownloadInfo>): RecyclerView.Adapter<DownloadAdapter.VH>() {
 
-    private var mItemClickListener: DownloadAdapter.ItemClickListener?=null
+    private var mItemClickListener: ItemClickListener?=null
 
 
      private fun getLayout(viewType: Int): Int {
@@ -26,25 +27,25 @@ class DownloadAdapter(private val mItems:MutableList<NiceDownloadInfo>): Recycle
     }
 
 
-     fun addItem(item: NiceDownloadInfo) {
+     fun addItem(item: JDownloadInfo) {
          mItems.add(0, item)
         notifyItemChanged(0)
     }
 
-     fun deleteItem(item: NiceDownloadInfo) {
+     fun deleteItem(item: JDownloadInfo) {
 
     }
 
-     fun refreshItems(items: MutableList<NiceDownloadInfo>) {
+     fun refreshItems(items: MutableList<JDownloadInfo>) {
 
     }
-     fun getItem(position: Int): NiceDownloadInfo {
+     fun getItem(position: Int): JDownloadInfo {
         return mItems[position]
     }
-     fun setItemClickListener(itemClickListener: DownloadAdapter.ItemClickListener){
+     fun setItemClickListener(itemClickListener: ItemClickListener){
         mItemClickListener = itemClickListener
     }
-     fun addItems(items: MutableList<NiceDownloadInfo>) {
+     fun addItems(items: MutableList<JDownloadInfo>) {
 
     }
 
@@ -53,7 +54,7 @@ class DownloadAdapter(private val mItems:MutableList<NiceDownloadInfo>): Recycle
         notifyItemChanged(position)
     }
 
-     fun deleteItems(items: MutableList<NiceDownloadInfo>) {
+     fun deleteItems(items: MutableList<JDownloadInfo>) {
 
     }
 
@@ -65,6 +66,7 @@ class DownloadAdapter(private val mItems:MutableList<NiceDownloadInfo>): Recycle
         val item = mItems[position]
         val name = holder.getView<NiceTextView>(R.id.btv_download_item_name)
         val url = holder.getView<NiceTextView>(R.id.btv_download_item_url)
+        LogUtils.d("item.read:${item.read}, item.count:${item.count}")
         holder.getView<BaseCircleProgress>(R.id.cpb_download_item).loading(String.format("%.1f", item.read * 100.0 / item.count).toDouble())
         name.text = item.name
         url.text = item.url
@@ -88,7 +90,7 @@ class DownloadAdapter(private val mItems:MutableList<NiceDownloadInfo>): Recycle
          * @param item
          * @param position
          */
-        fun setItemClick(itemView: DownloadAdapter.VH, item: NiceDownloadInfo, position:Int)
+        fun setItemClick(itemView: VH, item: JDownloadInfo, position:Int)
         /**
          * item的长按事件
          * @param itemView
@@ -96,12 +98,12 @@ class DownloadAdapter(private val mItems:MutableList<NiceDownloadInfo>): Recycle
          * @param position
          * @return
          */
-        fun setItemLongClick(itemView: DownloadAdapter.VH, item: NiceDownloadInfo, position:Int):Boolean
+        fun setItemLongClick(itemView: VH, item: JDownloadInfo, position:Int):Boolean
     }
 
 
 
-    class VH(private val mContentView: View): RecyclerView.ViewHolder(mContentView), NiceDownloadListener {
+    class VH(private val mContentView: View): RecyclerView.ViewHolder(mContentView), JDownloadCallback {
 
 
         companion object {
@@ -143,6 +145,9 @@ class DownloadAdapter(private val mItems:MutableList<NiceDownloadInfo>): Recycle
 
         override fun downloadFailed(e: Throwable) {
             mContentView.findViewById<BaseCircleProgress>(R.id.cpb_download_item).failed()
+        }
+        override fun pause(read: Long, count: Long, done: Boolean) {
+
         }
 
         override fun downloadCancel() {

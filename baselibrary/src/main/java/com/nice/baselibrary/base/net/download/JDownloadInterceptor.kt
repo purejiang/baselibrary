@@ -9,16 +9,12 @@ import okhttp3.Response
  * @author JPlus
  * @date 2019/2/22.
  */
-class NiceDownloadInterceptor(niceDownloadListener: NiceDownloadProgressListener) : Interceptor {
-    private var mNiceDownloadListener: NiceDownloadProgressListener? = null
+class JDownloadInterceptor(private val jDownloadListener: JDownloadProgressListener) : Interceptor {
 
-    init {
-        mNiceDownloadListener = niceDownloadListener
-    }
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.proceed(chain.request())
         LogUtils.d("responseHeaders:\n" + original.headers().toString())
-        return original.newBuilder().body(NiceDownloadResponseBody(original.body()!!, mNiceDownloadListener!!)).build()
+        return original.newBuilder().body(JDownloadResponseBody(original.body(), jDownloadListener)).build()
     }
 }

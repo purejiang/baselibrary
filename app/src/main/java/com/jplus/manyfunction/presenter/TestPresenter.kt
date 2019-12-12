@@ -9,10 +9,7 @@ import com.jplus.manyfunction.contract.TestContract
 import com.jplus.manyfunction.net.dto.LoginRequest
 import com.jplus.manyfunction.ui.activity.RefreshActivity
 import com.nice.baselibrary.base.common.BaseLibrary
-import com.nice.baselibrary.base.net.download.NiceDownloadDataSource
-import com.nice.baselibrary.base.net.download.NiceDownloadInfo
-import com.nice.baselibrary.base.net.download.NiceDownloadListener
-import com.nice.baselibrary.base.net.download.NiceDownloadManager
+import com.nice.baselibrary.base.net.download.*
 import com.nice.baselibrary.base.net.upload.OkhttpManager
 import com.nice.baselibrary.base.utils.*
 import com.nice.baselibrary.widget.dialog.NiceAlertDialog
@@ -33,16 +30,23 @@ import java.util.regex.Pattern
  * @author JPlus
  * @date 2019/2/13.
  */
-class TestPresenter : TestContract.Presenter {
+class TestPresenter(view: TestContract.View) : TestContract.Presenter {
 
-    private var mView: TestContract.View? = null
+    private var mView: TestContract.View? = view
     private var mIsCanOpen = true
     private var mPhotoUtils: PhotoUtils? = null
-    private var mDataSourceNice: NiceDownloadDataSource? = null
+    private var mDataSourceJ: JDownloadDataSource? = null
 
+    init {
+        mView?.setPresenter(this)
+        mPhotoUtils = PhotoUtils(true)
+        mView?.getFragActivity()?.let {
+            mDataSourceJ = JDownloadDataSource(it)
+        }
+    }
 
     override fun checkToCameraOrPhoto(view: View, niceDialog: NiceAlertDialog) {
-        mView?.getFragActivity()?.let{
+        mView?.getFragActivity()?.let {
             BaseLibrary.instance.requestPermissions(it, mutableSetOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), object : JPermissionsUtils.PermissionListener {
                 override fun ignoredCallback(permissions: MutableSet<String>) {
 
@@ -82,7 +86,7 @@ class TestPresenter : TestContract.Presenter {
 
                                 }, 1006, 1007)
                     }
-                }else{
+                } else {
                     mView?.getFragActivity()?.let {
                         JPermissionsUtils.showPermissionDialog(it, "权限提示", mutableSetOf(Manifest.permission.CAMERA))
                     }
@@ -90,8 +94,8 @@ class TestPresenter : TestContract.Presenter {
             }
             R.id.ntv_photo_dialog_photo -> {
                 if (mIsCanOpen) {
-                    mView?.getFragActivity()?.let{
-                        mPhotoUtils?.openPhoto(it,true,
+                    mView?.getFragActivity()?.let {
+                        mPhotoUtils?.openPhoto(it, true,
                                 object : PhotoUtils.ChoosePictureCallback {
                                     override fun onSuccess(path: String) {
                                         uploadPic("http://192.168.11.175:8000/upload_file/", path)
@@ -175,19 +179,17 @@ class TestPresenter : TestContract.Presenter {
         }
     }
 
-    override fun downLoadPatch(url: String, dirPath: String, niceDownloadListener: NiceDownloadListener) {
-        var download = mDataSourceNice?.getData(url)
-        if (download == null) {
+    override fun downLoadPatch(url: String, dirPath: String, jDownloadCallback: JDownloadCallback) {
+        val downloadList = mDataSourceJ?.getData(mutableMapOf(Pair("url", url))) ?: mutableListOf()
+        if (downloadList.size == 0) {
             val name = StringUtils.parseUrlName(url)
-            download = NiceDownloadInfo(0, name, url, dirPath + File.separator + name, Date(System.currentTimeMillis()).getDateTimeByMillis(false), 0, 0, NiceDownloadManager.DownloadStatus.DOWNLOAD_START)
-            mDataSourceNice?.addData(download)
+            val download = JDownloadInfo(0, name, url, dirPath + File.separator + name, Date(System.currentTimeMillis()).getDateTimeByMillis(false), "", 0, 0, JDownloadState.DOWNLOAD_READY)
+            mDataSourceJ?.addData(download)
+            //不判断下载状态
+            download.status = JDownloadState.DOWNLOAD_ING
+            mDataSourceJ?.modifyData(download)
+            JDownloadManager().startNewDownload(download, jDownloadCallback, mDataSourceJ!!)
         }
-        //不判断下载状态
-        download.status = NiceDownloadManager.DownloadStatus.DOWNLOAD_ING
-        mDataSourceNice?.modifyData(download)
-        NiceDownloadManager.instance.startNewDownload(download, niceDownloadListener, mDataSourceNice!!)
-
-
     }
 
     override fun getPatchDownLoadUrl() {
@@ -220,31 +222,24 @@ class TestPresenter : TestContract.Presenter {
         val passwordResult = Pattern.matches("[a-zA-Z]\\w{5,17}\$", password)
         return phoneResult && passwordResult
     }
+
     override fun playVideo(url: String) {
         mView?.showVideoView()
     }
 
     override fun share(file: File) {
-        mView?.getFragActivity()?.let{
+        mView?.getFragActivity()?.let {
             ShareUtils.shareFile(it, file, "分享文件")
         }
     }
 
     override fun refreshLoadView() {
-        mView?.getFragActivity()?.let{
-           it.startActivity(Intent(it, RefreshActivity::class.java))
+        mView?.getFragActivity()?.let {
+            it.startActivity(Intent(it, RefreshActivity::class.java))
         }
 
     }
 
-    constructor(view: TestContract.View) {
-        mView = view
-        mView?.setPresenter(this)
-        mPhotoUtils = PhotoUtils(true)
-        mView?.getFragActivity()?.let{
-            mDataSourceNice = NiceDownloadDataSource(it)
-        }
-    }
 
     override fun subscribe() {
 
@@ -261,7 +256,7 @@ class TestPresenter : TestContract.Presenter {
     }
 
     override fun permissionResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        mView?.getFragActivity()?.let{
+        mView?.getFragActivity()?.let {
             BaseLibrary.instance.handleRequestPermissionsResult(it, requestCode, permissions, grantResults)
         }
     }

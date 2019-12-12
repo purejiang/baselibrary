@@ -17,7 +17,7 @@ import com.jplus.manyfunction.ui.activity.DownloadListActivity
 import com.nice.baselibrary.base.adapter.NiceAdapter
 import com.nice.baselibrary.base.common.Constant
 import com.nice.baselibrary.base.listener.NotDoubleOnClickListener
-import com.nice.baselibrary.base.net.download.NiceDownloadListener
+import com.nice.baselibrary.base.net.download.JDownloadCallback
 import com.nice.baselibrary.base.ui.BaseFragment
 import com.nice.baselibrary.base.utils.LogUtils
 import com.nice.baselibrary.base.utils.createDialog
@@ -213,7 +213,11 @@ class TestFragment : BaseFragment(), TestContract.View {
                                 R.id.btn_patch_download -> {
                                     LogUtils.d("btn_patch_download.setOnClickListener")
                                     val dirPath = File(Constant.Path.ROOT_DIR, Constant.Path.PATCH_DEX_DIR).absolutePath
-                                    mPresenter?.downLoadPatch("http://192.168.11.175:8000/file/upload/class2.dex", dirPath, object : NiceDownloadListener {
+                                    mPresenter?.downLoadPatch("http://192.168.11.175:8000/file/upload/class2.dex", dirPath, object : JDownloadCallback {
+                                        override fun pause(read: Long, count: Long, done: Boolean) {
+
+                                        }
+
                                         override fun update(read: Long, count: Long, done: Boolean) {
                                             viewHolder.getView<BaseCircleProgress>(R.id.ncp_download_patch).loading(String.format("%.1f", read * 100.0 / count).toDouble())
                                         }
