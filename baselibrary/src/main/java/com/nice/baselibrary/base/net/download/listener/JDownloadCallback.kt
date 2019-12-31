@@ -1,4 +1,6 @@
-package com.nice.baselibrary.base.net.download
+package com.nice.baselibrary.base.net.download.listener
+
+import okhttp3.ResponseBody
 
 /**
  * 下载监听
@@ -15,15 +17,18 @@ interface JDownloadCallback {
     fun update(read:Long, count:Long, done:Boolean)
     /**
      * 下载暂停
-     * @param read 读取中的大小
-     * @param count 下载文件大小
-     * @param done 是否读取完成
      */
-    fun pause(read:Long, count:Long, done:Boolean)
+    fun pause()
     /**
      * 下载成功
      */
     fun downloadSuccess()
+
+    /**
+     *
+     */
+    fun next(responseBody: ResponseBody)
+
     /**
      * 下载失败
      * @param e

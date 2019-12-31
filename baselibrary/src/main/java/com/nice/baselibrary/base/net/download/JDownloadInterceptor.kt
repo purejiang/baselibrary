@@ -1,5 +1,6 @@
 package com.nice.baselibrary.base.net.download
 
+import com.nice.baselibrary.base.net.download.listener.JDownloadProgressListener
 import com.nice.baselibrary.base.utils.LogUtils
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -11,10 +12,9 @@ import okhttp3.Response
  */
 class JDownloadInterceptor(private val jDownloadListener: JDownloadProgressListener) : Interceptor {
 
-
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.proceed(chain.request())
-        LogUtils.d("responseHeaders:\n" + original.headers().toString())
+        LogUtils.d("download[responseHeaders]:\n${original.headers()}")
         return original.newBuilder().body(JDownloadResponseBody(original.body(), jDownloadListener)).build()
     }
 }

@@ -19,44 +19,47 @@ import com.nice.baselibrary.R
  */
 class CircleLoadingView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var mCountTimer: CountDownTimer? = null
+    private var mOutRect: RectF? = null
+    private var mInRect: RectF? = null
+    private var mOutProgressPaint: Paint? = null
+    private var mInProgressPaint: Paint? = null
+
     private var mStrokeWidth = 0f
     private var mOutAngle = 0f
     private var mInAngle = 0f
     private var mStartAngle = 0f
     private var mWidth: Int = 0
     private var mHeight: Int = 0
-    private var mOutRect: RectF? = null
-    private var mInRect: RectF? = null
     private var mIsShowInProgress = false
+
     private val mMinWidth by lazy {
         150
     }
     private val mMinHeight by lazy {
         mMinWidth
     }
-    private var mOutProgressPaint: Paint? = null
-    private var mInProgressPaint: Paint? = null
-
-    init {
-        initLoadingView(context, attrs)
+    private val mTypeArray by lazy {
+        context.obtainStyledAttributes(attrs, R.styleable.CircleLoadingView)
     }
 
-    @SuppressLint("CustomViewStyleable", "Recycle")
-    private fun initLoadingView(context: Context, attrs: AttributeSet) {
-        val typeArray = context.obtainStyledAttributes(attrs, R.styleable.CircleLoadingView)
-        val inProgressColor = typeArray.getColor(
+    init {
+        initLoadingView(context)
+    }
+
+    private fun initLoadingView(context: Context) {
+
+        val inProgressColor = mTypeArray.getColor(
             R.styleable.CircleLoadingView_in_progress_color,
             ContextCompat.getColor(context, R.color.white)
         )
 
-        val outProgressColor = typeArray.getColor(R.styleable.CircleLoadingView_out_progress_color,
+        val outProgressColor = mTypeArray.getColor(R.styleable.CircleLoadingView_out_progress_color,
                 ContextCompat.getColor(context, R.color.white))
 
-
-        mIsShowInProgress = typeArray.getBoolean(R.styleable.CircleLoadingView_has_in_progress, false)
-        mStrokeWidth = typeArray.getFloat(R.styleable.CircleLoadingView_width, 0f)
-        mOutAngle = typeArray.getFloat(R.styleable.CircleLoadingView_out_angle, 270f)
-        mInAngle = typeArray.getFloat(R.styleable.CircleLoadingView_in_angle, 270f)
+        mIsShowInProgress = mTypeArray.getBoolean(R.styleable.CircleLoadingView_has_in_progress, false)
+        mStrokeWidth = mTypeArray.getFloat(R.styleable.CircleLoadingView_width, 0f)
+        mOutAngle = mTypeArray.getFloat(R.styleable.CircleLoadingView_out_angle, 270f)
+        mInAngle = mTypeArray.getFloat(R.styleable.CircleLoadingView_in_angle, 270f)
         mOutProgressPaint = Paint()
 
         //第一个进度条画笔
@@ -129,7 +132,10 @@ class CircleLoadingView(context: Context, attrs: AttributeSet) : View(context, a
             mWidth / 2f + mWidth / 2f - mStrokeWidth / 2f - mWidth / 4,
             mHeight / 2f + mHeight / 2f - mStrokeWidth / 2f - mHeight / 4
         )
+        start()
+    }
 
+    fun start(){
         //倒计时，第一个参数为总时长，第二个为每次执行onTick的间隔时间
         mCountTimer = object : CountDownTimer(3000, 10) {
             override fun onTick(millisUntilFinished: Long) {
@@ -165,6 +171,8 @@ class CircleLoadingView(context: Context, attrs: AttributeSet) : View(context, a
      * 避免长时间重绘导致内存泄漏
      */
     fun close() {
+        //资源回收
+        mTypeArray.recycle()
         if (mCountTimer != null) {
             mCountTimer?.cancel()
             mCountTimer?.onFinish()

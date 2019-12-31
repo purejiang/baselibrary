@@ -20,11 +20,13 @@ class PhotoUtils constructor(private val mIsCache: Boolean) {
     private var mPhotoCode = 1
     private var mCameraCropCode = 2
     private var mPhotoCropCode = 3
+    private var mPhotoIsCrop = false
+    private var mCameraIsCrop = false
+
     private var mImagePath: String? = null
     private var mCameraCallBack: ChoosePictureCallback? = null
     private var mPhotoCallBack: ChoosePictureCallback? = null
-    private var mCameraIsCrop = false
-    private var mPhotoIsCrop = false
+
 
     /**
      * 打开相机
@@ -41,7 +43,7 @@ class PhotoUtils constructor(private val mIsCache: Boolean) {
         mCameraIsCrop = isCrop
         File(Environment.getExternalStorageDirectory(), "pic").let {
             LogUtils.d(it.toString())
-            if (!FileUtils.createOrExistsDir(it)) {
+            if (!it.createDir()) {
                 activity.showNormalToast("无法生成文件夹,请检查权限")
                 return
             }
@@ -57,7 +59,7 @@ class PhotoUtils constructor(private val mIsCache: Boolean) {
             mImagePath?.let { path ->
                 it.putExtra(MediaStore.EXTRA_OUTPUT, activity.getUriByPath(path))  // 保存拍照的图片到uri而不是系统相册
             }
-            LogUtils.e("openCamera")
+            LogUtils.e("--openCamera--")
             activity.startActivityForResult(it, requestCode)
         }
     }
@@ -117,7 +119,7 @@ class PhotoUtils constructor(private val mIsCache: Boolean) {
             it.putExtra("outputY", 720) // 输出图片的高度
             it.putExtra("return-data", false)  //是否直接以Bitmap的形式缓存到内存中（会导致OOM问题）
 //            it.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(File(Environment.getExternalStorageDirectory(), "pic_"+System.currentTimeMillis()+".jpg")))
-            it.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
+            it.putExtra("outputFormat", toString())
             it.putExtra("noFaceDetection", true)
             activity.startActivityForResult(it, requestCode)
         }
@@ -126,11 +128,11 @@ class PhotoUtils constructor(private val mIsCache: Boolean) {
 
     private fun onRunCallback(callBack: ChoosePictureCallback?, path: String?) {
         if (path != null) {
-            LogUtils.d(" ChoosePictureCallBack.onSuccess")
+            LogUtils.d(" --ChoosePictureCallBack.onSuccess--")
             callBack?.onSuccess(path)
 
         } else {
-            LogUtils.d(" ChoosePictureCallBack.onFail")
+            LogUtils.d(" --ChoosePictureCallBack.onFail--")
             callBack?.onFail()
 
         }

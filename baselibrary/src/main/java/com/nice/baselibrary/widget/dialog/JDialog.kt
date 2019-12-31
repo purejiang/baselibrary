@@ -6,8 +6,8 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.nice.baselibrary.R
 import com.nice.baselibrary.widget.BaseCircleProgress
-import com.nice.baselibrary.widget.NiceTextView
-import com.nice.baselibrary.widget.NiceTitleBar
+import com.nice.baselibrary.widget.JTextView
+import com.nice.baselibrary.widget.JTitleBar
 import com.nice.baselibrary.base.utils.LogUtils
 
 /**
@@ -15,13 +15,14 @@ import com.nice.baselibrary.base.utils.LogUtils
  * @author JPlus
  * @date 2019/3/18.
  */
-class NiceDialog
+class JDialog
 /**
  * 构造函数
  * @param context 上下文
  * @param resInt dialog使用的布局
  * @param resIntArray 控件的id
- */(context: Context, resInt: Int, resIntArray: Array<Int>, styleable: Int) : AlertDialog(context, styleable) {
+ */
+(context: Context, resInt: Int, resIntArray: Array<Int>, styleable: Int) : AlertDialog(context, styleable) {
     companion object {
 
         val DIALOG_NORMAL = "normal"
@@ -30,18 +31,20 @@ class NiceDialog
         val DIALOG_BIG = "big"
 
     }
-    private var mTitle: NiceTitleBar? = null
-    private var mMessage: NiceTextView? = null
-    private var mCancel: NiceTextView? = null
-    private var mConfirm: NiceTextView? = null
+    private var mTitle: JTitleBar? = null
+    private var mMessage: JTextView? = null
+    private var mCancel: JTextView? = null
+    private var mConfirm: JTextView? = null
     private var mProgress: BaseCircleProgress?=null
 
     init {
         val layout: LayoutInflater = LayoutInflater.from(context)
         val view: View = layout.inflate(resInt, null)
         setView(view)
+
         //去掉圆角四周的默认背景色
         window?.setBackgroundDrawableResource(R.drawable.bg_circle_view)
+
         //去掉默认dialog弹出后的半透明背景
         window?.setDimAmount(0f)
 
@@ -57,7 +60,7 @@ class NiceDialog
      * @param text 显示的加载提示文字
      * @return
      */
-    fun setCircleProgress(text:String): NiceDialog {
+    fun setCircleProgress(text:String): JDialog {
         mProgress?.visibility = View.VISIBLE
         setConfirm(text, null)
         return this
@@ -67,7 +70,7 @@ class NiceDialog
      * @param title 显示的标题文字
      * @return
      */
-    fun setTitle(title: String): NiceDialog {
+    fun setTitle(title: String): JDialog {
         mTitle?.visibility = View.VISIBLE
         mTitle?.setMainTitle(title)
         return this
@@ -77,7 +80,7 @@ class NiceDialog
      * @param message 显示的加载提示文字
      * @return
      */
-    fun setMessage(message: String): NiceDialog {
+    fun setMessage(message: String): JDialog {
         mMessage?.visibility = View.VISIBLE
         mMessage?.text = message
         return this
@@ -88,7 +91,7 @@ class NiceDialog
      * @param dialogCancelClickListener 取消按钮的点击事件
      * @return
      */
-    fun setCancel(cancel: String, dialogCancelClickListener: DialogClickListener?): NiceDialog {
+    fun setCancel(cancel: String, dialogCancelClickListener: DialogClickListener?): JDialog {
         mCancel?.visibility = View.VISIBLE
         mCancel?.text = cancel
         mCancel?.setOnClickListener {
@@ -103,7 +106,7 @@ class NiceDialog
      * @param dialogConfirmClickListener 确认按钮的点击事件
      * @return
      */
-    fun setConfirm(confirm: String, dialogConfirmClickListener: DialogClickListener?): NiceDialog {
+    fun setConfirm(confirm: String, dialogConfirmClickListener: DialogClickListener?): JDialog {
         mConfirm?.visibility = View.VISIBLE
         mConfirm?.text = confirm
         mConfirm?.setOnClickListener {
@@ -118,20 +121,20 @@ class NiceDialog
      * @param cancel 是否可以取消
      * @return
      */
-    fun setCanceled(cancel: Boolean): NiceDialog {
+    fun setCanceled(cancel: Boolean): JDialog {
         this.setCancelable(cancel)
         return this
     }
 
     override fun cancel() {
         super.cancel()
-        LogUtils.e("cancel")
+        LogUtils.d("${this.javaClass.simpleName} --cancel()")
         mProgress?.close()
     }
 
     override fun dismiss() {
         super.dismiss()
-        LogUtils.e("dismiss")
+        LogUtils.d("${this.javaClass.simpleName} --dismiss()")
         mProgress?.close()
     }
 

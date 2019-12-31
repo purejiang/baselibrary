@@ -15,7 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.nice.baselibrary.widget.dialog.NiceDialog
+import com.nice.baselibrary.widget.dialog.JDialog
 import java.io.IOException
 
 
@@ -25,22 +25,22 @@ import java.io.IOException
  * @date 2019/2/27.
  */
 object JPermissionsUtils  {
-
     private const val REQUEST_CODE_ASK_PERMISSIONS = 1024
+
+    private var mHasWindow: Boolean = true
     private var mOpenDialog: Boolean = true
     private var mIsCancelable: Boolean = true
-    private var mHasWindow: Boolean = true
-    private var mPerMap: MutableMap<String, HashMap<String, List<String>>>? = null
+
+    private var mPermissions: Array<String>? = null
     private var mPerListener: PermissionListener? = null
+    private var mPerMap: MutableMap<String, HashMap<String, List<String>>>? = null
+
     private val mAllPermissions: Array<String> by lazy {
         arrayOf<String>()
     }
-    private var mPermissions: Array<String>? = null
-
     private val mPer2Listener: MutableMap<MutableSet<String>, PermissionListener> by lazy {
         HashMap<MutableSet<String>, PermissionListener>()
     }
-
     fun init(context: Context, openDialog: Boolean = true, isCancelable: Boolean = true, hasWindow: Boolean = true) {
         mPerMap = getDangerPermission(context)
         mOpenDialog = openDialog
@@ -79,7 +79,7 @@ object JPermissionsUtils  {
                     noPermission.add(it)
                     sb.append(it).append("\n")
                 }
-        LogUtils.d(sb.toString())
+        LogUtils.d("[${this.javaClass.simpleName}] -noPermission:$sb")
         return noPermission
     }
 
@@ -90,7 +90,7 @@ object JPermissionsUtils  {
      */
     private fun checkIgnorePermissions(context: Context, params: MutableSet<String>): MutableSet<String> {
         val ignorePermissions = mutableSetOf<String>()
-        val sb = StringBuilder("checkIgnorePermissions").append("\n")
+        val sb = StringBuilder()
         if (params.isEmpty()) {
             return ignorePermissions
         }
@@ -99,7 +99,7 @@ object JPermissionsUtils  {
                     ignorePermissions.add(it)
                     sb.append(it).append("\n")
                 }
-        LogUtils.d(sb.toString())
+        LogUtils.d("[${this.javaClass.simpleName}] -checkIgnorePermissions:$sb")
         return ignorePermissions
     }
 
@@ -113,7 +113,6 @@ object JPermissionsUtils  {
             perInfoList
                     .filter { it.contains(permission) }
                     .forEach {
-                        LogUtils.e(it)
                         return true
                     }
         }
@@ -142,7 +141,7 @@ object JPermissionsUtils  {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> Settings.canDrawOverlays(context)
             else -> true
         }
-        LogUtils.d("hasWindowPermission:$result")
+        LogUtils.d("[${this.javaClass.simpleName}] -hasWindowPermission:$result")
         return result
     }
 
@@ -153,7 +152,7 @@ object JPermissionsUtils  {
     private fun getDangerPermission(context: Context): MutableMap<String, HashMap<String, List<String>>> {
         //获取json文件中的权限信息
         val input = context.resources.assets.open("permissions.json")
-        val perContent = FileUtils.readFile2String(input, "UTF-8")
+        val perContent = input.readFile2String("UTF-8")
         return Gson().fromJson<HashMap<String, HashMap<String, List<String>>>>(perContent, object : TypeToken<HashMap<String, HashMap<String, List<String>>>>() {}.type)
     }
 
@@ -215,23 +214,23 @@ object JPermissionsUtils  {
      * @return
      */
     fun showPermissionDialog(activity: Activity, title: String, permissions: MutableSet<String>) {
-        LogUtils.d("showPermissionDialog")
+        LogUtils.d("[${this.javaClass.simpleName}] --showPermissionDialog()")
         val sb = StringBuilder("您有已忽略的权限，请到设置中开启:\n\n")
 
         //获取危险权限信息
         for (per in permissions) {
             sb.append("\t\t\t\t").append(getPermissionPrompt(per, mPerMap!!)).append("\n")
         }
-        activity.createDialog(NiceDialog.DIALOG_NORMAL)
+        activity.createDialog(JDialog.DIALOG_NORMAL)
                 .setTitle(title)
                 .setMessage(sb.toString())
                 .setCanceled(mIsCancelable)
-                .setCancel("取消", object : NiceDialog.DialogClickListener {
+                .setCancel("取消", object : JDialog.DialogClickListener {
                     override fun onClick() {
 
                     }
                 })
-                .setConfirm("去设置", object : NiceDialog.DialogClickListener {
+                .setConfirm("去设置", object : JDialog.DialogClickListener {
                     override fun onClick() {
                         startActivityToSetting(activity)
                     }
@@ -245,17 +244,17 @@ object JPermissionsUtils  {
      * @param message
      */
     fun showWindowDialog(activity: Activity, title: String, message: String) {
-        LogUtils.d("showWindowDialog")
-        activity.createDialog(NiceDialog.DIALOG_NORMAL)
+        LogUtils.d("[${this.javaClass.simpleName}] --showWindowDialog()")
+        activity.createDialog(JDialog.DIALOG_NORMAL)
                 .setTitle(title)
                 .setMessage(message)
                 .setCanceled(mIsCancelable)
-                .setCancel("取消", object : NiceDialog.DialogClickListener {
+                .setCancel("取消", object : JDialog.DialogClickListener {
                     override fun onClick() {
 //                        destroy()
                     }
                 })
-                .setConfirm("去设置", object : NiceDialog.DialogClickListener {
+                .setConfirm("去设置", object : JDialog.DialogClickListener {
                     override fun onClick() {
                         startActivityToOverlay(activity)
                     }
@@ -293,12 +292,13 @@ object JPermissionsUtils  {
      * @param grantResult 请求的结果码
      */
     fun handleRequestPermissionsResult(context: Context, requestCode: Int, permissions: Array<out String>, grantResult: IntArray) {
-        LogUtils.d("handleRequestPermissionsResult")
-        val sb = StringBuilder("result:\n")
+        LogUtils.d("[${this.javaClass.simpleName}] --handleRequestPermissionsResult()")
+        val sb = StringBuilder()
         for (i in permissions.indices) {
             sb.append(permissions[i]).append(":").append(grantResult[i]).append("\n")
         }
-        LogUtils.d("sb:$sb")
+        LogUtils.d("[${this.javaClass.simpleName}] -requestPermissions:\n$sb")
+
         var result = true
         val deniedPermission = mutableSetOf<String>()
         val grantedPermission = mutableSetOf<String>()
@@ -318,7 +318,6 @@ object JPermissionsUtils  {
                     }
                 }
                 val noPermissions = getNoPermission(context, grantedPermission)
-                LogUtils.d("noPermissions$noPermissions")
                 //是否请求到全部权限的
                 mPerListener?.deniedCallback(deniedPermission)
                 mPerListener?.ignoredCallback(checkIgnorePermissions(context, deniedPermission))

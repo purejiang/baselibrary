@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.net.download
+package com.nice.baselibrary.base.net.download.retrofit
 
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -27,7 +27,7 @@ class JDownloadRetrofitHelper(okHttpClient: OkHttpClient) {
      * 创建新的service
      * @return
      */
-    fun getService(): JDownloadService{
+    fun getService(): JDownloadService {
         return downloadRetrofit.create(JDownloadService::class.java)
     }
 }

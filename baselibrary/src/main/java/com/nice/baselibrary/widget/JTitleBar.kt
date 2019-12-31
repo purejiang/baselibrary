@@ -16,10 +16,10 @@ import com.nice.baselibrary.R
  * @author JPlus
  * @date 2019/1/21.
  */
-class NiceTitleBar :RelativeLayout,View.OnClickListener {
-    private var mBackNiceTextView: NiceTextView? = null
-    private var mTitleNiceTextView: NiceTextView? = null
-    private var mMenuNiceTextView: NiceTextView? = null
+class JTitleBar :RelativeLayout,View.OnClickListener {
+    private var mBackJTextView: JTextView? = null
+    private var mTitleJTextView: JTextView? = null
+    private var mMenuJTextView: JTextView? = null
     private var mContext:Context?=null
 
     constructor(context: Context):super(context){
@@ -41,9 +41,9 @@ class NiceTitleBar :RelativeLayout,View.OnClickListener {
     private fun initView() {
         val view = LayoutInflater.from(mContext).inflate(R.layout.layout_title_bar_base, this)
         view?.let {
-            mBackNiceTextView = it.findViewById(R.id.tv_back_title_bar)
-            mTitleNiceTextView = it.findViewById(R.id.tv_title_title_bar)
-            mMenuNiceTextView = it.findViewById(R.id.tv_menu_title_bar)
+            mBackJTextView = it.findViewById(R.id.tv_back_title_bar)
+            mTitleJTextView = it.findViewById(R.id.tv_title_title_bar)
+            mMenuJTextView = it.findViewById(R.id.tv_menu_title_bar)
         }
 
     }
@@ -57,15 +57,15 @@ class NiceTitleBar :RelativeLayout,View.OnClickListener {
      * @param color
      */
      fun setTitleTextColor(color: Int) {
-        mTitleNiceTextView?.setTextColor(ContextCompat.getColor(mContext!!, color))
+        mTitleJTextView?.setTextColor(ContextCompat.getColor(mContext!!, color))
     }
     /**
      * 设置左右标题文字颜色
      * @param color
      */
     fun setTextColor(color: Int) {
-        mBackNiceTextView?.setTextColor(ContextCompat.getColor(mContext!!, color))
-        mMenuNiceTextView?.setTextColor(ContextCompat.getColor(mContext!!, color))
+        mBackJTextView?.setTextColor(ContextCompat.getColor(mContext!!, color))
+        mMenuJTextView?.setTextColor(ContextCompat.getColor(mContext!!, color))
     }
 
     /**
@@ -81,8 +81,8 @@ class NiceTitleBar :RelativeLayout,View.OnClickListener {
      * @param title
      */
      fun setMainTitle(title: String) {
-        mTitleNiceTextView?.gravity =Gravity.CENTER
-        mTitleNiceTextView?.text = title
+        mTitleJTextView?.gravity =Gravity.CENTER
+        mTitleJTextView?.text = title
     }
 
     /**
@@ -90,8 +90,8 @@ class NiceTitleBar :RelativeLayout,View.OnClickListener {
      * @param title
      */
      fun setLeftTitle(title: String) {
-        mBackNiceTextView?.gravity =Gravity.CENTER
-        mBackNiceTextView?.text = title
+        mBackJTextView?.gravity =Gravity.CENTER
+        mBackJTextView?.text = title
     }
 
     /**
@@ -99,8 +99,8 @@ class NiceTitleBar :RelativeLayout,View.OnClickListener {
      * @param title
      */
      fun setRightTitle(title: String) {
-        mMenuNiceTextView?.gravity =Gravity.CENTER
-        mMenuNiceTextView?.text = title
+        mMenuJTextView?.gravity =Gravity.CENTER
+        mMenuJTextView?.text = title
     }
 
     /**
@@ -124,14 +124,14 @@ class NiceTitleBar :RelativeLayout,View.OnClickListener {
             left2Drawable?.setBounds(0, 0, iconSize, iconSize)
 
         }
-        mBackNiceTextView?.let {
+        mBackJTextView?.let {
             it.setCompoundDrawables(leftDrawable, null, left2Drawable, null)
-            it.setLeftDrawableListener(object : NiceTextView.LeftDrawableListener {
+            it.setLeftDrawableListener(object : JTextView.LeftDrawableListener {
                 override fun onLeftDrawableListener() {
                     leftListener?.onClickListener()
                 }
             })
-            it.setRightDrawableListener(object : NiceTextView.RightDrawableListener {
+            it.setRightDrawableListener(object : JTextView.RightDrawableListener {
                 override fun onRightDrawableListener() {
                     left2Listener?.onClickListener()
                 }
@@ -162,15 +162,15 @@ class NiceTitleBar :RelativeLayout,View.OnClickListener {
 //            right2Drawable.setBounds(0, 0, right2Drawable.minimumWidth, right2Drawable.minimumHeight)
             right2Drawable?.setBounds(0, 0, iconSize, iconSize)
         }
-        mMenuNiceTextView?.let{
+        mMenuJTextView?.let{
             it.setCompoundDrawables(rightDrawable, null, right2Drawable, null)
 
-            it.setLeftDrawableListener(object : NiceTextView.LeftDrawableListener {
+            it.setLeftDrawableListener(object : JTextView.LeftDrawableListener {
                 override fun onLeftDrawableListener() {
                     rightListener?.onClickListener()
                 }
             })
-            it.setRightDrawableListener(object : NiceTextView.RightDrawableListener {
+            it.setRightDrawableListener(object : JTextView.RightDrawableListener {
                 override fun onRightDrawableListener() {
                     right2Listener?.onClickListener()
                 }

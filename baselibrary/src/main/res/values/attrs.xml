@@ -24,6 +24,10 @@
         <attr name="in_angle" format="float"/>
     </declare-styleable>
 
+    <declare-styleable name="JEditTextView">
+        <attr name="delete_pic" format="reference" />
+    </declare-styleable>
+
     <declare-styleable name="LinesLoadingView">
         <attr name="lines_color" format="color" />
         <attr name="rate" format="float" />

@@ -4,6 +4,7 @@ package com.nice.baselibrary.widget.dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,9 +19,9 @@ import com.nice.baselibrary.base.utils.getScreenWidth
  * @date 2019/4/17.
  */
 
-open class NiceAlertDialog : NiceDialogFragment() {
-    private val mController: NiceDialogController by lazy {
-        NiceDialogController.create()
+open class JAlertDialog : JDialogFragment() {
+    private val mController: JDialogController by lazy {
+        JDialogController.create()
     }
 
 
@@ -61,7 +62,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
         return mController.getCancelable()
     }
 
-    override fun getAnimationRes(): Int {
+    override fun getAnimationRes(): Int? {
         return mController.getAnimationRes()
     }
 
@@ -107,33 +108,28 @@ open class NiceAlertDialog : NiceDialogFragment() {
         return mController.getListOrientation()
     }
 
-    open fun show(): NiceAlertDialog {
-        try {
-            mController.getFragmentTransaction()?.let {
-                it.add(this, mController.getTag())
-                it.commitAllowingStateLoss()
+    open fun show(): JAlertDialog {
+            mController.getFragmentManager()?.let{
+                this.show(it, mController.getTag())
             }
-
-        } catch (e: Exception) {
-
-        }
         return this
     }
 
     interface OnViewClickListener {
-        fun onClick(viewHolder: NiceAdapter.VH, view: View, dialog: NiceAlertDialog)
+        fun onClick(viewHolder: NiceAdapter.VH, view: View, dialog: JAlertDialog)
     }
     interface OnBindViewListener {
         fun onBindView(viewHolder: NiceAdapter.VH)
     }
 
-    class Builder(mFragmentTransaction: FragmentTransaction) {
+    class Builder(mFragmentManager: FragmentManager) {
 
-        private var params: NiceDialogController.Params? = null
+        private val params: JDialogController.Params by lazy {
+            JDialogController.Params()
+        }
 
         init {
-            params = NiceDialogController.Params()
-            params?.mFragmentTransaction = mFragmentTransaction
+            params.mFragmentManager = mFragmentManager
         }
 
         /**
@@ -142,7 +138,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setLayoutRes(layoutRes: Int): Builder {
-            params?.mLayoutRes = layoutRes
+            params.mLayoutRes = layoutRes
             return this
         }
         /**
@@ -151,7 +147,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setGravity(gravity: Int): Builder {
-            params?.mGravity = gravity
+            params.mGravity = gravity
             return this
         }
         /**
@@ -160,7 +156,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setCancelable(isCancelable: Boolean): Builder {
-            params?.mIsCancelable = isCancelable
+            params.mIsCancelable = isCancelable
             return this
         }
         /**
@@ -169,7 +165,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setTag(tag: String): Builder {
-            params?.mTag = tag
+            params.mTag = tag
             return this
         }
         /**
@@ -178,7 +174,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setAnimationRes(animationRes: Int): Builder {
-            params?.mAnimationRes = animationRes
+            params.mAnimationRes = animationRes
             return this
         }
         /**
@@ -188,7 +184,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setScreenWidthPercent(context: Context, percent: Float): Builder {
-            params?.mDialogWidth = (context.getScreenWidth() * percent).toInt()
+            params.mDialogWidth = (context.getScreenWidth() * percent).toInt()
             return this
         }
         /**
@@ -198,7 +194,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setScreenHeightPercent(context: Context, percent: Float): Builder {
-            params?.mDialogHeight = (context.getScreenHeight() * percent).toInt()
+            params.mDialogHeight = (context.getScreenHeight() * percent).toInt()
             return this
         }
         /**
@@ -207,7 +203,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setBackgroundRes(backgroundRes: Int): Builder {
-            params?.mBackgroundRes = backgroundRes
+            params.mBackgroundRes = backgroundRes
             return this
         }
         /**
@@ -216,7 +212,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setDialogHeight(height: Int): Builder {
-            params?.mDialogHeight = height
+            params.mDialogHeight = height
             return this
         }
         /**
@@ -225,7 +221,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setDialogWidth(width: Int): Builder {
-            params?.mDialogWidth = width
+            params.mDialogWidth = width
             return this
         }
         /**
@@ -234,7 +230,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setDimAmount(amount: Float): Builder {
-            params?.mDimAmount = amount
+            params.mDimAmount = amount
             return this
         }
         /**
@@ -243,7 +239,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setKeyListener(onKeyListener: DialogInterface.OnKeyListener): Builder {
-            params?.mOnKeyListener = onKeyListener
+            params.mOnKeyListener = onKeyListener
             return this
         }
         /**
@@ -252,7 +248,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun addClickedId(vararg ids: Int): Builder {
-            params?.mIds = ids
+            params.mIds = ids
             return this
         }
         /**
@@ -261,7 +257,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setViewClickListener(clickListener: OnViewClickListener): Builder {
-            params?.mOnViewClickListener = clickListener
+            params.mOnViewClickListener = clickListener
             return this
         }
         /**
@@ -270,7 +266,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setListItemClickListener(clickListener: NiceAdapter.ItemClickListener): Builder {
-            params?.mListItemClickListener = clickListener
+            params.mListItemClickListener = clickListener
             return this
         }
         /**
@@ -279,7 +275,7 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setBindViewListener(bindViewListener: OnBindViewListener): Builder {
-            params?.mOnBindViewListener = bindViewListener
+            params.mOnBindViewListener = bindViewListener
             return this
         }
         /**
@@ -289,8 +285,8 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setListRes(recyclerId:Int, orientation:Int): Builder {
-            params?.mListRecyclerId =recyclerId
-            params?.mListOrientation = orientation
+            params.mListRecyclerId =recyclerId
+            params.mListOrientation = orientation
             return this
         }
         /**
@@ -299,18 +295,17 @@ open class NiceAlertDialog : NiceDialogFragment() {
          * @return Builder
          */
         fun setAdapter(adapter: NiceAdapter<*>): Builder {
-            params?.mAdapter = adapter
+            params.mAdapter = adapter
             return this
         }
         /**
          * 创建NiceDialog
          * @return NiceAlertDialog
          */
-
-        fun create(): NiceAlertDialog {
-            val dialog = NiceAlertDialog()
+        fun create(): JAlertDialog {
+            val dialog = JAlertDialog()
             //将数据从Builder的Params中传递到Dialog中
-            params?.apply(dialog.mController)
+            params.apply(dialog.mController)
             return dialog
         }
     }

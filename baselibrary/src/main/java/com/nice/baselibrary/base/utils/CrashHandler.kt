@@ -16,20 +16,22 @@ import java.util.*
  */
 
 object CrashHandler : Thread.UncaughtExceptionHandler {
-    private var mDefaultCrashHandler: Thread.UncaughtExceptionHandler? = null
-    private var mDirPath: String? = null
+
     private var mMaxNum = 0
     private var mFileName = "crash"
     private var mSysInfo = "暂无信息"
+
+    private var mDirPath: String? = null
+    private var mDefaultCrashHandler: Thread.UncaughtExceptionHandler? = null
     /**
      * 初始化
      * @param maxNum 最大保存文件数量，默认为1
      * @param dir 存储文件的目录，默认为应用私有文件夹下crash目录
      */
-    fun init(context: Context, maxNum: Int = 1, dir: String = FileUtils.writePrivateDir("crash", context).absolutePath) {
+    fun init(context: Context, maxNum: Int = 1, dir: String = context.writePrivateDir("crash").absolutePath) {
         mDirPath = dir
         mMaxNum = maxNum
-        mFileName = context.getDeviceImei() + "_" + Date(System.currentTimeMillis()).getDateTimeByMillis(false).replace(":", "-")
+        mFileName =  "crash_"+Date(System.currentTimeMillis()).getDateTimeByMillis(false).replace(":", "-")
         mSysInfo = getSysInfo(context)
         mDefaultCrashHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler(this)
@@ -40,7 +42,7 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
      * @return 日志文件列表
      */
     fun getAllFiles(): MutableList<File>? {
-        return FileUtils.getDirFiles(File(mDirPath))
+        return File(mDirPath).getDirFiles()
     }
 
     /**
@@ -49,20 +51,20 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
      */
     fun getNewFile(): File? {
         //筛选出最近最新的一次崩溃日志
-        return FileUtils.getDirFiles(File(mDirPath))?.let {
+        return getAllFiles()?.let {
             if (it.size > 0) it.reversed()[0] else null
         }
     }
 
     private fun writeNewFile(path: String, name: String, body: String) {
-        FileUtils.getDirFiles(File(mDirPath))?.let {
+        getAllFiles()?.let {
             if (it.size >= mMaxNum) {
                 //大于设置的数量则删除最旧文件
-                FileUtils.delFileOrDir(it.sorted()[0])
+                it.sorted()[0].delete()
             }
             //继续存崩溃日志，新线程写入文件
             GlobalScope.launch {
-                FileUtils.writeFile(File(path, name), body, false)
+                File(path, name).writeFile(body, false)
             }
         }
     }
@@ -85,16 +87,18 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
     }
 
     private fun getSysInfo(context: Context): String {
-        val map = hashMapOf<String, String>()
-        map["versionName"] = context.getAppVersionName()
-        map["versionCode"] = "" + context.getAppVersionCode()
-        map["androidApi"] = "" + getOsLevel()
-        map["product"] = "" + getDeviceProduct()
-        map["mobileInfo"] = getDeviceInfo()
-        map["cpuABI"] = getCpuABI()
+        val map = linkedMapOf<String, String>()
+        map["phone_type"] = getDeviceInfo()
+        map["app_version"] = context.getAppVersionName()
+        map["os"] = "android"
+        map["os_level"] = "Android ${getOsLevel()}"
+        map["api_level"] = "Level ${getApiLevel()}"
+        map["device_id"] = context.getDeviceImei()
+        map["product"] = getDeviceProduct()
+        map["cpu"] = getCpuABI()
         val str = StringBuilder("=".repeat(10) + "PhoneInfo" + "=".repeat(10) + "\n")
         for (item in map) {
-            str.append(item.key).append(" = ").append(item.value).append("\n")
+            str.append(item.key).append(" : ").append(item.value).append("\n")
         }
         str.append("=".repeat(10) + "=".repeat(10) + "\n")
         return str.toString()

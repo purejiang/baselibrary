@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.os.CountDownTimer
 import android.util.AttributeSet
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.nice.baselibrary.R
 import com.nice.baselibrary.base.ui.BaseLoadingView
@@ -169,6 +170,7 @@ class BaseCircleProgress(context: Context, attrs: AttributeSet?) : BaseLoadingVi
      * @param isShowNum
      */
     private fun drawByProgress(progress: Double, canvas: Canvas, isShowNum: Boolean) {
+        Log.e("pipa", "draw:$progress")
         when (progress) {
             LOADING_NORMAL -> {
                 //未下载
@@ -258,7 +260,6 @@ class BaseCircleProgress(context: Context, attrs: AttributeSet?) : BaseLoadingVi
      * @param progress
      */
     override fun loading(progress: Double) {
-        LogUtils.d("progress:$progress")
         if (progress <= 100.0) {
             mProgress = progress
         }

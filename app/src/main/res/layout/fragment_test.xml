@@ -12,7 +12,8 @@
             android:id="@+id/btn_test_patch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="热修复" />
+            android:textAllCaps="false"
+            android:text="Patch" />
 
         <include layout="@layout/line_view" />
 
@@ -25,14 +26,15 @@
                 android:id="@+id/btn_upload_pic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="图片上传" />
+                android:textAllCaps="false"
+                android:text="UploadPic" />
 
             <ImageView
                 android:id="@+id/img_head_view"
                 android:layout_width="65dp"
                 android:layout_height="65dp" />
 
-            <com.nice.baselibrary.widget.NiceTextView
+            <com.nice.baselibrary.widget.JTextView
                 android:id="@+id/ntv_url"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -62,7 +64,7 @@
             android:id="@+id/btn_app_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="video"
+            android:text="Download"
             android:textAllCaps="false" />
 
         <include layout="@layout/line_view" />

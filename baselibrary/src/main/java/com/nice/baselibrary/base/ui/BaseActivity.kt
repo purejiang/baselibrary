@@ -14,19 +14,21 @@ import com.nice.baselibrary.base.utils.showNormalToast
  */
 abstract class BaseActivity : AppCompatActivity() {
     companion object {
-        private const val BACK_TIME =2000
+        private const val BACK_TIME = 2000
     }
 
-    private var mBackTime=0L
+    private var mBackTime = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LogUtils.d("Activity:[${this.localClassName}] --onCreate()")
+
         ActivityCollect.add(this)
-        LogUtils.d(this.localClassName + " --onCreate()")
     }
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
+        LogUtils.d("Activity:[${this.localClassName}] --setContentView()")
         onSetContent()
     }
 
@@ -51,76 +53,81 @@ abstract class BaseActivity : AppCompatActivity() {
      */
     abstract fun onBindListener()
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        LogUtils.d("Activity:[${this.localClassName}] --onSaveInstanceState()")
+    }
+
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        LogUtils.d(this.localClassName + " --onConfigurationChanged()")
+        LogUtils.d("Activity:[${this.localClassName}] --onConfigurationChanged()")
     }
 
     override fun onStart() {
         super.onStart()
-        LogUtils.d(this.localClassName + " --onStart()")
+        LogUtils.d("Activity:[${this.localClassName}] --onStart()")
     }
 
     override fun onPause() {
         super.onPause()
-        LogUtils.d(this.localClassName + " --onPause()")
+        LogUtils.d("Activity:[${this.localClassName}] --onPause()")
     }
 
     override fun onStop() {
         super.onStop()
-        LogUtils.d(this.localClassName + " --onStop()")
+        LogUtils.d("Activity:[${this.localClassName}] --onStop()")
     }
 
     override fun onRestart() {
         super.onRestart()
-        LogUtils.d(this.localClassName + " --onRestart()")
+        LogUtils.d("Activity:[${this.localClassName}] --onRestart()")
     }
 
     override fun onResume() {
         super.onResume()
-        LogUtils.d(this.localClassName + " --onResume()")
+        LogUtils.d("Activity:[${this.localClassName}] --onResume()")
     }
 
     override fun onDestroy() {
         super.onDestroy()
         ActivityCollect.remove(this)
-        LogUtils.d(this.localClassName + " --onDestroy()")
+        LogUtils.d("Activity:[${this.localClassName}]--onDestroy()")
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        LogUtils.d(this.localClassName + " --onNewIntent()")
+        LogUtils.d("Activity:[${this.localClassName}] --onNewIntent()")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        LogUtils.d(this.localClassName + " --onActivityResult()")
+        LogUtils.d("Activity:[${this.localClassName}] --onActivityResult()")
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        LogUtils.d(this.localClassName + " --onRequestPermissionsResult()")
+        LogUtils.d("Activity:[${this.localClassName}] --onRequestPermissionsResult()")
     }
 
     /**
      * 是否点击两次退出
-     * @return
+     * @return 返回空则无两次点击退出
      */
-    open fun setBackTwiceMsg():String{
-        return ""
+    open fun setBackTwiceMsg(): String? {
+        return null
     }
 
     override fun onBackPressed() {
-        if(setBackTwiceMsg().isNotEmpty()){
-            if(System.currentTimeMillis()- mBackTime>BACK_TIME){
+        setBackTwiceMsg()?.let {
+            if (System.currentTimeMillis() - mBackTime > BACK_TIME) {
                 mBackTime = System.currentTimeMillis()
-                this.showNormalToast(setBackTwiceMsg())
-            }else{
+                this.showNormalToast(it)
+            } else {
                 ActivityCollect.removeAll()
             }
-        }else {
-            super.onBackPressed()
+            return
         }
+        super.onBackPressed()
     }
 
 }

@@ -6,25 +6,23 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentTransaction
-import android.view.*
 import com.nice.baselibrary.base.utils.LogUtils
 
 /**
  * @author JPlus
  * @date 2019/4/16.
  */
-abstract class NiceDialogFragment : DialogFragment() {
+abstract class JDialogFragment : DialogFragment() {
     companion object {
         private const val AMOUNT_DEFAULT = 0.2f
         private const val DIALOG_TAG = "niceDialog"
-
-
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        LogUtils.d("====onCreateDialog====")
+        LogUtils.d("${this.javaClass.simpleName} --onCreateDialog")
         return super.onCreateDialog(savedInstanceState)
 
     }
@@ -32,34 +30,34 @@ abstract class NiceDialogFragment : DialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(getLayoutRes(), container, false)
         bindView(view)
-        LogUtils.d("====onCreateView====")
+        LogUtils.d("${this.javaClass.simpleName} --onCreateView")
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        LogUtils.d("====onViewCreated====")
+        LogUtils.d("${this.javaClass.simpleName} --onViewCreated")
         super.onViewCreated(view, savedInstanceState)
-        dialog?.run {
-            requestWindowFeature(Window.FEATURE_NO_TITLE) // 去除标题栏
-            setCanceledOnTouchOutside(getCancelable())//点击外部是否可取消
-            getKeyListener()?.let {
-                setOnKeyListener(it)
+        this.dialog?.let {
+            it.requestWindowFeature(Window.FEATURE_NO_TITLE) // 去除标题栏
+            it.setCanceledOnTouchOutside(getCancelable())//点击外部是否可取消
+            getKeyListener()?.let { listener ->
+                it.setOnKeyListener(listener)
             }
-            if (getAnimationRes() > 0) {
-                window?.setWindowAnimations(getAnimationRes())
+            getAnimationRes()?.let { res ->
+                if (res != 0) it.window?.attributes?.windowAnimations = res
             }
         }
 
     }
 
     override fun onStart() {
-        LogUtils.d("====onStart====")
+        LogUtils.d("${this.javaClass.simpleName} --onStart")
         super.onStart()
-        dialog?.window?.run {
+        this.dialog?.window?.run {
             //设置窗体背景
             setBackgroundDrawableResource(getBackgroundDrawableRes())
         }
-        dialog?.window?.attributes = dialog?.window?.attributes?.apply {
+        this.dialog?.window?.attributes = this.dialog?.window?.attributes?.apply {
             width = getDialogWidth()
             height = getDialogHeight()
             dimAmount = getDimAmount()
@@ -69,41 +67,43 @@ abstract class NiceDialogFragment : DialogFragment() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        LogUtils.d("====onConfigurationChanged====")
+        LogUtils.d("${this.javaClass.simpleName} --onConfigurationChanged")
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LogUtils.d("====onCreate====")
+        LogUtils.d("${this.javaClass.simpleName} --onCreate")
+
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        LogUtils.d("====onAttach====")
+        LogUtils.d("${this.javaClass.simpleName} --onAttach")
     }
 
     override fun onPause() {
         super.onPause()
-        LogUtils.d("====onPause====")
+        LogUtils.d("${this.javaClass.simpleName} --onPause")
     }
 
     override fun onResume() {
         super.onResume()
-        LogUtils.d("====onResume====")
+        LogUtils.d("${this.javaClass.simpleName} --onResume")
     }
 
     override fun onStop() {
         super.onStop()
-        LogUtils.d("====onStop====")
+        LogUtils.d("${this.javaClass.simpleName} --onStop")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        LogUtils.d("====onDestroy====")
+        LogUtils.d("${this.javaClass.simpleName} --onDestroy")
     }
 
     override fun onDetach() {
         super.onDetach()
-        LogUtils.d("====onDetach====")
+        LogUtils.d("${this.javaClass.simpleName} --onDetach")
     }
 
     /**
@@ -150,13 +150,15 @@ abstract class NiceDialogFragment : DialogFragment() {
     open fun getBackgroundDrawableRes(): Int {
         return 0
     }
+
     /**
      * 获取dialog的动画
      * @return
      */
-    open fun getAnimationRes(): Int {
-        return 0
+    open fun getAnimationRes(): Int? {
+        return null
     }
+
     /**
      * 获取dialog背景阴影的透明度
      * @return
@@ -172,6 +174,7 @@ abstract class NiceDialogFragment : DialogFragment() {
     open fun getDialogWidth(): Int {
         return WindowManager.LayoutParams.WRAP_CONTENT
     }
+
     /**
      * 获取dialog的高
      * @return
@@ -184,7 +187,7 @@ abstract class NiceDialogFragment : DialogFragment() {
      * 获取dialog的tag
      * @return
      */
-    open fun getDialogTag():String{
+    open fun getDialogTag(): String {
         return DIALOG_TAG
     }
 

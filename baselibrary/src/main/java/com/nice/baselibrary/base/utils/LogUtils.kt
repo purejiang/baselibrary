@@ -31,7 +31,7 @@ object LogUtils {
     fun init(context:Context, debug:Boolean){
         val maxNum =1
         val dir = Constant.Path.ROOT_DIR + File.separator + context.packageName + File.separator + Constant.Path.LOGCAT_INFO_DIR
-        val tag = " --log: "+context.packageName
+        val tag = "${context.packageName} -log"
         init(debug, maxNum, tag, dir)
     }
 
@@ -40,34 +40,24 @@ object LogUtils {
         mTag = tag
         mDirPath = dir
         mMaxNum = maxNum
-        FileUtils.createOrExistsDir(File(mDirPath))
     }
 
     fun e(message:String, tag:String=mTag){
-        if(mDebug) {
-            Log.e(tag, message)
-        }
+        if(mDebug) Log.e(tag, message)
     }
     fun d(message:String, tag:String=mTag){
-        if(mDebug) {
-            Log.d(tag, message)
-        }
+        if(mDebug) Log.d(tag, message)
     }
     fun w(message:String, tag:String=mTag){
-        if(mDebug) {
-            Log.w(tag, message)
-        }
+        if(mDebug) Log.w(tag, message)
     }
     fun v(message:String, tag:String=mTag){
-        if(mDebug) {
-            Log.v(tag, message)
-        }
+        if(mDebug) Log.v(tag, message)
     }
     fun i(message:String, tag:String=mTag){
-        if(mDebug) {
-            Log.i(tag, message)
-        }
+        if(mDebug) Log.i(tag, message)
     }
+
     /**
      * 保存log到文件
      * @param file 默认为根目录下
@@ -86,7 +76,7 @@ object LogUtils {
      * @return 日志文件列表
      */
     fun getAllFiles(): MutableList<File>? {
-        return FileUtils.getDirFiles(File(mDirPath))
+        return File(mDirPath).getDirFiles()
     }
 
     /**
@@ -95,20 +85,20 @@ object LogUtils {
      */
     fun getNewFile(): File? {
         //筛选出最近最新的一次崩溃日志
-        return FileUtils.getDirFiles(File(mDirPath))?.let {
+        return getAllFiles()?.let {
             if (it.size>0) it.reversed()[0] else null
         }
     }
 
     private fun writeNewFile(file: File, input: InputStream) {
-        FileUtils.getDirFiles(File(mDirPath))?.let {
+        getAllFiles()?.let {
             if (it.size >= mMaxNum) {
                 //大于设置的数量则删除最旧文件
-                FileUtils.delFileOrDir(it.sorted()[0])
+                it.sorted()[0].delete()
             }
             //继续存崩溃日志，协程写入文件
             GlobalScope.launch{
-                FileUtils.writeFile(file, input, false)
+                file.writeFile(input, false)
             }
         }
     }

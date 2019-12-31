@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.net.download
+package com.nice.baselibrary.base.net.download.vo
 
 /**
  * 下载实体类

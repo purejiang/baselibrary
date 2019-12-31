@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.net.download
+package com.nice.baselibrary.base.net.download.common
 
 /**
  * 下载状态
@@ -8,28 +8,32 @@ package com.nice.baselibrary.base.net.download
 class JDownloadState {
         companion object {
             /**
+             *未知
+             */
+            const val DOWNLOAD_UNKNOWN = "unknown"
+            /**
              *准备下载
              */
-            val DOWNLOAD_READY = "ready"
+            const val DOWNLOAD_READY = "ready"
             /**
              *下载失败
              */
-            val DOWNLOAD_FAILED = "failed"
+            const val DOWNLOAD_FAILED = "failed"
             /**
              *下载中
              */
-            val DOWNLOAD_ING = "ing"
+            const val DOWNLOAD_ING = "ing"
             /**
              *下载成功
              */
-            val DOWNLOAD_SUCCESS = "success"
+            const val DOWNLOAD_SUCCESS = "success"
             /**
              *下载暂停
              */
-            val DOWNLOAD_PAUSE = "pause"
+            const val DOWNLOAD_PAUSE = "pause"
             /**
              *下载取消
              */
-            val DOWNLOAD_CANCEL = "cancel"
+            const val DOWNLOAD_CANCEL = "cancel"
         }
 }

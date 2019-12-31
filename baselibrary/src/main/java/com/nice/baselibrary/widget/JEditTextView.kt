@@ -17,17 +17,10 @@ import com.nice.baselibrary.R
  * @author JPlus
  * @date 2019/2/19.
  */
-class NiceEditText : AppCompatEditText {
+class JEditTextView(context: Context, attrs: AttributeSet?) : AppCompatEditText(context, attrs) {
     private var mRightPic:Drawable?=null
-    constructor(context: Context) : super(context) {
-        init(context, null)
-    }
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init(context, attrs)
-    }
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    init {
         init(context, attrs)
     }
 
@@ -37,7 +30,7 @@ class NiceEditText : AppCompatEditText {
      * @param attrs
      */
     private fun init(context: Context, attrs: AttributeSet?) {
-        this.background = ContextCompat.getDrawable(context, R.drawable.edit_base_circle_background)
+        val typeArray = context.obtainStyledAttributes(attrs, R.styleable.JEditTextView)
         mRightPic = if(this.inputType == InputType.TYPE_TEXT_VARIATION_PASSWORD) {
             //密码格式则显示眼睛
             ContextCompat.getDrawable(context, R.mipmap.ic_del_grey)
@@ -69,10 +62,10 @@ class NiceEditText : AppCompatEditText {
     private fun setDrawable(rightPic:Drawable?) {
         var drawable:Drawable?=null
         if (length()>0){
-            drawable =rightPic
+//            drawable =rightPic
         }
         //使用setCompoundDrawables()是没有效果的
-        setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
+//        setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
 
         }
 
@@ -84,11 +77,6 @@ class NiceEditText : AppCompatEditText {
                 this.getGlobalVisibleRect(rect)
                 rect.left = rect.right - 100
                 if (rect.contains(eventX, eventY)) {
-//                    if(aaa) {
-//                        setText("")
-//                    }else{
-//
-//                    }
                 }
             }
             return super.onTouchEvent(event)

@@ -1,6 +1,7 @@
 package com.jplus.manyfunction.presenter
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import android.view.View
@@ -9,10 +10,13 @@ import com.jplus.manyfunction.contract.TestContract
 import com.jplus.manyfunction.net.dto.LoginRequest
 import com.jplus.manyfunction.ui.activity.RefreshActivity
 import com.nice.baselibrary.base.common.BaseLibrary
-import com.nice.baselibrary.base.net.download.*
+import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
+import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
+import com.jplus.manyfunction.download.JDownloadManager
+import com.nice.baselibrary.base.net.download.common.JDownloadState
 import com.nice.baselibrary.base.net.upload.OkhttpManager
 import com.nice.baselibrary.base.utils.*
-import com.nice.baselibrary.widget.dialog.NiceAlertDialog
+import com.nice.baselibrary.widget.dialog.JAlertDialog
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -30,23 +34,19 @@ import java.util.regex.Pattern
  * @author JPlus
  * @date 2019/2/13.
  */
-class TestPresenter(view: TestContract.View) : TestContract.Presenter {
+class TestPresenter(private val mView: TestContract.View, private val activity: Activity) : TestContract.Presenter {
 
-    private var mView: TestContract.View? = view
+
     private var mIsCanOpen = true
     private var mPhotoUtils: PhotoUtils? = null
-    private var mDataSourceJ: JDownloadDataSource? = null
 
     init {
-        mView?.setPresenter(this)
+        mView.setPresenter(this)
         mPhotoUtils = PhotoUtils(true)
-        mView?.getFragActivity()?.let {
-            mDataSourceJ = JDownloadDataSource(it)
-        }
     }
 
-    override fun checkToCameraOrPhoto(view: View, niceDialog: NiceAlertDialog) {
-        mView?.getFragActivity()?.let {
+    override fun checkToCameraOrPhoto(view: View, jDialog: JAlertDialog) {
+        activity.let {
             BaseLibrary.instance.requestPermissions(it, mutableSetOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), object : JPermissionsUtils.PermissionListener {
                 override fun ignoredCallback(permissions: MutableSet<String>) {
 
@@ -73,7 +73,7 @@ class TestPresenter(view: TestContract.View) : TestContract.Presenter {
         when (view.id) {
             R.id.ntv_photo_dialog_camera -> {
                 if (mIsCanOpen) {
-                    mView?.getFragActivity()?.let {
+                    mView.getFragActivity()?.let {
                         mPhotoUtils?.openCamera(it, "pic_" + System.currentTimeMillis() + ".jpg", true,
                                 object : PhotoUtils.ChoosePictureCallback {
                                     override fun onSuccess(path: String) {
@@ -87,14 +87,14 @@ class TestPresenter(view: TestContract.View) : TestContract.Presenter {
                                 }, 1006, 1007)
                     }
                 } else {
-                    mView?.getFragActivity()?.let {
+                    mView.getFragActivity()?.let {
                         JPermissionsUtils.showPermissionDialog(it, "权限提示", mutableSetOf(Manifest.permission.CAMERA))
                     }
                 }
             }
             R.id.ntv_photo_dialog_photo -> {
                 if (mIsCanOpen) {
-                    mView?.getFragActivity()?.let {
+                    mView.getFragActivity()?.let {
                         mPhotoUtils?.openPhoto(it, true,
                                 object : PhotoUtils.ChoosePictureCallback {
                                     override fun onSuccess(path: String) {
@@ -110,13 +110,13 @@ class TestPresenter(view: TestContract.View) : TestContract.Presenter {
 
                 }
             }
-            R.id.ntv_photo_dialog_cancel -> niceDialog.dismiss()
+            R.id.ntv_photo_dialog_cancel -> jDialog.dismiss()
         }
 
     }
 
     override fun startPhotoTest() {
-        mView?.showUploadPic()
+        mView.showUploadPic()
     }
 
 
@@ -129,7 +129,7 @@ class TestPresenter(view: TestContract.View) : TestContract.Presenter {
         OkhttpManager.uploadFile(url, body, object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 LogUtils.d("请求失败：message:" + t.printStackTrace())
-                mView?.uploadResultView(null)
+                mView.uploadResultView(null)
             }
 
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -137,11 +137,11 @@ class TestPresenter(view: TestContract.View) : TestContract.Presenter {
                     val str = response.body()?.string()
                     LogUtils.d("上传成功：$str")
                     val fileUrl = JSONObject(str).getJSONObject("result_data").get("file_url").toString()
-                    mView?.uploadResultView(fileUrl)
+                    mView.uploadResultView(fileUrl)
 
                 } else {
                     LogUtils.d("上传失败：code:" + response.code())
-                    mView?.uploadResultView(null)
+                    mView.uploadResultView(null)
                 }
             }
         })
@@ -149,7 +149,7 @@ class TestPresenter(view: TestContract.View) : TestContract.Presenter {
 
 
     override fun startPermissionTest() {
-        mView?.getFragActivity()?.let {
+        mView.getFragActivity()?.let {
             JPermissionsUtils.requestPermissions(it, null, object : JPermissionsUtils.PermissionListener {
                 override fun ignoredCallback(permissions: MutableSet<String>) {
                     if (permissions.size > 0) {
@@ -173,27 +173,22 @@ class TestPresenter(view: TestContract.View) : TestContract.Presenter {
     }
 
     override fun getAppInfos() {
-        mView?.getFragActivity()?.let {
+        mView.getFragActivity()?.let {
             val appInfos = it.getAppsInfo(false)
-            mView?.showAppInfo(appInfos)
+            mView.showAppInfo(appInfos)
         }
     }
 
     override fun downLoadPatch(url: String, dirPath: String, jDownloadCallback: JDownloadCallback) {
-        val downloadList = mDataSourceJ?.getData(mutableMapOf(Pair("url", url))) ?: mutableListOf()
-        if (downloadList.size == 0) {
-            val name = StringUtils.parseUrlName(url)
-            val download = JDownloadInfo(0, name, url, dirPath + File.separator + name, Date(System.currentTimeMillis()).getDateTimeByMillis(false), "", 0, 0, JDownloadState.DOWNLOAD_READY)
-            mDataSourceJ?.addData(download)
-            //不判断下载状态
-            download.status = JDownloadState.DOWNLOAD_ING
-            mDataSourceJ?.modifyData(download)
-            JDownloadManager().startNewDownload(download, jDownloadCallback, mDataSourceJ!!)
-        }
+        val name = StringUtils.parseUrlName(url)
+        val download = JDownloadInfo(0, name, url, dirPath + File.separator + name, Date(System.currentTimeMillis()).getDateTimeByMillis(false), "", 0, 0, JDownloadState.DOWNLOAD_UNKNOWN)
+        //不判断下载状态
+        JDownloadManager.addNewDownload(download, jDownloadCallback, null, false)
+
     }
 
     override fun getPatchDownLoadUrl() {
-        mView?.showPatchDownLoad()
+        mView.showPatchDownLoad()
     }
 
     override fun login(phone: String, password: String) {
@@ -203,7 +198,7 @@ class TestPresenter(view: TestContract.View) : TestContract.Presenter {
         OkhttpManager.doPost("http://192.168.11.175:8000/login/", LoginRequest(phone, password), object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 LogUtils.d("请求失败：message:" + t.printStackTrace())
-                mView?.uploadResultView(null)
+                mView.uploadResultView(null)
             }
 
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -224,17 +219,17 @@ class TestPresenter(view: TestContract.View) : TestContract.Presenter {
     }
 
     override fun playVideo(url: String) {
-        mView?.showVideoView()
+        mView.showVideoView()
     }
 
     override fun share(file: File) {
-        mView?.getFragActivity()?.let {
+        mView.getFragActivity()?.let {
             ShareUtils.shareFile(it, file, "分享文件")
         }
     }
 
     override fun refreshLoadView() {
-        mView?.getFragActivity()?.let {
+        mView.getFragActivity()?.let {
             it.startActivity(Intent(it, RefreshActivity::class.java))
         }
 
@@ -250,13 +245,13 @@ class TestPresenter(view: TestContract.View) : TestContract.Presenter {
     }
 
     override fun activityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        mView?.getFragActivity()?.let {
+        mView.getFragActivity()?.let {
             mPhotoUtils?.onActivityResult(it, requestCode, resultCode, data)
         }
     }
 
     override fun permissionResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        mView?.getFragActivity()?.let {
+        mView.getFragActivity()?.let {
             BaseLibrary.instance.handleRequestPermissionsResult(it, requestCode, permissions, grantResults)
         }
     }

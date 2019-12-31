@@ -9,7 +9,7 @@ import androidx.appcompat.widget.AppCompatImageView
  * @author JPlus
  * @date 2019/5/8.
  */
-class NiceImageView(context: Context?, attrs: AttributeSet?) : AppCompatImageView(context, attrs) {
+class JImageView(context: Context?, attrs: AttributeSet?) : AppCompatImageView(context, attrs) {
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)

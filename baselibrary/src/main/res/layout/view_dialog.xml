@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:padding="@dimen/small_space">
 
-    <com.nice.baselibrary.widget.NiceTitleBar
+    <com.nice.baselibrary.widget.JTitleBar
         android:id="@+id/bt_dialog_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/big_space"
@@ -24,7 +24,7 @@
         />
 
 
-    <com.nice.baselibrary.widget.NiceTextView
+    <com.nice.baselibrary.widget.JTextView
         android:id="@+id/btv_dialog_message"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -40,7 +40,7 @@
         android:orientation="horizontal"
         android:visibility="visible"
         >
-        <com.nice.baselibrary.widget.NiceTextView
+        <com.nice.baselibrary.widget.JTextView
             android:id="@+id/btv_dialog_cancel"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -48,7 +48,7 @@
             android:gravity="center"
             android:layout_weight="1"
             android:text="cancel"/>
-        <com.nice.baselibrary.widget.NiceTextView
+        <com.nice.baselibrary.widget.JTextView
             android:id="@+id/btv_dialog_confirm"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

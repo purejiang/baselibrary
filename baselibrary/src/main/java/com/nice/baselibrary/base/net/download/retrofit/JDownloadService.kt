@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.net.download
+package com.nice.baselibrary.base.net.download.retrofit
 
 import io.reactivex.Observable
 import okhttp3.ResponseBody
@@ -15,5 +15,5 @@ import retrofit2.http.Url
 interface JDownloadService {
     @Streaming//大文件注解，防止出现OOM
     @GET
-    fun downloadFile(@Header("RANGE") start:String, @Url fileUrl: String): Observable<ResponseBody>    //start断点续传的初始下载位置 fileUrl就是文件的下载地址，通过参数形式传进来
+    fun download(@Header("RANGE") start:String, @Url fileUrl: String): Observable<ResponseBody>    //start断点续传的初始下载位置 fileUrl就是文件的下载地址，通过参数形式传进来
 }

@@ -9,13 +9,13 @@ import com.jplus.manyfunction.R
 import com.jplus.manyfunction.presenter.TestPresenter
 import com.jplus.manyfunction.ui.fragment.TestFragment
 import com.nice.baselibrary.base.ui.BaseActivity
-import com.nice.baselibrary.widget.dialog.NiceAlertDialog
+import com.nice.baselibrary.widget.dialog.JAlertDialog
 
 
 class MainActivity : BaseActivity() {
 
 
-    private var niceDialog: NiceAlertDialog? = null
+    private var jDialog: JAlertDialog? = null
 
     private var mFragment: TestFragment? = null
 
@@ -100,7 +100,7 @@ class MainActivity : BaseActivity() {
 
     override fun onBindListener() {
         mFragment?.let{
-            TestPresenter(it)
+            TestPresenter(it, this)
         }
     }
 

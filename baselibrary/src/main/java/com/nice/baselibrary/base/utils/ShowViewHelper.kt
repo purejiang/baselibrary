@@ -5,8 +5,8 @@ import android.view.Gravity
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import com.nice.baselibrary.R
-import com.nice.baselibrary.widget.dialog.NiceAlertDialog
-import com.nice.baselibrary.widget.dialog.NiceDialog
+import com.nice.baselibrary.widget.dialog.JAlertDialog
+import com.nice.baselibrary.widget.dialog.JDialog
 
 /**
  * 弹出控件方法集
@@ -20,16 +20,16 @@ import com.nice.baselibrary.widget.dialog.NiceDialog
  * @param resIntArray
  * @param styleable
  */
-fun Context.createDialog(resInt: Int, resIntArray: Array<Int>, styleable: Int): NiceDialog {
-    return NiceDialog(this, resInt, resIntArray, styleable)
+fun Context.createDialog(resInt: Int, resIntArray: Array<Int>, styleable: Int): JDialog {
+    return JDialog(this, resInt, resIntArray, styleable)
 }
 
 /**
  * 返回一个弹出框Builder
  * @return Builder
  */
-fun FragmentActivity.getAlertDialog(): NiceAlertDialog.Builder {
-    return NiceAlertDialog.Builder(this.supportFragmentManager.beginTransaction())
+fun FragmentActivity.getAlertDialog(): JAlertDialog.Builder {
+    return JAlertDialog.Builder(this.supportFragmentManager)
 }
 
 /**
@@ -38,7 +38,7 @@ fun FragmentActivity.getAlertDialog(): NiceAlertDialog.Builder {
  * @param resIntArray
  * @param size dialog大小样式
  */
-fun Context.createDialog(resInt: Int, resIntArray: Array<Int>, size: String): NiceDialog {
+fun Context.createDialog(resInt: Int, resIntArray: Array<Int>, size: String): JDialog {
     var styleable = R.style.NormalNiceDialog
     when (size) {
         "normal" -> styleable = R.style.NormalNiceDialog
@@ -46,14 +46,14 @@ fun Context.createDialog(resInt: Int, resIntArray: Array<Int>, size: String): Ni
         "big" -> styleable = R.style.BigNiceDialog
         "smaller" -> styleable = R.style.SmallerNiceDialog
     }
-    return NiceDialog(this, resInt, resIntArray, styleable)
+    return JDialog(this, resInt, resIntArray, styleable)
 }
 
 /**
  * 创建一个弹出框，使用默认布局
  * @param size
  */
-fun Context.createDialog(size: String): NiceDialog {
+fun Context.createDialog(size: String): JDialog {
     val resInt = R.layout.view_dialog
     val resIntArray = arrayOf(R.id.bt_dialog_title, R.id.btv_dialog_message, R.id.btv_dialog_cancel, R.id.btv_dialog_confirm, R.id.cp_loading)
     return createDialog(resInt, resIntArray, size)

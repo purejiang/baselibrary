@@ -114,10 +114,10 @@ abstract class NiceAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
         }
 
         holder.itemView.setOnClickListener {
-            mItemClickListener?.setItemClick(holder, position)
+            mItemClickListener?.setItemClick(holder, position - 1)
         }
         holder.itemView.setOnLongClickListener {
-            mItemClickListener?.setItemLongClick(holder, position) ?: true
+            mItemClickListener?.setItemLongClick(holder, position - 1) ?: true
         }
 
     }

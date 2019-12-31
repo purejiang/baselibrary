@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         app:progressColor="@color/violet"
         app:isNoProgress="true"/>
-    <com.nice.baselibrary.widget.NiceTextView
+    <com.nice.baselibrary.widget.JTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="loading..."/>

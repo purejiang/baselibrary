@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.nice.baselibrary.widget.NiceTextView
+        <com.nice.baselibrary.widget.JTextView
             android:id="@+id/ntv_photo_dialog_camera"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
             android:gravity="center"
  />
 
-        <com.nice.baselibrary.widget.NiceTextView
+        <com.nice.baselibrary.widget.JTextView
             android:id="@+id/ntv_photo_dialog_photo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
             android:gravity="center"
            />
 
-        <com.nice.baselibrary.widget.NiceTextView
+        <com.nice.baselibrary.widget.JTextView
             android:id="@+id/ntv_photo_dialog_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

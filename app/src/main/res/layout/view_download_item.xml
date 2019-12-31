@@ -1,38 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:gravity="center_vertical"
-    android:paddingLeft="@dimen/normal_space"
-    android:paddingRight="@dimen/normal_space">
-    <com.nice.baselibrary.widget.NiceTextView
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+  >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/normal_space"
+        android:paddingRight="@dimen/normal_space"
+        android:layout_height="?attr/actionBarSize">
+
+    <com.nice.baselibrary.widget.JTextView
         android:id="@+id/btv_download_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="名称"
-        android:maxLines="1"
-        android:maxEms="16"
         android:layout_weight="1"
-        />
-    <com.nice.baselibrary.widget.NiceTextView
-        android:id="@+id/btv_download_item_url"
+        android:ellipsize="end"
+        android:maxEms="10"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="名称" />
+
+    <com.nice.baselibrary.widget.JTextView
+        android:id="@+id/btv_download_item_ratio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
+        android:gravity="end"
+        android:textSize="@dimen/size_smallest"
         android:layout_weight="1"
-        android:text="url"
-
-        android:background="@drawable/edit_base_circle_background"
         android:maxLines="1"
-        android:maxEms="16"
-        android:layout_marginStart="@dimen/normal_space"
-        />
+        android:text="进度" />
+
     <com.nice.baselibrary.widget.BaseCircleProgress
-        android:id="@+id/cpb_download_item"
+        android:id="@+id/bcp_download_item"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/normal_space"
+        android:layout_marginEnd="@dimen/normal_space"
+       />
+    <CheckBox
+        android:id="@+id/cb_download_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/smaller_space"
+        android:layout_marginEnd="@dimen/smaller_space"
+        android:visibility="gone"
         />
-
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_width"
+        android:background="@color/gainsboro"/>
 </LinearLayout>

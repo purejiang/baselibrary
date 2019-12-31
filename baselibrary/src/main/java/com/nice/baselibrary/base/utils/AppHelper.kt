@@ -1,10 +1,13 @@
 package com.nice.baselibrary.base.utils
 
 import android.annotation.SuppressLint
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.provider.Settings
@@ -63,8 +66,8 @@ fun Context.getAppsInfo(isSystem: Boolean): MutableList<AppInfo> {
                     versionName = packageInfo.versionName,
                     icon = info.loadIcon(this.packageManager),
                     inTime = sp.format(date),
-                    signMd5 = MD5Utils.encryptionMD5(this.packageManager.getPackageInfo(
-                            packageInfo.packageName, PackageManager.GET_SIGNATURES).signatures[0].toByteArray()),
+                    signMd5 = (this.packageManager.getPackageInfo(
+                            packageInfo.packageName, PackageManager.GET_SIGNATURES).signatures[0].toByteArray()).encryptionMD5(),
                     permission = getPermissions(packageInfo.packageName, this.packageManager)
             )
             appsInfo.add(appInfo)
@@ -185,7 +188,7 @@ fun getApiLevel(): Int {
  * @return
  */
 fun getOsLevel(): String {
-    return "Android " + Build.VERSION.RELEASE
+    return Build.VERSION.RELEASE
 }
 
 /**
@@ -229,4 +232,42 @@ fun Context.getScreenWidth(): Int {
  */
 fun Context.getScreenHeight(): Int {
     return this.resources.displayMetrics.heightPixels
+}
+
+/**
+*  根据包名跳转到第三方应用，不重复启动
+ *  @param packageName
+*  @return
+*/
+@SuppressLint("WrongConstant")
+fun Context.startAppByPackageName(packageName: String){
+    var mainAct =""
+    val pkgMag = this.packageManager
+    val intent = Intent(Intent.ACTION_MAIN)
+    intent.addCategory(Intent.CATEGORY_LAUNCHER)
+    intent.flags = Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED or Intent.FLAG_ACTIVITY_NEW_TASK
+    val list = pkgMag.queryIntentActivities(intent, PackageManager.GET_ACTIVITIES)
+    for (i in list.indices) {
+        val info = list[i]
+        if (info.activityInfo.packageName == packageName) {
+            mainAct = info.activityInfo.name
+            break
+        }
+    }
+    if (mainAct.isEmpty()) {
+        return
+    }
+    intent.component = ComponentName(packageName, mainAct)
+    this.startActivity(intent)
+}
+/**
+ *  卸载第三方应用
+ *  @return
+ */
+fun Context.deleteAppByPackageName(packageName: String){
+    Intent(Intent.ACTION_DELETE).let{
+        it.data = Uri.parse("package:$packageName")
+        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(it)
+    }
 }

@@ -10,7 +10,7 @@ import androidx.appcompat.widget.AppCompatTextView
  * @author JPlus
  * @date 2019/1/23.
  */
-class NiceTextView : AppCompatTextView {
+class JTextView : AppCompatTextView {
 
     companion object {
         private const val DRAWABLE_LEFT = 0

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/big_space">
+
+        <!--android.support.design:hintAnimationEnabled | 是否显示hint的动画,默认true-->
+        <!--android.support.design:hintEnabled | 是否使用hint属性,默认true-->
+        <!--android.support.design:hintTextAppearance | 设置hint的文字样式(指运行动画效果之后的样式)-->
+        <!--android.support.design:counterEnabled | 是否显示计数器-->
+        <!--android.support.design:counterMaxLength | 设置计数器的最大值-->
+        <!--android.support.design:counterOverflowTextAppearance | 输入字符大于我们限定个数字符时的样式-->
+        <!--app:theme 设置浮动标签的颜色主题-->
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_edit_input_url"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/stock_input_url"
+            android:gravity="start"
+            android:inputType="textMultiLine"
+            android:padding="@dimen/normal_space" />
+
+
+        <Button
+            android:id="@+id/btn_input_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/normal_space"
+            android:background="@drawable/bg_circle_btn"
+            android:text="下载"
+            android:textColor="@color/white" />
+
+
+</LinearLayout>

@@ -2,11 +2,11 @@ package com.jplus.manyfunction.contract
 
 import android.app.Activity
 import android.content.Intent
-import com.nice.baselibrary.base.net.download.JDownloadCallback
+import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
 import com.nice.baselibrary.base.rx.NiceBaseView
 import com.nice.baselibrary.base.rx.NicePresenter
 import com.nice.baselibrary.base.vo.AppInfo
-import com.nice.baselibrary.widget.dialog.NiceAlertDialog
+import com.nice.baselibrary.widget.dialog.JAlertDialog
 import java.io.File
 
 /**
@@ -85,7 +85,7 @@ interface TestContract {
         /**
          * 图片上传功能
          */
-        fun checkToCameraOrPhoto(view: android.view.View, niceDialog: NiceAlertDialog)
+        fun checkToCameraOrPhoto(view: android.view.View, jDialog: JAlertDialog)
         /**
          * 获取appInfos
          */

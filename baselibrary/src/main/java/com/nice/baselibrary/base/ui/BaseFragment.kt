@@ -35,17 +35,17 @@ abstract class BaseFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        LogUtils.d(this.javaClass.simpleName + " --onAttach()")
+        LogUtils.d("Fragment:[${this.javaClass.simpleName}] --onAttach()")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LogUtils.d(this.javaClass.simpleName + " --onCreate()")
+        LogUtils.d("Fragment:[${this.javaClass.simpleName}] --onCreate()")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(getLayoutId(), container, false)
-        LogUtils.d(this.javaClass.simpleName + " --onCreateView()")
+        LogUtils.d("Fragment:[${this.javaClass.simpleName}] --onCreateView()")
         getInitView(view, savedInstanceState)
 
         return view
@@ -53,42 +53,42 @@ abstract class BaseFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         bindListener()//如果写在onCreateView中会因为view还没有返回导致不能直接使用布局id，或者可以直接用findViewById则不会出现此问题
-        LogUtils.d(this.javaClass.simpleName + " --onActivityCreated()")
+        LogUtils.d("Fragment:[${this.javaClass.simpleName}] --onActivityCreated()")
     }
 
     override fun onStart() {
         super.onStart()
-        LogUtils.d(this.javaClass.simpleName + " --onStart()")
+        LogUtils.d("Fragment:[${this.javaClass.simpleName}] --onStart()")
     }
 
     override fun onResume() {
         super.onResume()
-        LogUtils.d(this.javaClass.simpleName + " --onResume()")
+        LogUtils.d("Fragment:[${this.javaClass.simpleName}] --onResume()")
     }
 
     override fun onPause() {
         super.onPause()
-        LogUtils.d(this.javaClass.simpleName + " --onPause()")
+        LogUtils.d("Fragment:[${this.javaClass.simpleName}] --onPause()")
     }
 
 
     override fun onStop() {
         super.onStop()
-        LogUtils.d(this.javaClass.simpleName + " --onStop()")
+        LogUtils.d("Fragment:[${this.javaClass.simpleName}] --onStop()")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        LogUtils.d(this.javaClass.simpleName + " --onDestroyView()")
+        LogUtils.d("Fragment:[${this.javaClass.simpleName}] --onDestroyView()")
     }
     override fun onDestroy() {
         super.onDestroy()
-        LogUtils.d(this.javaClass.simpleName + " --onDestroy()")
+        LogUtils.d("Fragment:[${this.javaClass.simpleName}] --onDestroy()")
     }
 
     override fun onDetach() {
         super.onDetach()
-        LogUtils.d(this.javaClass.simpleName + " --onDetach()")
+        LogUtils.d("Fragment:[${this.javaClass.simpleName}] --onDetach()")
     }
 
 

@@ -4,12 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.nice.baselibrary.widget.NiceTitleBar
+    <com.nice.baselibrary.widget.JTitleBar
         android:id="@+id/bt_download"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-    </com.nice.baselibrary.widget.NiceTitleBar>
+    </com.nice.baselibrary.widget.JTitleBar>
+
     <FrameLayout
         android:id="@+id/fly_download"
         android:layout_width="match_parent"
