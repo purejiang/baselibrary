@@ -5,16 +5,20 @@ import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import android.view.View
+import com.google.gson.Gson
 import com.jplus.manyfunction.R
+import com.jplus.manyfunction.common.Constant
 import com.jplus.manyfunction.contract.TestContract
-import com.jplus.manyfunction.net.dto.LoginRequest
 import com.jplus.manyfunction.ui.activity.RefreshActivity
 import com.nice.baselibrary.base.common.BaseLibrary
 import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
 import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
 import com.jplus.manyfunction.download.JDownloadManager
-import com.nice.baselibrary.base.net.download.common.JDownloadState
-import com.nice.baselibrary.base.net.upload.OkhttpManager
+import com.jplus.manyfunction.net.HostList
+import com.jplus.manyfunction.net.dto.*
+
+import com.nice.baselibrary.base.net.download.JDownloadState
+import com.nice.baselibrary.base.net.OkhttpManager
 import com.nice.baselibrary.base.utils.*
 import com.nice.baselibrary.widget.dialog.JAlertDialog
 import okhttp3.MediaType
@@ -77,7 +81,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
                         mPhotoUtils?.openCamera(it, "pic_" + System.currentTimeMillis() + ".jpg", true,
                                 object : PhotoUtils.ChoosePictureCallback {
                                     override fun onSuccess(path: String) {
-                                        uploadPic("http://192.168.11.175:8000/upload_file/", path)
+                                        uploadPic("http://192.168.11.184:8000/upload_file/", path)
                                     }
 
                                     override fun onFail() {
@@ -115,6 +119,73 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
 
     }
 
+    override fun init(activity:Activity) {
+        val initRequest = InitializeRequest(activity.packageName,
+                activity.getAppVersionName(),
+                getOsLevel(),
+                activity.getDeviceImei(),
+                "Android",
+                "",
+                "",
+                "${activity.getScreenWidth()}*${activity.getScreenHeight()}",
+                getDeviceProduct(),
+                "",
+                "",
+                "")
+        OkhttpManager.doPost(HostList.BASE_HOST[0].url + Constant.init, initRequest, HostList.BASE_HOST[0].timeOut, object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                LogUtils.d("连接服务器失败：message:" + t.printStackTrace())
+
+            }
+
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    val str = response.body()?.string()
+                    LogUtils.d("请求成功：$str")
+                    val res = Gson().fromJson<BaseResponse>(str, BaseResponse::class.java)
+                    if(res.result_code==BaseResponse.SUCCESS){
+                        val re = Gson().fromJson<InitializeResponse>(res.result_data, InitializeResponse::class.java)
+                        if(re.is_debug){
+                           //是否debug模式
+                            requestShow("token", re.show_num)
+                        }
+                    }
+                } else {
+                    LogUtils.d("连接服务器失败：code:" + response.code())
+                }
+            }
+        })
+
+    }
+
+    private fun requestShow(token:String, num:Long){
+        val request  = InitShowRequest(token, num)
+        OkhttpManager.doPost(HostList.BASE_HOST[0].url + Constant.init_show, request, HostList.BASE_HOST[0].timeOut, object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                LogUtils.d("连接服务器失败：message:" + t.printStackTrace())
+
+            }
+
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    val str = response.body()?.string()
+                    LogUtils.d("请求成功：$str")
+                    val res = Gson().fromJson<BaseResponse>(str, BaseResponse::class.java)
+                    if(res.result_code==BaseResponse.SUCCESS){
+                        val re = Gson().fromJson<InitShowResponse>(res.result_data, InitShowResponse::class.java)
+                        if(re.is_h5) {
+                            mView.showInitH5View(re)
+                        }else{
+                            mView.showInitView(re)
+                        }
+                    }
+                } else {
+                    LogUtils.d("连接服务器失败：code:" + response.code())
+                }
+            }
+        })
+    }
+
     override fun startPhotoTest() {
         mView.showUploadPic()
     }
@@ -126,9 +197,9 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
         val request = RequestBody.create(MediaType.parse("multipart/form-data"), File(path))
         val body = MultipartBody.Part.createFormData("pic", File(path).name, request)
 
-        OkhttpManager.uploadFile(url, body, object : Callback<ResponseBody> {
+        OkhttpManager.uploadFile(url, body, 15L, object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                LogUtils.d("请求失败：message:" + t.printStackTrace())
+                LogUtils.d("连接服务器失败：message:" + t.printStackTrace())
                 mView.uploadResultView(null)
             }
 
@@ -140,7 +211,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
                     mView.uploadResultView(fileUrl)
 
                 } else {
-                    LogUtils.d("上传失败：code:" + response.code())
+                    LogUtils.d("连接服务器失败：code:" + response.code())
                     mView.uploadResultView(null)
                 }
             }
@@ -195,9 +266,9 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
         if (!checkAccountPwd(phone, password)) {
             return
         }
-        OkhttpManager.doPost("http://192.168.11.175:8000/login/", LoginRequest(phone, password), object : Callback<ResponseBody> {
+        OkhttpManager.doPost("http://192.168.11.175:8000/login/", LoginRequest(phone, password),15, object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                LogUtils.d("请求失败：message:" + t.printStackTrace())
+                LogUtils.d("连接服务器失败：message:" + t.printStackTrace())
                 mView.uploadResultView(null)
             }
 
@@ -206,7 +277,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
                     val str = response.body()?.string()
                     LogUtils.d("登录成功：$str")
                 } else {
-                    LogUtils.d("登录失败：code:" + response.code())
+                    LogUtils.d("连接服务器失败：code:" + response.code())
                 }
             }
         })

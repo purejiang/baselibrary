@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.net.download.common
+package com.nice.baselibrary.base.net.download
 
 /**
  * 下载状态

@@ -15,7 +15,7 @@ import com.jplus.manyfunction.adapter.DownloadAdapter
 import com.jplus.manyfunction.contract.DownloadListContract
 import com.nice.baselibrary.base.adapter.NiceAdapter
 import com.nice.baselibrary.base.common.Constant
-import com.nice.baselibrary.base.net.download.common.JDownloadState
+import com.nice.baselibrary.base.net.download.JDownloadState
 import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
 import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
 import com.nice.baselibrary.base.ui.BaseFragment

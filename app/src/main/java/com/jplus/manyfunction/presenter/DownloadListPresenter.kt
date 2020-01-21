@@ -5,7 +5,7 @@ import android.util.Log
 import com.jplus.manyfunction.contract.DownloadListContract
 import com.jplus.manyfunction.download.JDownloadDataSource
 import com.jplus.manyfunction.download.JDownloadManager
-import com.nice.baselibrary.base.net.download.common.JDownloadState
+import com.nice.baselibrary.base.net.download.JDownloadState
 import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
 import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
 import com.nice.baselibrary.base.utils.LogUtils

@@ -12,7 +12,7 @@ import java.util.*
 
 /**
  * 获取当前时间
- * @
+ * @param isIncludeBlank 是否包含空格
  * @return yyyy-MM-dd_HH:mm:ss格式的时间
  */
 @SuppressLint("SimpleDateFormat")
@@ -23,7 +23,11 @@ fun Date.getDateTimeByMillis(isIncludeBlank: Boolean): String {
         SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(this)
     }
 }
-
+/**
+ * 获取开始时间
+ * @param isMonth true 返回本月最初时间，false则返回本年最初时间
+ * @return yyyy-MM-dd HH:mm:ss格式的时间
+ */
 @SuppressLint("SimpleDateFormat")
 fun Date.getStartDateTime(isMonth: Boolean): String {
     return if (isMonth) {
@@ -33,7 +37,11 @@ fun Date.getStartDateTime(isMonth: Boolean): String {
     }
 
 }
-
+/**
+ * 获取最后时间
+ * @param isMonth true 返回本月最后时间，false则返回本年最后时间
+ * @return yyyy-MM-dd HH:mm:ss格式的时间
+ */
 @SuppressLint("SimpleDateFormat")
 fun Date.getEndDateTime(isMonth: Boolean): String {
     return if (isMonth) {

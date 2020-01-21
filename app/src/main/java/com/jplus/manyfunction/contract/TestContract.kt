@@ -2,6 +2,7 @@ package com.jplus.manyfunction.contract
 
 import android.app.Activity
 import android.content.Intent
+import com.jplus.manyfunction.net.dto.InitShowResponse
 import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
 import com.nice.baselibrary.base.rx.NiceBaseView
 import com.nice.baselibrary.base.rx.NicePresenter
@@ -18,6 +19,14 @@ interface TestContract {
         /**
          */
         fun getFragActivity():Activity?
+        /**
+         * 初始化原生弹窗
+         */
+        fun showInitView(response:InitShowResponse)
+        /**
+         * 初始化h5弹窗
+         */
+        fun showInitH5View(response:InitShowResponse)
         /**
          * 未通过权限界面
          */
@@ -64,6 +73,10 @@ interface TestContract {
     }
 
     interface Presenter: NicePresenter {
+        /**
+         * 初始化
+         */
+        fun init(activity:Activity)
         /**
          * 请求权限测试
          */

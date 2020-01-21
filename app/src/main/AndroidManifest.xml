@@ -33,6 +33,9 @@
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <!--传感器-->
     <uses-permission android:name="android.permission.BODY_SENSORS" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"

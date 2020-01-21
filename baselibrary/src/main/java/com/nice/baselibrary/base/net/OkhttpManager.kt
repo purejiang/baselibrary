@@ -1,4 +1,5 @@
-package com.nice.baselibrary.base.net.upload
+package com.nice.baselibrary.base.net
+
 
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -14,30 +15,30 @@ import java.util.concurrent.TimeUnit
 class OkhttpManager {
 
     companion object{
-        fun uploadFile(url:String, photo: MultipartBody.Part, callBack:Callback<ResponseBody>){
+        fun uploadFile(url:String, photo: MultipartBody.Part, timeOut:Long, callBack:Callback<ResponseBody>){
             val okhttp = OkHttpClient.Builder()
                     .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                     .retryOnConnectionFailure(true)
-                    .connectTimeout(3, TimeUnit.SECONDS)
+                    .connectTimeout(timeOut, TimeUnit.SECONDS)
                     .build()
 
-            UploadReHelper(okhttp, "http://www.google.com")
+            JRetrofitHelper("http://www.google.com", okhttp)
                     .getService()
-                    ?.uploadFiles(photo, url)
-                    ?.enqueue(callBack)
-
+                    .upload(photo, url)
+                    .enqueue(callBack)
         }
-        fun doPost(url:String, any: Any, callBack:Callback<ResponseBody>){
-            val okhttp = OkHttpClient.Builder()
+
+        fun doPost(url:String, any: Any, timeOut:Long, callBack:Callback<ResponseBody>){
+            val okhttpClient = OkHttpClient.Builder()
                     .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                     .retryOnConnectionFailure(true)
-                    .connectTimeout(3, TimeUnit.SECONDS)
+                    .connectTimeout(timeOut, TimeUnit.SECONDS)
                     .build()
 
-            HttpReHelper(okhttp, "http://www.google.com")
+            JRetrofitHelper( "http://www.google.com", okhttpClient)
                     .getService()
-                    ?.sendHttp(any, url)
-                    ?.enqueue(callBack)
+                    .post(any, url)
+                    .enqueue(callBack)
         }
     }
 }

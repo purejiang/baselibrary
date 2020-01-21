@@ -1,7 +1,6 @@
-package com.nice.baselibrary.base.net.download.retrofit
+package com.nice.baselibrary.base.net.download
 
 import android.annotation.SuppressLint
-import com.nice.baselibrary.base.net.download.common.JDownloadState
 import com.nice.baselibrary.base.net.download.listener.JDownloadProgressListener
 import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
 import io.reactivex.Observable

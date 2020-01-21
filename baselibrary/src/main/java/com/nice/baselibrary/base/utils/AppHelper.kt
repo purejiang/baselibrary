@@ -104,7 +104,6 @@ fun Context.getPackageName(): String {
  * 获取设备标识
  * @return
  */
-
 @SuppressLint("MissingPermission")
 fun Context.getDeviceImei(): String {
     val tm = this.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager

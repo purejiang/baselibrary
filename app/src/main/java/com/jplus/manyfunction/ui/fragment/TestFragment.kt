@@ -14,6 +14,7 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.google.android.material.textfield.TextInputEditText
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.contract.TestContract
+import com.jplus.manyfunction.net.dto.InitShowResponse
 import com.jplus.manyfunction.ui.activity.DownloadListActivity
 import com.nice.baselibrary.base.adapter.NiceAdapter
 import com.nice.baselibrary.base.common.Constant
@@ -36,6 +37,7 @@ import java.io.File
  */
 class TestFragment : BaseFragment(), TestContract.View {
 
+
     private var mPresenter: TestContract.Presenter? = null
 
     override fun getInitView(view: View?, bundle: Bundle?) {
@@ -49,6 +51,9 @@ class TestFragment : BaseFragment(), TestContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mPresenter?.startPermissionTest()
+        this.activity?.let{
+            mPresenter?.init(it)
+        }
     }
 
     override fun bindListener() {
@@ -96,16 +101,78 @@ class TestFragment : BaseFragment(), TestContract.View {
         })
     }
 
+    override fun showInitView(response: InitShowResponse) {
+        this.activity?.createDialog(JDialog.DIALOG_NORMAL)
+                ?.setTitle(response.title)
+                ?.setMessage(response.message)
+                ?.setCanceled(response.is_cancel)
+                ?.let{
+                    if(response.cancel_msg.isNotEmpty()){
+                        it.setCancel(response.cancel_msg, object : JDialog.DialogClickListener {
+                            override fun onClick() {
+
+                            }
+                        })
+                    }
+                    if(response.confirm_msg.isNotEmpty()){
+                        it.setConfirm(response.confirm_msg, object : JDialog.DialogClickListener {
+                            override fun onClick() {
+
+                            }
+                        })
+                    }
+                    it.show()
+                }
+    }
+
+    override fun showInitH5View(response: InitShowResponse) {
+        this.activity?.let {
+            it.getAlertDialog()
+                    .setBackgroundRes(R.drawable.bg_normal_dialog_view)
+                    .setLayoutRes(R.layout.view_photo_dialog)
+                    .setCancelable(true)
+                    .setTag("newDialog")
+                    .setScreenHeightPercent(it, 0.2f)
+                    .setScreenWidthPercent(it, 1.0f)
+                    .setAnimationRes(R.style.NiceDialogAnim)
+                    .setGravity(Gravity.BOTTOM)
+                    .setDimAmount(0.0f)
+                    .setBindViewListener(object : JAlertDialog.OnBindViewListener {
+                        override fun onBindView(viewHolder: NiceAdapter.VH) {
+                            viewHolder.getView<JTextView>(R.id.ntv_photo_dialog_camera).text = "相机"
+                            viewHolder.getView<JTextView>(R.id.ntv_photo_dialog_photo).text = "照片"
+                            viewHolder.getView<JTextView>(R.id.ntv_photo_dialog_cancel).text = "取消"
+
+                        }
+                    })
+                    .addClickedId(R.id.ntv_photo_dialog_camera, R.id.ntv_photo_dialog_photo, R.id.ntv_photo_dialog_cancel)
+                    .setViewClickListener(object : JAlertDialog.OnViewClickListener {
+                        override fun onClick(viewHolder: NiceAdapter.VH, view: View, dialog: JAlertDialog) {
+                            dialog.dismiss()
+                            mPresenter?.checkToCameraOrPhoto(view, dialog)
+                        }
+                    })
+
+                    .setKeyListener(DialogInterface.OnKeyListener { _, _, _ -> false })
+                    .create()
+                    .show()
+        }
+    }
 
     override fun showNotPermissionView(content: String) {
-        this.activity?.createDialog(JDialog.DIALOG_NORMAL)?.setTitle("关于权限")?.setMessage(content)?.setCanceled(true)?.setCancel("取消", object : JDialog.DialogClickListener {
-            override fun onClick() {
-            }
-        })?.setConfirm("去设置", object : JDialog.DialogClickListener {
-            override fun onClick() {
+        this.activity?.createDialog(JDialog.DIALOG_NORMAL)
+                ?.setTitle("关于权限")
+                ?.setMessage(content)
+                ?.setCanceled(true)
+                ?.setCancel("取消", object : JDialog.DialogClickListener {
+                    override fun onClick() {
+
+                    }
+                })?.setConfirm("去设置", object : JDialog.DialogClickListener {
+                    override fun onClick() {
 //                        JPermissionsUtils.instance.startActivityToSetting(context as Activity)
-            }
-        })?.show()
+                    }
+                })?.show()
 
     }
 
@@ -175,7 +242,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                         override fun convert(holder: VH, item: AppInfo, position: Int, payloads: MutableList<Any>?) {
                             holder.getView<TextView>(R.id.tv_app_name).text = item.appName
                             holder.getView<TextView>(R.id.tv_package_name).text = item.packageName
-                            holder.getView<ImageButton>(R.id.imb_del_app).setOnClickListener{
+                            holder.getView<ImageButton>(R.id.imb_del_app).setOnClickListener {
                                 item.packageName?.let { s ->
                                     this@TestFragment.activity?.deleteAppByPackageName(s)
                                 }

@@ -1,11 +1,11 @@
 package com.jplus.manyfunction.download
 
 
+import com.nice.baselibrary.base.net.JRetrofitHelper
 import com.nice.baselibrary.base.net.download.JDownloadInterceptor
-import com.nice.baselibrary.base.net.download.common.JDownloadState
+import com.nice.baselibrary.base.net.download.JDownloadState
 import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
-import com.nice.baselibrary.base.net.download.retrofit.JDownloadRetrofitHelper
-import com.nice.baselibrary.base.net.download.retrofit.JDownloadSubscriber
+import com.nice.baselibrary.base.net.download.JDownloadSubscriber
 import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
 import com.nice.baselibrary.base.utils.LogUtils
 import com.nice.baselibrary.base.utils.writeRandomAccessFile
@@ -195,7 +195,7 @@ object JDownloadManager {
                     .build()
 
             //新建下载服务，添加对应关系
-            JDownloadRetrofitHelper(okHttpClient).getService()
+            JRetrofitHelper("https://www.google.com", okHttpClient).getService()
                     .download("bytes=${it.read}-", it.url)
                     .subscribeOn(Schedulers.io())
                     ?.doOnNext { res: ResponseBody ->

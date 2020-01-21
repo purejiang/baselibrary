@@ -7,13 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
-import com.jplus.manyfunction.MyApplication
 import com.jplus.manyfunction.R
-import com.jplus.manyfunction.download.JDownloadManager
-import com.nice.baselibrary.base.net.download.common.JDownloadState
-import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
 import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
-import com.nice.baselibrary.base.utils.LogUtils
 import com.nice.baselibrary.base.utils.StringUtils
 import com.nice.baselibrary.widget.BaseCircleProgress
 import com.nice.baselibrary.widget.JTextView

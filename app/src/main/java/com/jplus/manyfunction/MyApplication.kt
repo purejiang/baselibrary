@@ -1,6 +1,5 @@
 package com.jplus.manyfunction
 
-import com.jplus.manyfunction.download.JDownloadManager
 import com.nice.baselibrary.base.common.BaseLibrary
 import com.nice.baselibrary.base.ui.BaseApplication
 import com.squareup.leakcanary.LeakCanary
@@ -16,7 +15,6 @@ class MyApplication : BaseApplication() {
         super.onCreate()
         LeakCanary.install(this)
         BaseLibrary.instance.initUtils(this, true)
-
     }
 
 }
