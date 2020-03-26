@@ -40,6 +40,19 @@ class OkhttpManager {
                     .post(any, url)
                     .enqueue(callBack)
         }
+
+        fun doPost(url:String, map: MutableMap<String, String>, timeOut:Long, callBack:Callback<ResponseBody>){
+            val okhttpClient = OkHttpClient.Builder()
+                    .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                    .retryOnConnectionFailure(true)
+                    .connectTimeout(timeOut, TimeUnit.SECONDS)
+                    .build()
+
+            JRetrofitHelper( "http://www.google.com", okhttpClient)
+                    .getService()
+                    .post(map, url)
+                    .enqueue(callBack)
+        }
         fun doGet(url:String, timeOut:Long, callBack:Callback<ResponseBody>){
             val okhttpClient = OkHttpClient.Builder()
                     .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))

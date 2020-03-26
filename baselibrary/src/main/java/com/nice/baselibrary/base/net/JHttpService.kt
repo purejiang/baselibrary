@@ -16,8 +16,11 @@ interface JHttpService {
     @GET
     fun download(@Header("RANGE") start:String, @Url fileUrl: String): Observable<ResponseBody>    //start断点续传的初始下载位置 fileUrl就是文件的下载地址，通过参数形式传进来
 
-    @POST
+    @POST //json提交
     fun post(@Body any:Any, @Url url:String): Call<ResponseBody> //post请求
+
+    @POST  //表单提交
+    fun post(@FieldMap map:MutableMap<String, String>,@Url url:StringBuffer)
 
     @GET
     fun get(@Url url:String): Call<ResponseBody> //get请求
