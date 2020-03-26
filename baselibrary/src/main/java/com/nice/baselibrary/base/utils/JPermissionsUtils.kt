@@ -265,7 +265,7 @@ object JPermissionsUtils  {
      * 跳转到应用的设置界面
      * @param activity
      */
-    private fun startActivityToSetting(activity: Activity) {
+     fun startActivityToSetting(activity: Activity) {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         intent.data = Uri.parse("package:" + activity.packageName)
         activity.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
@@ -275,7 +275,7 @@ object JPermissionsUtils  {
      * 跳转到应用的弹出框设置界面
      * @param activity
      */
-    private fun startActivityToOverlay(activity: Activity) {
+     fun startActivityToOverlay(activity: Activity) {
          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
             intent.data = Uri.parse("package:" + activity.packageName)

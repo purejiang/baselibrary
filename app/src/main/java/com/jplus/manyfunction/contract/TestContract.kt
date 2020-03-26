@@ -2,6 +2,7 @@ package com.jplus.manyfunction.contract
 
 import android.app.Activity
 import android.content.Intent
+import com.jplus.jvideoview.data.Video
 import com.jplus.manyfunction.net.dto.InitShowResponse
 import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
 import com.nice.baselibrary.base.rx.NiceBaseView
@@ -61,7 +62,11 @@ interface TestContract {
         /**
          * 视频播放界面
          */
-        fun showVideoView()
+        fun showVideoView(urlList: MutableList<Video>)
+        /**
+         * 下载列表
+         */
+        fun downloadList()
         /**
          * 分享功能
          */
@@ -70,6 +75,10 @@ interface TestContract {
          * 上拉加载下拉刷新功能
          */
         fun showRefreshLoadView()
+        /**
+         * WebView
+         */
+        fun showWebView(url: String)
     }
 
     interface Presenter: NicePresenter {
@@ -122,17 +131,24 @@ interface TestContract {
         /**
          * 视频流播放
          */
-        fun playVideo(url: String)
+        fun playVideo(urlList: MutableList<Video>)
 
         /**
          * 分享功能
          */
         fun share(file: File)
-
+        /**
+         * 下载列表
+         */
+        fun download()
         /**
          * 上拉加载下拉刷新
          */
         fun refreshLoadView()
+        /**
+         * WebView
+         */
+        fun showWebView(url: String)
 
     }
 }

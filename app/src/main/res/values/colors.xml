@@ -10,4 +10,10 @@
     <!--<color name="colorWhite_light">#f7fcff</color>-->
     <!--<color name="colorWhite_dark">#e4e4e4</color>-->
     <!--<color name="colorTransparent">#00ffffff</color>-->
+    <color name="video_line_progress_start">#9661FA</color>
+    <color name="video_line_progress_center">#7B3AF7</color>
+    <color name="video_line_progress_end">#6617FA</color>
+    <color name="video_seek_bar_progress">#D1B8FF</color>
+    <color name="video_seek_bar_progress_second">#DFFFFFFF</color>
+    <color name="video_seek_bar_progress_thumb">#7E57CA</color>
 </resources>

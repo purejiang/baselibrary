@@ -10,6 +10,8 @@ import android.view.*
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentTransaction
 import com.nice.baselibrary.base.utils.LogUtils
+import com.nice.baselibrary.base.utils.getScreenHeight
+import com.nice.baselibrary.base.utils.getScreenWidth
 
 /**
  * @author JPlus
@@ -26,6 +28,7 @@ abstract class JDialogFragment : DialogFragment() {
         return super.onCreateDialog(savedInstanceState)
 
     }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(getLayoutRes(), container, false)
@@ -50,6 +53,7 @@ abstract class JDialogFragment : DialogFragment() {
 
     }
 
+
     override fun onStart() {
         LogUtils.d("${this.javaClass.simpleName} --onStart")
         super.onStart()
@@ -57,17 +61,49 @@ abstract class JDialogFragment : DialogFragment() {
             //设置窗体背景
             setBackgroundDrawableResource(getBackgroundDrawableRes())
         }
-        this.dialog?.window?.attributes = this.dialog?.window?.attributes?.apply {
-            width = getDialogWidth()
-            height = getDialogHeight()
-            dimAmount = getDimAmount()
-            gravity = getGravity()
+        this.dialog?.window?.attributes = this.dialog?.window?.attributes?.let {params->
+            params.apply {
+                width = if (getDialogWidthPercent() == -1f) {
+                    getDialogWidth()
+                } else {
+                    val width = context?.getScreenWidth()?:0
+                    (getDialogWidthPercent() * width).toInt()
+                }
+                height = if (getDialogHeightPercent() == -1f) {
+                    getDialogHeight()
+                } else {
+                    val height = context?.getScreenHeight()?:0
+                    (getDialogHeightPercent() * height).toInt()
+                }
+                dimAmount = getDimAmount()
+                gravity = getGravity()
+            }
         }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         LogUtils.d("${this.javaClass.simpleName} --onConfigurationChanged")
+        //旋转屏幕后根据宽高比重新修改宽高
+        this.dialog?.window?.attributes = this.dialog?.window?.attributes?.let {params->
+            params.apply {
+                width = if (getDialogWidthPercent() == -1f) {
+                    getDialogWidth()
+                } else {
+                    val width = context?.getScreenWidth()?:0
+                    (getDialogWidthPercent() * width).toInt()
+                }
+                height = if (getDialogHeightPercent() == -1f) {
+                    getDialogHeight()
+                } else {
+                    val height = context?.getScreenHeight()?:0
+                    (getDialogHeightPercent() * height).toInt()
+                }
+                dimAmount = getDimAmount()
+                gravity = getGravity()
+            }
+        }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -173,6 +209,22 @@ abstract class JDialogFragment : DialogFragment() {
      */
     open fun getDialogWidth(): Int {
         return WindowManager.LayoutParams.WRAP_CONTENT
+    }
+
+    /**
+     * 获取dialog的高比例
+     * @return
+     */
+    open fun getDialogHeightPercent(): Float {
+        return 0f
+    }
+
+    /**
+     * 获取dialog的宽比例
+     * @return
+     */
+    open fun getDialogWidthPercent(): Float {
+        return 0f
     }
 
     /**

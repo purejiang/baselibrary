@@ -32,6 +32,11 @@ class MainActivity : BaseActivity() {
 //        LeniuPaySdk.getInstance(this).showPayDialog("元宝", null, "50")
     }
 
+    override fun onContentChanged() {
+        super.onContentChanged()
+        Log.d("pipa", "onContentChanged")
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         Log.d("pipa", "onSaveInstanceState")

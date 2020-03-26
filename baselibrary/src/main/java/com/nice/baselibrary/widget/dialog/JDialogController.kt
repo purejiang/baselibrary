@@ -26,9 +26,11 @@ class JDialogController private constructor() {
     private var mGravity = 0
     private var mLayoutRes = 0
     private var mOrientation = 0
-    private var mDialogWidth = 0
+    var mDialogHeight = 0
+    var mDialogWidth = 0
+    private var mDialogWidthPercent = -1f
+    private var mDialogHeightPercent = -1f
 
-    private var mDialogHeight = 0
     private var mDimAmount = 0.0f
     private var mBackgroundRes = 0
     private var mListRecyclerId = 0
@@ -74,6 +76,13 @@ class JDialogController private constructor() {
         return mAnimationRes
     }
 
+    fun getDialogHeightPercent(): Float {
+        return mDialogHeightPercent
+    }
+
+    fun getDialogWidthPercent(): Float {
+        return mDialogWidthPercent
+    }
     fun getDialogHeight(): Int {
         return mDialogHeight
     }
@@ -109,6 +118,9 @@ class JDialogController private constructor() {
         return mOnBindViewListener
     }
 
+    fun getOnDismissListener():DialogInterface.OnDismissListener?{
+        return  mOnDismissListener
+    }
     /*
         列表Dialog用到的方法
     */
@@ -136,9 +148,10 @@ class JDialogController private constructor() {
     class Params {
         var mLayoutRes = R.layout.view_dialog
         var mBackgroundRes = R.drawable.bg_circle_view
-        var mDialogWidth = WindowManager.LayoutParams.WRAP_CONTENT
-        var mDialogHeight = WindowManager.LayoutParams.WRAP_CONTENT
-
+        var mDialogWidthPercent = -1f
+        var mDialogHeightPercent = -1f
+        var mDialogHeight = 0
+        var mDialogWidth = 0
         var mTag = ""
         var mDimAmount = 0.0f
         var mOrientation = 0
@@ -162,8 +175,8 @@ class JDialogController private constructor() {
         fun apply(jDialogController: JDialogController?) {
             jDialogController?.mFragmentManager = mFragmentManager
             jDialogController?.mLayoutRes = mLayoutRes
-            jDialogController?.mDialogHeight = mDialogHeight
-            jDialogController?.mDialogWidth = mDialogWidth
+            jDialogController?.mDialogHeightPercent = mDialogHeightPercent
+            jDialogController?.mDialogWidthPercent = mDialogWidthPercent
             jDialogController?.mDimAmount = mDimAmount
             jDialogController?.mGravity = mGravity
             jDialogController?.mTag = mTag

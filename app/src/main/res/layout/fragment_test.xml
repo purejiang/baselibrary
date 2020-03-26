@@ -5,7 +5,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <Button
@@ -61,7 +61,7 @@
         <include layout="@layout/line_view" />
 
         <Button
-            android:id="@+id/btn_app_video"
+            android:id="@+id/btn_app_download"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Download"
@@ -83,5 +83,19 @@
             android:layout_height="wrap_content"
             android:text="Refresh"
             android:textAllCaps="false" />
+        <Button
+            android:id="@+id/btn_app_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Video"
+            android:textAllCaps="false"
+            />
+        <Button
+            android:id="@+id/btn_app_web"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Web"
+            android:textAllCaps="false"
+            />
     </LinearLayout>
 </ScrollView>

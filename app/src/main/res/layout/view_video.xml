@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.jplus.jvideoview.jvideo.JVideoView
+        android:id="@+id/jv_video_main"
+        app:lines_drawer="@drawable/video_line_progress"
+        app:loading_color="@color/video_line_progress_start"
+        app:num_progress_mode="both_sides"
+        app:play_btn_color="@color/video_line_progress_start"
+        app:progress_drawer="@drawable/video_seek_bar"
+        app:thumb_color="@color/video_line_progress_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>

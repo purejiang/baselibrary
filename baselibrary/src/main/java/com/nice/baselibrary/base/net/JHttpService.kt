@@ -19,6 +19,9 @@ interface JHttpService {
     @POST
     fun post(@Body any:Any, @Url url:String): Call<ResponseBody> //post请求
 
+    @GET
+    fun get(@Url url:String): Call<ResponseBody> //get请求
+
     @Multipart
     @POST
     fun upload(@Part photo: MultipartBody.Part, @Url url:String):Call<ResponseBody> // 文件上传

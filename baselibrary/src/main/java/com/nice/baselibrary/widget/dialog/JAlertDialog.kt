@@ -40,13 +40,19 @@ open class JAlertDialog : JDialogFragment() {
         //adapter不为空则设置adapter和recyclerView
         getListAdapter()?.let{
             it.setItemClickListener(getListItemClickListener())
-            val layoutManager = LinearLayoutManager(view.context, getListOreation(), false)
+            val layoutManager = LinearLayoutManager(view.context, getListOrientation(), false)
             view.findViewById<RecyclerView>(getListRecyclerId()).run{
                 setLayoutManager(layoutManager)
                 adapter = getListAdapter()
             }
             it.notifyDataSetChanged()
         }
+
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        getDismissListener()?.onDismiss(dialog)
 
     }
 
@@ -73,7 +79,13 @@ open class JAlertDialog : JDialogFragment() {
     override fun getDialogWidth(): Int {
         return mController.getDialogWidth()
     }
+    override fun getDialogHeightPercent(): Float {
+        return mController.getDialogHeightPercent()
+    }
 
+    override fun getDialogWidthPercent(): Float {
+        return mController.getDialogWidthPercent()
+    }
     override fun getDimAmount(): Float {
         return mController.getDimAmount()
     }
@@ -84,10 +96,12 @@ open class JAlertDialog : JDialogFragment() {
     override fun getBackgroundDrawableRes():Int{
         return mController.getBackgroundRes()
     }
-
-
     private fun getBindViewListener(): OnBindViewListener? {
         return mController.getOnBindViewListener()
+    }
+
+    private fun getDismissListener(): DialogInterface.OnDismissListener? {
+        return mController.getOnDismissListener()
     }
     private fun getViewClickListener(): OnViewClickListener? {
         return mController.getOnViewClickListener()
@@ -104,7 +118,7 @@ open class JAlertDialog : JDialogFragment() {
     private fun getListRecyclerId():Int{
         return mController.getListRecyclerId()
     }
-    private fun getListOreation():Int{
+    private fun getListOrientation():Int{
         return mController.getListOrientation()
     }
 
@@ -179,22 +193,20 @@ open class JAlertDialog : JDialogFragment() {
         }
         /**
          * 设置百分比宽
-         * @param context 上下文
          * @param percent
          * @return Builder
          */
-        fun setScreenWidthPercent(context: Context, percent: Float): Builder {
-            params.mDialogWidth = (context.getScreenWidth() * percent).toInt()
+        fun setScreenWidthPercent(percent: Float): Builder {
+            params.mDialogWidthPercent =  percent
             return this
         }
         /**
          * 设置百分比高
-         * @param context 上下文
          * @param percent
          * @return Builder
          */
-        fun setScreenHeightPercent(context: Context, percent: Float): Builder {
-            params.mDialogHeight = (context.getScreenHeight() * percent).toInt()
+        fun setScreenHeightPercent(percent: Float): Builder {
+            params.mDialogHeightPercent = percent
             return this
         }
         /**
@@ -267,6 +279,15 @@ open class JAlertDialog : JDialogFragment() {
          */
         fun setListItemClickListener(clickListener: NiceAdapter.ItemClickListener): Builder {
             params.mListItemClickListener = clickListener
+            return this
+        }
+        /**
+         * 设置dialog关闭的回调
+         * @param dismissListener
+         * @return Builder
+         */
+        fun setDismissListener(dismissListener: DialogInterface.OnDismissListener): Builder {
+            params.mOnDismissListener = dismissListener
             return this
         }
         /**

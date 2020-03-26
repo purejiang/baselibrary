@@ -6,6 +6,7 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import com.google.gson.Gson
+import com.jplus.jvideoview.data.Video
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.common.Constant
 import com.jplus.manyfunction.contract.TestContract
@@ -158,6 +159,10 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
 
     }
 
+    override fun showWebView(url: String) {
+        mView.showWebView(url)
+    }
+
     private fun requestShow(token:String, num:Long){
         val request  = InitShowRequest(token, num)
         OkhttpManager.doPost(HostList.BASE_HOST[0].url + Constant.init_show, request, HostList.BASE_HOST[0].timeOut, object : Callback<ResponseBody> {
@@ -237,6 +242,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
                     if (Manifest.permission.SYSTEM_ALERT_WINDOW in permissions) {
                         JPermissionsUtils.showWindowDialog(it, "权限提示", "为保证应用的正常使用，请开启允许显示在应用上层权限。")
                     }
+                    mView.showNotPermissionView(content = "为保证应用的正常使用，请开启权限。")
                 }
 
             })
@@ -289,10 +295,13 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
         return phoneResult && passwordResult
     }
 
-    override fun playVideo(url: String) {
-        mView.showVideoView()
+    override fun playVideo(urlList: MutableList<Video>) {
+        mView.showVideoView(urlList)
     }
 
+    override fun download() {
+        mView.downloadList()
+    }
     override fun share(file: File) {
         mView.getFragActivity()?.let {
             ShareUtils.shareFile(it, file, "分享文件")

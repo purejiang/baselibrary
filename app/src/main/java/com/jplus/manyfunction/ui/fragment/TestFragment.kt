@@ -12,10 +12,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.google.android.material.textfield.TextInputEditText
+import com.jplus.jvideoview.data.Video
+import com.jplus.jvideoview.data.source.VideoRepository
+import com.jplus.jvideoview.data.source.local.LocalVideoDataSource
+import com.jplus.jvideoview.data.source.remote.RemoteVideoDataSource
+import com.jplus.jvideoview.jvideo.JVideoState
+import com.jplus.jvideoview.jvideo.JVideoView
+import com.jplus.jvideoview.jvideo.JVideoViewPresenter
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.contract.TestContract
 import com.jplus.manyfunction.net.dto.InitShowResponse
 import com.jplus.manyfunction.ui.activity.DownloadListActivity
+import com.jplus.manyfunction.ui.activity.WebActivity
+import com.jplus.manyfunction.utils.ParseVideoInUrl
 import com.nice.baselibrary.base.adapter.NiceAdapter
 import com.nice.baselibrary.base.common.Constant
 import com.nice.baselibrary.base.listener.NotDoubleOnClickListener
@@ -37,7 +46,7 @@ import java.io.File
  */
 class TestFragment : BaseFragment(), TestContract.View {
 
-
+    private var presenter: JVideoViewPresenter?=null
     private var mPresenter: TestContract.Presenter? = null
 
     override fun getInitView(view: View?, bundle: Bundle?) {
@@ -51,7 +60,7 @@ class TestFragment : BaseFragment(), TestContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mPresenter?.startPermissionTest()
-        this.activity?.let{
+        this.activity?.let {
             mPresenter?.init(it)
         }
     }
@@ -86,7 +95,13 @@ class TestFragment : BaseFragment(), TestContract.View {
         })
         btn_app_video?.setOnClickListener(object : NotDoubleOnClickListener() {
             override fun notDoubleOnClick(view: View) {
-                mPresenter?.playVideo("")
+                val list = mutableListOf<Video>(Video(1, "斗破苍穹第一集：废柴萧炎", "", "https://cn5.download05.com/hls/20190804/ebfd96741e2e6e854144b2e012c30755/1564883639/index.m3u8", 0))
+                mPresenter?.playVideo(list)
+            }
+        })
+        btn_app_download?.setOnClickListener(object : NotDoubleOnClickListener() {
+            override fun notDoubleOnClick(view: View) {
+                mPresenter?.download()
             }
         })
         btn_app_share?.setOnClickListener(object : NotDoubleOnClickListener() {
@@ -94,27 +109,28 @@ class TestFragment : BaseFragment(), TestContract.View {
                 mPresenter?.share(File(Constant.Path.ROOT_DIR, "技术支持中心-AndroidSDK-蒋鹏(季度工作报告).pptx"))
             }
         })
-        btn_app_refresh?.setOnClickListener(object : NotDoubleOnClickListener() {
+        btn_app_web?.setOnClickListener(object : NotDoubleOnClickListener() {
             override fun notDoubleOnClick(view: View) {
-                mPresenter?.refreshLoadView()
+                mPresenter?.showWebView("")
             }
         })
     }
+
 
     override fun showInitView(response: InitShowResponse) {
         this.activity?.createDialog(JDialog.DIALOG_NORMAL)
                 ?.setTitle(response.title)
                 ?.setMessage(response.message)
                 ?.setCanceled(response.is_cancel)
-                ?.let{
-                    if(response.cancel_msg.isNotEmpty()){
+                ?.let {
+                    if (response.cancel_msg.isNotEmpty()) {
                         it.setCancel(response.cancel_msg, object : JDialog.DialogClickListener {
                             override fun onClick() {
 
                             }
                         })
                     }
-                    if(response.confirm_msg.isNotEmpty()){
+                    if (response.confirm_msg.isNotEmpty()) {
                         it.setConfirm(response.confirm_msg, object : JDialog.DialogClickListener {
                             override fun onClick() {
 
@@ -126,14 +142,14 @@ class TestFragment : BaseFragment(), TestContract.View {
     }
 
     override fun showInitH5View(response: InitShowResponse) {
-        this.activity?.let {
-            it.getAlertDialog()
+        this.activity?.run {
+                    getAlertDialog()
                     .setBackgroundRes(R.drawable.bg_normal_dialog_view)
                     .setLayoutRes(R.layout.view_photo_dialog)
                     .setCancelable(true)
                     .setTag("newDialog")
-                    .setScreenHeightPercent(it, 0.2f)
-                    .setScreenWidthPercent(it, 1.0f)
+                    .setScreenHeightPercent( 0.2f)
+                    .setScreenWidthPercent( 1.0f)
                     .setAnimationRes(R.style.NiceDialogAnim)
                     .setGravity(Gravity.BOTTOM)
                     .setDimAmount(0.0f)
@@ -170,7 +186,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     }
                 })?.setConfirm("去设置", object : JDialog.DialogClickListener {
                     override fun onClick() {
-//                        JPermissionsUtils.instance.startActivityToSetting(context as Activity)
+                        JPermissionsUtils.startActivityToSetting(context as Activity)
                     }
                 })?.show()
 
@@ -178,14 +194,13 @@ class TestFragment : BaseFragment(), TestContract.View {
 
     override fun showUploadPic() {
         //照相、相片剪裁上传、显示demo
-        this.activity?.let {
-            it.getAlertDialog()
+        this.activity?.run {
+                    getAlertDialog()
                     .setBackgroundRes(R.drawable.bg_normal_dialog_view)
                     .setLayoutRes(R.layout.view_photo_dialog)
                     .setCancelable(true)
                     .setTag("newDialog")
-                    .setScreenHeightPercent(it, 0.2f)
-                    .setScreenWidthPercent(it, 1.0f)
+
                     .setAnimationRes(R.style.NiceDialogAnim)
                     .setGravity(Gravity.BOTTOM)
                     .setDimAmount(0.0f)
@@ -228,8 +243,8 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setLayoutRes(R.layout.list_dialog_test)
                     .setCancelable(true)
                     .setTag("newDialog")
-                    .setScreenHeightPercent(it, 0.8f)
-                    .setScreenWidthPercent(it, 0.8f)
+                    .setScreenHeightPercent(0.8f)
+                    .setScreenWidthPercent(0.8f)
                     .setAnimationRes(R.style.NiceDialogAnim)
                     .setGravity(Gravity.CENTER)
                     .setDimAmount(0.2f)
@@ -275,8 +290,8 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setLayoutRes(R.layout.view_patch_dialog)
                     .setCancelable(true)
                     .setTag("newDialog")
-                    .setScreenHeightPercent(it, 0.4f)
-                    .setScreenWidthPercent(it, 0.8f)
+//                    .setScreenHeightPercent(it, 0.4f)
+                    .setScreenWidthPercent( 0.8f)
                     .setAnimationRes(R.style.NiceDialogAnim)
                     .setGravity(Gravity.CENTER)
                     .setDimAmount(0.0f)
@@ -296,21 +311,21 @@ class TestFragment : BaseFragment(), TestContract.View {
                                         }
 
                                         override fun update(read: Long, count: Long, done: Boolean) {
-                                            viewHolder.getView<BaseCircleProgress>(R.id.ncp_download_patch).loading(String.format("%.1f", read * 100.0 / count).toDouble())
+
                                         }
 
                                         override fun downloadSuccess() {
                                             viewHolder.getView<TextView>(R.id.tv_upload_content).text = "下载结束请重启App"
-                                            viewHolder.getView<BaseCircleProgress>(R.id.ncp_download_patch).success()
+
                                         }
 
                                         override fun downloadFailed(e: Throwable) {
                                             e.printStackTrace()
-                                            view.findViewById<BaseCircleProgress>(R.id.ncp_download_patch)?.failed()
+
                                         }
 
                                         override fun downloadCancel() {
-                                            view.findViewById<BaseCircleProgress>(R.id.ncp_download_patch)?.cancel()
+
                                         }
 
                                     })
@@ -325,14 +340,15 @@ class TestFragment : BaseFragment(), TestContract.View {
     }
 
     override fun showLogin() {
+        ParseVideoInUrl().getResponse("https://z1.m1907.cn/?jx=安家")
 //        throw RuntimeException("Is RuntimeException.")
         this.activity?.let {
             JAlertDialog.Builder(it.supportFragmentManager)
                     .setLayoutRes(R.layout.view_login_dialog)
                     .setCancelable(true)
                     .setTag("newDialog")
-                    .setScreenHeightPercent(it, 0.5f)
-                    .setScreenWidthPercent(it, 0.8f)
+                    .setScreenHeightPercent( 0.5f)
+                    .setScreenWidthPercent( 0.8f)
                     .setAnimationRes(R.style.NiceDialogAnim)
                     .setGravity(Gravity.CENTER)
                     .setDimAmount(0.0f)
@@ -347,9 +363,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                                 }
                             }
                         }
-
-                    })
-                    .create()
+                    }).create()
                     .show()
         }
     }
@@ -358,9 +372,41 @@ class TestFragment : BaseFragment(), TestContract.View {
 
     }
 
-    override fun showVideoView() {
+    override fun downloadList() {
         this.activity?.let {
             startActivity(Intent(it, DownloadListActivity::class.java))
+        }
+    }
+
+    override fun showVideoView(urlList: MutableList<Video>) {
+        this.activity?.let {
+            JDialog
+            JAlertDialog.Builder(it.supportFragmentManager)
+                    .setLayoutRes(R.layout.view_video)
+                    .setCancelable(false)
+                    .setScreenWidthPercent(1.0f)
+                    .setTag("videoDialog")
+                    .setAnimationRes(R.style.NiceDialogAnim)
+                    .setGravity(Gravity.CENTER)
+                    .setDimAmount(0.8f)
+                    .setBindViewListener(object :JAlertDialog.OnBindViewListener{
+                        override fun onBindView(viewHolder: NiceAdapter.VH) {
+                            this@TestFragment.activity?.let{ activity->
+                                presenter = JVideoViewPresenter(
+                                        activity,
+                                        viewHolder.getView<JVideoView>(R.id.jv_video_main),
+                                        VideoRepository.getInstance(RemoteVideoDataSource(urlList), LocalVideoDataSource()).apply {
+                                            refreshVideos()
+                                        }, JVideoState.PlayBackEngine.PLAYBACK_IJK_PLAYER)
+
+                                presenter?.subscribe()
+                            }
+                        }
+                    }).setDismissListener(DialogInterface.OnDismissListener {
+                        LogUtils.d("view_video.dismiss()")
+                        presenter?.unSubscribe()
+                    }).create()
+                    .show()
         }
     }
 
@@ -370,6 +416,12 @@ class TestFragment : BaseFragment(), TestContract.View {
 
     override fun showShareView() {
 
+    }
+
+    override fun showWebView(url: String) {
+        this.activity?.let {
+            startActivity(Intent(it, WebActivity::class.java))
+        }
     }
 
     override fun getLayoutId(): Int {
