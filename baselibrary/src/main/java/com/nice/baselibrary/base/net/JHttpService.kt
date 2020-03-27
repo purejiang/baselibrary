@@ -19,8 +19,9 @@ interface JHttpService {
     @POST //json提交
     fun post(@Body any:Any, @Url url:String): Call<ResponseBody> //post请求
 
+    @FormUrlEncoded
     @POST  //表单提交
-    fun post(@FieldMap map:MutableMap<String, String>,@Url url:StringBuffer)
+    fun post(@FieldMap map:MutableMap<String, String>, @Url url:String): Call<ResponseBody>//post请求
 
     @GET
     fun get(@Url url:String): Call<ResponseBody> //get请求
