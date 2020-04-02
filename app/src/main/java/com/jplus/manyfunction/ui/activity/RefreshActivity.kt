@@ -3,9 +3,12 @@ package com.jplus.manyfunction.ui.activity
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.jplus.manyfunction.R
 import com.nice.baselibrary.base.adapter.NiceAdapter
 import com.nice.baselibrary.base.utils.showNormalToast
+import kotlinx.android.synthetic.main.activity_refresh.*
 
 
 class RefreshActivity : AppCompatActivity() {
@@ -37,12 +40,18 @@ class RefreshActivity : AppCompatActivity() {
                 return true
             }
         })
-//        smrl_test.setOnRefreshListener { refreshlayout ->
-//            refreshlayout.finishRefresh(2000/*,false*/)//传入false表示刷新失败
-//        }
-//        smrl_test.setOnLoadMoreListener { refreshlayout ->
-//            refreshlayout.finishLoadMore(2000/*,false*/)//传入false表示加载失败
-//        }
+        smrl_test.setOnRefreshListener { refreshlayout ->
+            refreshlayout.finishRefresh(2000/*,false*/)//传入false表示刷新失败
+        }
+        smrl_test.setOnLoadMoreListener { refreshlayout ->
+            refreshlayout.finishLoadMore(2000/*,false*/)//传入false表示加载失败
+        }
+        val rvManager = LinearLayoutManager(this)
+        rvManager.stackFromEnd = true
+        rvManager.reverseLayout =true
+        rcy_test.layoutManager = rvManager
+        rcy_test.itemAnimator = DefaultItemAnimator()
+        rcy_test.adapter = niceAdapter
 //        jrv_test.setJRefreshViewListener(object : JRefreshView.JRefreshListener {
 //            override fun refreshListener() {
 //                NiceShowView.instance.NormalToast("refreshListener").show()

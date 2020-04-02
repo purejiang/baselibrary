@@ -1,5 +1,6 @@
 package com.nice.baselibrary.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -83,7 +84,7 @@ class JTextView : AppCompatTextView {
 
     interface RightDrawableListener {
         /**
-         * 右图片的点击时间
+         * 右图片的点击事件
          */
         fun onRightDrawableListener()
     }

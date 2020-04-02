@@ -23,6 +23,7 @@ import com.jplus.manyfunction.R
 import com.jplus.manyfunction.contract.TestContract
 import com.jplus.manyfunction.net.dto.InitShowResponse
 import com.jplus.manyfunction.ui.activity.DownloadListActivity
+import com.jplus.manyfunction.ui.activity.RefreshActivity
 import com.jplus.manyfunction.ui.activity.WebActivity
 import com.jplus.manyfunction.utils.ParseVideoInUrl
 import com.nice.baselibrary.base.adapter.NiceAdapter
@@ -103,6 +104,12 @@ class TestFragment : BaseFragment(), TestContract.View {
             override fun notDoubleOnClick(view: View) {
                 mPresenter?.download()
             }
+        })
+        btn_app_refresh?.setOnClickListener(object :NotDoubleOnClickListener(){
+            override fun notDoubleOnClick(view: View) {
+                mPresenter?.refreshLoadView()
+            }
+
         })
         btn_app_share?.setOnClickListener(object : NotDoubleOnClickListener() {
             override fun notDoubleOnClick(view: View) {
@@ -411,7 +418,9 @@ class TestFragment : BaseFragment(), TestContract.View {
     }
 
     override fun showRefreshLoadView() {
-
+        activity?.let {
+            it.startActivity(Intent(it, RefreshActivity::class.java))
+        }
     }
 
     override fun showShareView() {

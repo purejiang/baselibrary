@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/small_space"
                 android:text="自动登录"
-                android:textColor="@color/colorPrimary" />
+                android:textColor="@color/colorGrey_dark" />
         </LinearLayout>
 
         <Button

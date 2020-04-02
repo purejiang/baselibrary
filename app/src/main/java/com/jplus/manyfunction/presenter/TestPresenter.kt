@@ -309,10 +309,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
     }
 
     override fun refreshLoadView() {
-        mView.getFragActivity()?.let {
-            it.startActivity(Intent(it, RefreshActivity::class.java))
-        }
-
+        mView.showRefreshLoadView()
     }
 
 
