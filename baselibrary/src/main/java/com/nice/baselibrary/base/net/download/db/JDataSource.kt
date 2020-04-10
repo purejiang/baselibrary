@@ -12,13 +12,13 @@ abstract class JDataSource<T> {
      * @param data
      * @return
      */
-    abstract fun addData(data:T):T?
+    abstract fun addData(data:T):Boolean
     /**
      * 添加数据通过list
      * @param dataList
      * @return
      */
-    abstract fun addDataList(dataList:MutableList<T>):MutableList<T>?
+    abstract fun addDataList(dataList:MutableList<T>):Boolean
     /**
      * 删除数据
      * @param data
@@ -41,7 +41,7 @@ abstract class JDataSource<T> {
      * @param data
      * @return
      */
-    abstract fun modifyData(data:T):T?
+    abstract fun modifyData(data:T):Boolean
     /**
      * 通过特定值查询数据
      * @param map

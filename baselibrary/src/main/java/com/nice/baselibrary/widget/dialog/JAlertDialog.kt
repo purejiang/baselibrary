@@ -1,16 +1,12 @@
 package com.nice.baselibrary.widget.dialog
 
 
-import android.content.Context
 import android.content.DialogInterface
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nice.baselibrary.base.adapter.NiceAdapter
-import com.nice.baselibrary.base.utils.getScreenHeight
-import com.nice.baselibrary.base.utils.getScreenWidth
 
 
 /**
@@ -39,7 +35,7 @@ open class JAlertDialog : JDialogFragment() {
 
         //adapter不为空则设置adapter和recyclerView
         getListAdapter()?.let{
-            it.setItemClickListener(getListItemClickListener())
+//            it.setItemClickListener(getListItemClickListener())
             val layoutManager = LinearLayoutManager(view.context, getListOrientation(), false)
             view.findViewById<RecyclerView>(getListRecyclerId()).run{
                 setLayoutManager(layoutManager)
@@ -107,9 +103,9 @@ open class JAlertDialog : JDialogFragment() {
         return mController.getOnViewClickListener()
     }
 
-    private fun getListItemClickListener(): NiceAdapter.ItemClickListener? {
-        return mController.getListItemClickListener()
-    }
+//    private fun getListItemClickListener(): NiceAdapter.ItemClickListener<*>? {
+//        return mController.getListItemClickListener()
+//    }
 
     private fun getListAdapter():NiceAdapter<*>?{
         return mController.getAdapter()
@@ -272,15 +268,15 @@ open class JAlertDialog : JDialogFragment() {
             params.mOnViewClickListener = clickListener
             return this
         }
-        /**
-         * 设置列表条目点击事件
-         * @param clickListener
-         * @return Builder
-         */
-        fun setListItemClickListener(clickListener: NiceAdapter.ItemClickListener): Builder {
-            params.mListItemClickListener = clickListener
-            return this
-        }
+//        /**
+//         * 设置列表条目点击事件
+//         * @param clickListener
+//         * @return Builder
+//         */
+//        fun setListItemClickListener(clickListener: NiceAdapter.ItemClickListener<*>): Builder {
+//            params.mListItemClickListener = clickListener
+//            return this
+//        }
         /**
          * 设置dialog关闭的回调
          * @param dismissListener

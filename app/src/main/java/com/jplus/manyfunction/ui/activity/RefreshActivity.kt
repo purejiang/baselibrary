@@ -30,12 +30,12 @@ class RefreshActivity : AppCompatActivity() {
             }
         }
         niceAdapter.addFootView(R.layout.view_test_foot)
-        niceAdapter.setItemClickListener(object : NiceAdapter.ItemClickListener {
-            override fun setItemClick(holder: NiceAdapter.VH, position: Int) {
+        niceAdapter.setItemClickListener(object : NiceAdapter.ItemClickListener<String> {
+            override fun setItemClick(holder: NiceAdapter.VH, item: String, position: Int) {
                 this@RefreshActivity.showNormalToast("setItemClick$position")
             }
 
-            override fun setItemLongClick(holder: NiceAdapter.VH, position: Int): Boolean {
+            override fun setItemLongClick(holder: NiceAdapter.VH, item: String, position: Int): Boolean {
                 this@RefreshActivity.showNormalToast("setItemLongClick$position")
                 return true
             }

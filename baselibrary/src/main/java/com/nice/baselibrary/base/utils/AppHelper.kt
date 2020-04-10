@@ -84,7 +84,7 @@ fun Context.getAppsInfo(isSystem: Boolean): MutableList<AppInfo> {
  */
 private fun Context.getPermissions(packageName: String, packageManager: PackageManager): MutableList<String> {
     val pi: PackageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
-    var permissions: MutableList<String> = mutableListOf("此应用无权限信息")
+    var permissions: MutableList<String> = mutableListOf()
     pi.requestedPermissions?.let {
         permissions = it.toMutableList()
     }
@@ -238,26 +238,24 @@ fun Context.getScreenHeight(): Int {
  *  @param packageName
 *  @return
 */
-@SuppressLint("WrongConstant")
 fun Context.startAppByPackageName(packageName: String){
     var mainAct =""
-    val pkgMag = this.packageManager
-    val intent = Intent(Intent.ACTION_MAIN)
-    intent.addCategory(Intent.CATEGORY_LAUNCHER)
-    intent.flags = Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED or Intent.FLAG_ACTIVITY_NEW_TASK
-    val list = pkgMag.queryIntentActivities(intent, PackageManager.GET_ACTIVITIES)
-    for (i in list.indices) {
-        val info = list[i]
-        if (info.activityInfo.packageName == packageName) {
-            mainAct = info.activityInfo.name
-            break
+    Intent(Intent.ACTION_MAIN).let {
+        it.addCategory(Intent.CATEGORY_LAUNCHER)
+        it.flags = Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED or Intent.FLAG_ACTIVITY_NEW_TASK
+        val list = this.packageManager.queryIntentActivities(it, PackageManager.MATCH_DEFAULT_ONLY)
+        for (i in list.indices) {
+            val info = list[i]
+            if (info.activityInfo.packageName == packageName) {
+                mainAct = info.activityInfo.name
+                break
+            }
         }
+        if (mainAct.isEmpty()) return
+
+        it.component = ComponentName(packageName, mainAct)
+        this.startActivity(it)
     }
-    if (mainAct.isEmpty()) {
-        return
-    }
-    intent.component = ComponentName(packageName, mainAct)
-    this.startActivity(intent)
 }
 /**
  *  卸载第三方应用

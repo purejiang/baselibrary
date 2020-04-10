@@ -28,13 +28,13 @@ abstract class JDBHelper<T>(context: Context, dataName: String, factory: SQLiteD
      * @param data
      * @return
      */
-    abstract fun add(data:T):T?
+    abstract fun add(data:T):Boolean
     /**
      * 添加数据通过list
      * @param dataList
      * @return
      */
-    abstract fun add(dataList:MutableList<T>):MutableList<T>?
+    abstract fun add(dataList:MutableList<T>):MutableList<Boolean>
     /**
      * 删除数据
      * @param data
@@ -57,7 +57,7 @@ abstract class JDBHelper<T>(context: Context, dataName: String, factory: SQLiteD
      * @param data
      * @return
      */
-    abstract fun update(data:T):T?
+    abstract fun update(data:T):Boolean
     /**
      * 通过特定值查询数据
      * @param map

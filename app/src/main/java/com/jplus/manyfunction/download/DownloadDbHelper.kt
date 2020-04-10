@@ -156,7 +156,11 @@ class DownloadDbHelper(context: Context, private val table_name: String = "downl
     }
 
     override fun queryCount(): Long {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val cursor = readableDatabase.rawQuery("SELECT COUNT (*) FROM $table_name", null)
+        cursor.moveToFirst()
+        val result = cursor.getLong(0)
+        cursor.close()
+        return result
     }
 
     private fun queryDataBase(sql: String, array: Array<out String>? = null): MutableList<JDownloadInfo> {

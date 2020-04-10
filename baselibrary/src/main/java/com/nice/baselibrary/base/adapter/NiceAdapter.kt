@@ -20,7 +20,7 @@ abstract class NiceAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
         NORMAL
     }
 
-    private var mItemClickListener: ItemClickListener? = null
+    private var mItemClickListener: ItemClickListener<T>? = null
     private var mHeadViewRes: Int? = null
     private var mFootViewRes: Int? = null
 
@@ -52,7 +52,8 @@ abstract class NiceAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
      * @param item
      */
     open fun deleteItem(item: T) {
-
+        mItems.remove(item)
+        notifyDataSetChanged()
     }
 
     /**
@@ -61,7 +62,7 @@ abstract class NiceAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
      */
     open fun deleteItem(position: Int) {
         mItems.removeAt(position)
-        notifyItemRemoved(position)
+        notifyItemRemoved(position-1)
     }
 
     /**
@@ -92,7 +93,7 @@ abstract class NiceAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
      * 设置条目的点击监听
      * @param itemClickListener
      */
-    open fun setItemClickListener(itemClickListener: ItemClickListener?) {
+    open fun setItemClickListener(itemClickListener: ItemClickListener<T>?) {
         this.mItemClickListener = itemClickListener
     }
 
@@ -114,10 +115,11 @@ abstract class NiceAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
         }
 
         holder.itemView.setOnClickListener {
-            mItemClickListener?.setItemClick(holder, position - 1)
+            mItemClickListener?.setItemClick(holder, mItems[position - 1], position - 1)
         }
+
         holder.itemView.setOnLongClickListener {
-            mItemClickListener?.setItemLongClick(holder, position - 1) ?: true
+            mItemClickListener?.setItemLongClick(holder, mItems[position - 1], position - 1) ?: true
         }
 
     }
@@ -131,13 +133,13 @@ abstract class NiceAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
         return mItems.size + 2
     }
 
-    interface ItemClickListener {
+    interface ItemClickListener<T> {
         /**
          * item的点击事件
          * @param holder
          * @param position
          */
-        fun setItemClick(holder: VH, position: Int)
+        fun setItemClick(holder: VH, item:T, position: Int)
 
         /**
          * item的长按事件
@@ -145,7 +147,7 @@ abstract class NiceAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
          * @param position
          * @return
          */
-        fun setItemLongClick(holder: VH, position: Int): Boolean
+        fun setItemLongClick(holder: VH, item:T, position: Int): Boolean
     }
 
 

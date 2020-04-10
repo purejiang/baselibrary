@@ -46,7 +46,7 @@ class JDialogController private constructor() {
     private var mOnViewClickListener: JAlertDialog.OnViewClickListener? = null
     private var mOnBindViewListener: JAlertDialog.OnBindViewListener? = null
     private var mOnDismissListener: DialogInterface.OnDismissListener? = null
-    private var mListItemClickListener: NiceAdapter.ItemClickListener? = null
+//    private var mListItemClickListener: NiceAdapter.ItemClickListener<*>? = null
 
 
     /*
@@ -129,9 +129,9 @@ class JDialogController private constructor() {
         return mAdapter
     }
 
-    fun getListItemClickListener(): NiceAdapter.ItemClickListener? {
-        return mListItemClickListener
-    }
+//    fun getListItemClickListener(): NiceAdapter.ItemClickListener<*>? {
+//        return mListItemClickListener
+//    }
 
 
     fun getListRecyclerId(): Int {
@@ -169,7 +169,7 @@ class JDialogController private constructor() {
         var mOnViewClickListener: JAlertDialog.OnViewClickListener? = null
         var mOnBindViewListener: JAlertDialog.OnBindViewListener? = null
         var mOnDismissListener: DialogInterface.OnDismissListener? = null
-        var mListItemClickListener: NiceAdapter.ItemClickListener? = null
+//        var mListItemClickListener: NiceAdapter.ItemClickListener<*>? = null
 
 
         fun apply(jDialogController: JDialogController?) {
@@ -192,7 +192,7 @@ class JDialogController private constructor() {
             jDialogController?.mBackgroundRes = mBackgroundRes
 
             jDialogController?.mAdapter = mAdapter
-            jDialogController?.mListItemClickListener = mListItemClickListener
+//            jDialogController?.mListItemClickListener = mListItemClickListener
             jDialogController?.mListOrientation = mListOrientation
             jDialogController?.mListRecyclerId = mListRecyclerId
 

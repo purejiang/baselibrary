@@ -246,6 +246,36 @@ class TestFragment : BaseFragment(), TestContract.View {
 
     override fun showAppInfo(infos: MutableList<AppInfo>) {
         this.activity?.let {
+            val adapter= object :NiceAdapter<AppInfo>(infos) {
+                override fun getLayout(viewType: Int): Int {
+                    return R.layout.app_info_view
+                }
+
+                override fun convert(holder: NiceAdapter.VH, item: AppInfo, position: Int, payloads: MutableList<Any>?) {
+                    holder.getView<TextView>(R.id.tv_app_name).text = item.appName
+                    holder.getView<TextView>(R.id.tv_package_name).text = item.packageName
+                    holder.getView<ImageButton>(R.id.imb_del_app).setOnClickListener {
+                        item.packageName?.let { s ->
+                            this@TestFragment.activity?.deleteAppByPackageName(s)
+                        }
+                    }
+                    holder.getView<ImageButton>(R.id.imb_start_up).setOnClickListener {
+                        item.packageName?.let { s ->
+                            this@TestFragment.activity?.startAppByPackageName(s)
+                        }
+                    }
+                }
+            }
+            adapter.setItemClickListener(object : NiceAdapter.ItemClickListener<AppInfo> {
+                override fun setItemClick(holder: NiceAdapter.VH, item: AppInfo, position: Int) {
+                    it.showNormalToast(infos[position].appName)
+                }
+
+                override fun setItemLongClick(holder: NiceAdapter.VH, item: AppInfo, position: Int): Boolean {
+                    it.showNormalToast(infos[position].signMd5)
+                    return true
+                }
+            })
             it.getAlertDialog()
                     .setLayoutRes(R.layout.list_dialog_test)
                     .setCancelable(true)
@@ -256,35 +286,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setGravity(Gravity.CENTER)
                     .setDimAmount(0.2f)
                     .setListRes(R.id.recycler_test, LinearLayoutManager.VERTICAL)
-                    .setAdapter(object : NiceAdapter<AppInfo>(infos) {
-                        override fun getLayout(viewType: Int): Int {
-                            return R.layout.app_info_view
-                        }
-
-                        override fun convert(holder: VH, item: AppInfo, position: Int, payloads: MutableList<Any>?) {
-                            holder.getView<TextView>(R.id.tv_app_name).text = item.appName
-                            holder.getView<TextView>(R.id.tv_package_name).text = item.packageName
-                            holder.getView<ImageButton>(R.id.imb_del_app).setOnClickListener {
-                                item.packageName?.let { s ->
-                                    this@TestFragment.activity?.deleteAppByPackageName(s)
-                                }
-                            }
-                            holder.getView<ImageButton>(R.id.imb_start_up).setOnClickListener {
-                                item.packageName?.let { s ->
-                                    this@TestFragment.activity?.startAppByPackageName(s)
-                                }
-                            }
-                        }
-                    }).setListItemClickListener(object : NiceAdapter.ItemClickListener {
-                        override fun setItemClick(holder: NiceAdapter.VH, position: Int) {
-                            it.showNormalToast(infos[position].appName)
-                        }
-
-                        override fun setItemLongClick(holder: NiceAdapter.VH, position: Int): Boolean {
-                            it.showNormalToast(infos[position].signMd5)
-                            return true
-                        }
-                    })
+                    .setAdapter(adapter)
                     .create()
                     .show()
 
