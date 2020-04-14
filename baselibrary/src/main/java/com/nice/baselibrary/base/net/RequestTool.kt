@@ -48,7 +48,7 @@ object RequestTool {
         }
     }
 
-    fun doGet(url: String, timeOut: Long, callBack: Callback<ResponseBody>, okHttpClient: OkHttpClient? = null) {
+    fun doGet(url: String, callBack: Callback<ResponseBody>, okHttpClient: OkHttpClient? = null) {
         mDefaultClient?.let {
             JRetrofitHelper("http://www.google.com", okHttpClient ?: it)
                     .getService()
