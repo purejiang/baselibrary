@@ -22,8 +22,5 @@ class MyApplication : BaseApplication() {
         super.onCreate()
         LeakCanary.install(this)
         BaseLibrary.instance.initUtils(this, true, File(Constant.Path.ROOT_DIR, Constant.Path.PATCH_DEX_DIR))
-
-
     }
-
 }

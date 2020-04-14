@@ -14,7 +14,7 @@ class ParseVideoInUrl {
 
 
     fun getResponse(url:String){
-        RequestTool.doGet(url, 5, object : Callback<ResponseBody>{
+        RequestTool.doGet(url, object : Callback<ResponseBody>{
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
             }
