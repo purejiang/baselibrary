@@ -22,8 +22,8 @@ import java.io.File
  * @return String
  */
 @Throws(CursorIndexOutOfBoundsException::class)
-fun Context.getPathByUri(uri: Uri, selection: String?): String {
-    LogUtils.d("getPathByUri:$uri")
+fun Context.uri2Path(uri: Uri, selection: String?): String {
+    LogUtils.d("uri2Path:$uri")
     var path = ""
     val cursor = this.contentResolver.query(uri, null, selection, null, null)
     if (cursor != null) {
@@ -37,51 +37,46 @@ fun Context.getPathByUri(uri: Uri, selection: String?): String {
 
 /**
  * 将path转换为uri
- * @param filePath
- * @return Uri
+ * @param path 文件路径
+ * @return Uri 转换的uri
  */
 @Throws(IllegalArgumentException::class)
-fun Context.getUriByPath(filePath: String): Uri {
-    LogUtils.d("getUriByPath:$filePath")
+fun Context.path2Uri(path: String, authority: String): Uri {
+    LogUtils.d("path2Uri:$path")
     return if (getApiLevel() >= Build.VERSION_CODES.N) {
         //android 7.0 开始只能使用provider获取uri
-        FileProvider.getUriForFile(this, this.packageName + ".provider", File(filePath))
+        FileProvider.getUriForFile(this, authority, File(path))
     } else {
-        Uri.fromFile(File(filePath))
+        Uri.fromFile(File(path))
     }
 }
 
 /**
- * 解析系统返回的uri
+ * 解析系统uri并返回文件路径
  * @param uri
  * @return String
  */
 fun Context.parseUri(uri: Uri): String {
-    var imgPath = ""
-    uri.let {
-        if (DocumentsContract.isDocumentUri(this, it)) {
-            val docId = DocumentsContract.getDocumentId(it)
-            if ("com.android.providers.media.documents" == it.authority) {
-                val id = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
-                val selection = MediaStore.Images.Media._ID + "=" + id
-                imgPath = getPathByUri(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection)
-            } else if ("com.android.providers.downloads.documents" == it.authority) {
-                val contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"),
-                        docId.toLong())
-                imgPath = getPathByUri(contentUri, null)
-            }
-        } else if ("content".equals(it.scheme, true)) {
-            imgPath = if ("com.google.android.apps.photos.content" == it.authority) {
-                it.lastPathSegment ?: ""
-            } else {
-                getPathByUri(it, null)
-            }
-        } else if ("file".equals(it.scheme, true)) {
-            imgPath = it.path ?: ""
+    if (DocumentsContract.isDocumentUri(this, uri)) {
+        val docId = DocumentsContract.getDocumentId(uri)
+        if ("com.android.providers.media.documents" == uri.authority) {
+            val id = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
+            val selection = MediaStore.Images.Media._ID + "=" + id
+            return uri2Path(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection)
+        } else if ("com.android.providers.downloads.documents" == uri.authority) {
+            val contentUri = ContentUris.withAppendedId(
+                    Uri.parse("content://downloads/public_downloads"),
+                    docId.toLong())
+            return uri2Path(contentUri, null)
         }
-        LogUtils.d("imgPath:$imgPath")
+    } else if ("content".equals(uri.scheme, true)) {
+        return if ("com.google.android.apps.photos.content" == uri.authority) {
+            uri.lastPathSegment ?: ""
+        } else {
+            uri2Path(uri, null)
+        }
+    } else if ("file".equals(uri.scheme, true)) {
+        return uri.path ?: ""
     }
-
-    return imgPath
+    return ""
 }

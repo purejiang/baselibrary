@@ -5,8 +5,8 @@ import android.content.Context
 import android.database.Cursor
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
-import com.nice.baselibrary.base.net.download.db.JDBHelper
-import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
+import com.nice.baselibrary.base.db.JDBHelper
+import com.nice.baselibrary.base.entity.vo.JDownloadInfo
 import com.nice.baselibrary.base.utils.LogUtils
 
 
@@ -35,32 +35,33 @@ class DownloadDbHelper(context: Context, private val table_name: String = "downl
 
     }
 
-    override fun add(data: JDownloadInfo): JDownloadInfo? {
+    override fun add(data: JDownloadInfo): Boolean {
         val db = this.writableDatabase
         LogUtils.d("add:$data")
-        db.insert(table_name, null, download2Value(data))
+        val result = db.insert(table_name, null, download2Value(data))==1L
         val sql = "select * from $table_name where name = ? and url = ?"
-        return queryDataBase(sql, arrayOf(data.name, data.url))[0]
+        return result
     }
 
     @Throws(SQLException::class)
-    fun addExec(data: JDownloadInfo): JDownloadInfo? {
+    fun addExec(data: JDownloadInfo): Boolean{
         LogUtils.d("addExec:$data")
         val sql = "insert into $table_name values (null, '${data.name}', '${data.url}', '${data.path}', '${data.start_time}', '${data.end_time}', ${data.read}, ${data.count}, '${data.status}')"
         this.writableDatabase?.execSQL(sql)
-        return null
+        return true
     }
 
-    override fun add(dataList: MutableList<JDownloadInfo>): MutableList<JDownloadInfo>? {
+    override fun add(dataList: MutableList<JDownloadInfo>): MutableList<Boolean> {
         LogUtils.d("adds:$dataList")
         val db = this.writableDatabase
+        val result = mutableListOf<Boolean>()
         db.beginTransaction()
         try {
             for (data in dataList) {
-                db.insert(table_name, null, download2Value(data))
+               result.add(db.insert(table_name, null, download2Value(data))==1L)
             }
             db.setTransactionSuccessful()
-            return null
+            return result
         } finally {
             db.endTransaction()
             db.close()
@@ -117,13 +118,15 @@ class DownloadDbHelper(context: Context, private val table_name: String = "downl
         return true
     }
 
-    override fun update(data: JDownloadInfo): JDownloadInfo? {
+
+
+    override fun update(data: JDownloadInfo): Boolean {
         val db = this.writableDatabase
         val sql = "update $table_name set  name = '${data.name}', url = '${data.url}', path = '${data.path}', end_time = '${data.end_time}', read = ${data.read}, count = ${data.count}, status = '${data.status}' where id = ${data.id}"
         LogUtils.d(sql)
         db.execSQL(sql)
         db.close()
-        return null
+        return true
     }
 
     override fun query(map: MutableMap<String, out String>): MutableList<JDownloadInfo> {

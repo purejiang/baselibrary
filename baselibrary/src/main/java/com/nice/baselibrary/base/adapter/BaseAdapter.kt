@@ -5,24 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.nice.baselibrary.R
 
 
 /**
- * 适配器基类
+ * RecyclerView通用适配器基类
  * @author JPlus
  * @date 2019/1/16.
  */
-abstract class NiceAdapter<T>(private val mItems: MutableList<T>) : RecyclerView.Adapter<NiceAdapter.VH>() {
-    internal enum class ItemType {
-        HEADER,
-        FOOTER,
-        NORMAL
-    }
+abstract class BaseAdapter<T>(private val mItems: MutableList<T>) : RecyclerView.Adapter<BaseAdapter.VH>() {
 
     private var mItemClickListener: ItemClickListener<T>? = null
-    private var mHeadViewRes: Int? = null
-    private var mFootViewRes: Int? = null
 
     /**
      * 获取Layout
@@ -62,7 +54,7 @@ abstract class NiceAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
      */
     open fun deleteItem(position: Int) {
         mItems.removeAt(position)
-        notifyItemRemoved(position-1)
+        notifyItemRemoved(position)
     }
 
     /**
@@ -73,20 +65,10 @@ abstract class NiceAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
         return mItems[position]
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return when (position) {
-            0 -> ItemType.HEADER.ordinal
-            mItems.size + 1 -> ItemType.FOOTER.ordinal
-            else -> ItemType.NORMAL.ordinal
-        }
-    }
 
-    fun addHeadView(headViewRes: Int?) {
-        mHeadViewRes = headViewRes
-    }
-
-    fun addFootView(footViewRes: Int?) {
-        mFootViewRes = footViewRes
+    override fun getItemCount(): Int {
+        //增加了head和foot
+        return mItems.size
     }
 
     /**
@@ -99,27 +81,18 @@ abstract class NiceAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        return when (viewType) {
-            ItemType.HEADER.ordinal -> VH.create(parent, mHeadViewRes ?: R.layout.view_no_head)
-            ItemType.FOOTER.ordinal -> VH.create(parent, mFootViewRes ?: R.layout.view_no_foot)
-            else -> VH.create(parent, getLayout(viewType))
-        }
-
+        return VH.create(parent, getLayout(viewType))
     }
 
     override fun onBindViewHolder(holder: VH, position: Int, payloads: MutableList<Any>) {
-        when (position) {
-            0 -> return
-            mItems.size + 1 -> return
-            else -> convert(holder, mItems[position - 1], position - 1, payloads)
-        }
+        convert(holder, mItems[position], position, payloads)
 
         holder.itemView.setOnClickListener {
-            mItemClickListener?.setItemClick(holder, mItems[position - 1], position - 1)
+            mItemClickListener?.setItemClick(holder, mItems[position], position)
         }
 
         holder.itemView.setOnLongClickListener {
-            mItemClickListener?.setItemLongClick(holder, mItems[position - 1], position - 1) ?: true
+            mItemClickListener?.setItemLongClick(holder, mItems[position], position) ?: true
         }
 
     }
@@ -128,10 +101,6 @@ abstract class NiceAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
 
     }
 
-    override fun getItemCount(): Int {
-        //增加了head和foot
-        return mItems.size + 2
-    }
 
     interface ItemClickListener<T> {
         /**
@@ -139,7 +108,7 @@ abstract class NiceAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
          * @param holder
          * @param position
          */
-        fun setItemClick(holder: VH, item:T, position: Int)
+        fun setItemClick(holder: VH, item: T, position: Int)
 
         /**
          * item的长按事件
@@ -147,7 +116,7 @@ abstract class NiceAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
          * @param position
          * @return
          */
-        fun setItemLongClick(holder: VH, item:T, position: Int): Boolean
+        fun setItemLongClick(holder: VH, item: T, position: Int): Boolean
     }
 
 

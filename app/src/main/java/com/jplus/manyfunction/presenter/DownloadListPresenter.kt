@@ -6,8 +6,8 @@ import com.jplus.manyfunction.contract.DownloadListContract
 import com.jplus.manyfunction.download.JDownloadDataSource
 import com.jplus.manyfunction.download.JDownloadManager
 import com.nice.baselibrary.base.net.download.JDownloadState
-import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
-import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
+import com.nice.baselibrary.base.net.download.JDownloadCallback
+import com.nice.baselibrary.base.entity.vo.JDownloadInfo
 import com.nice.baselibrary.base.utils.LogUtils
 import com.nice.baselibrary.base.utils.StringUtils
 import java.io.File
@@ -55,9 +55,9 @@ class DownloadListPresenter(context: Context, private val mView: DownloadListCon
             if (it.size == 0) {
                 val filePath = dirPath + File.separator + name
                 val download = JDownloadInfo(0, name, url, filePath, "${System.currentTimeMillis()}", "", 0L, 0L, JDownloadState.DOWNLOAD_READY)
-                mDataSource.addData(download)?.let { info ->
-                    mView.addDownload(info)
-                }
+                mDataSource.addData(download)
+                mView.addDownload( mDataSource.getData(mutableMapOf(Pair("url", download.url), Pair("name",download.name)))[0])
+
             } else {
                 mView.downloadIsExist("$name 已在下载列表中")
             }

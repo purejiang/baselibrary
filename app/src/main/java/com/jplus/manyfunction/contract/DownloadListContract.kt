@@ -1,17 +1,16 @@
 package com.jplus.manyfunction.contract
 
-import android.net.Uri
-import com.nice.baselibrary.base.rx.NicePresenter
-import com.nice.baselibrary.base.rx.NiceBaseView
-import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
-import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
+import com.nice.baselibrary.base.mvp.BasePresenter
+import com.nice.baselibrary.base.mvp.BaseView
+import com.nice.baselibrary.base.entity.vo.JDownloadInfo
+import com.nice.baselibrary.base.net.download.JDownloadCallback
 
 /**
  * @author JPlus
  * @date 2019/2/13.
  */
 interface DownloadListContract {
-    interface View : NiceBaseView<Presenter> {
+    interface View : BaseView<Presenter> {
         /**
          * 展现列表
          */
@@ -39,7 +38,7 @@ interface DownloadListContract {
 
     }
 
-    interface Presenter: NicePresenter {
+    interface Presenter: BasePresenter {
         /**
          * 获取下载状态
          * @param id

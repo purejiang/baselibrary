@@ -1,6 +1,5 @@
 package com.nice.baselibrary.base.net.download
 
-import com.nice.baselibrary.base.net.download.listener.JDownloadProgressListener
 import com.nice.baselibrary.base.utils.LogUtils
 import okhttp3.Interceptor
 import okhttp3.Response

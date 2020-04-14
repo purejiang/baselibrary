@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!--指定从该目录往下搜寻-->
+    <root-path name="root" path="." />
+    <files-path name="files" path="." />
+    <cache-path name="cache" path="." />
+    <external-path name="external" path="." />
+    <external-files-path name="name" path="." />
+    <external-cache-path name="name" path="." />
+</paths>

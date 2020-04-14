@@ -4,9 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import com.jplus.jvideoview.data.Video
 import com.jplus.manyfunction.net.dto.InitShowResponse
-import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
-import com.nice.baselibrary.base.rx.NiceBaseView
-import com.nice.baselibrary.base.rx.NicePresenter
+import com.nice.baselibrary.base.net.download.JDownloadCallback
+import com.nice.baselibrary.base.mvp.BaseView
+import com.nice.baselibrary.base.mvp.BasePresenter
 import com.nice.baselibrary.base.vo.AppInfo
 import com.nice.baselibrary.widget.dialog.JAlertDialog
 import java.io.File
@@ -16,7 +16,7 @@ import java.io.File
  * @date 2019/2/13.
  */
 interface TestContract {
-    interface View : NiceBaseView<Presenter> {
+    interface View : BaseView<Presenter> {
         /**
          */
         fun getFragActivity():Activity?
@@ -81,7 +81,7 @@ interface TestContract {
         fun showWebView(url: String)
     }
 
-    interface Presenter: NicePresenter {
+    interface Presenter: BasePresenter {
         /**
          * 初始化
          */

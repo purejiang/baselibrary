@@ -62,7 +62,7 @@ class JDialog
      */
     fun setCircleProgress(text:String): JDialog {
         mProgress?.visibility = View.VISIBLE
-        setConfirm(text, null)
+        setConfirm(text, true, null)
         return this
     }
     /**
@@ -88,30 +88,32 @@ class JDialog
     /**
      * 设置弹出框取消按钮
      * @param cancel 显示的取消提示文字
+     * @param isHide 点击后dialog是否消失
      * @param dialogCancelClickListener 取消按钮的点击事件
      * @return
      */
-    fun setCancel(cancel: String, dialogCancelClickListener: DialogClickListener?): JDialog {
+    fun setCancel(cancel: String, isHide:Boolean, dialogCancelClickListener: DialogClickListener?): JDialog {
         mCancel?.visibility = View.VISIBLE
         mCancel?.text = cancel
         mCancel?.setOnClickListener {
             dialogCancelClickListener?.onClick()
-            dismiss()
+            if(isHide) dismiss()
         }
         return this
     }
     /**
      * 设置弹出框确认按钮
      * @param confirm 显示的确认提示文字
+     *  * @param isHide 点击后dialog是否消失
      * @param dialogConfirmClickListener 确认按钮的点击事件
      * @return
      */
-    fun setConfirm(confirm: String, dialogConfirmClickListener: DialogClickListener?): JDialog {
+    fun setConfirm(confirm: String, isHide:Boolean, dialogConfirmClickListener: DialogClickListener?): JDialog {
         mConfirm?.visibility = View.VISIBLE
         mConfirm?.text = confirm
         mConfirm?.setOnClickListener {
             dialogConfirmClickListener?.onClick()
-            dismiss()
+            if(isHide) dismiss()
         }
         return this
     }

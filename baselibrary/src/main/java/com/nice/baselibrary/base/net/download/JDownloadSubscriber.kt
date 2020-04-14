@@ -1,8 +1,7 @@
 package com.nice.baselibrary.base.net.download
 
 import android.annotation.SuppressLint
-import com.nice.baselibrary.base.net.download.listener.JDownloadProgressListener
-import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
+import com.nice.baselibrary.base.entity.vo.JDownloadInfo
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver

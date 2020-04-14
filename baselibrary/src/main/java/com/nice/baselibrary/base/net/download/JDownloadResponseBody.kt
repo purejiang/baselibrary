@@ -1,6 +1,5 @@
 package com.nice.baselibrary.base.net.download
 
-import com.nice.baselibrary.base.net.download.listener.JDownloadProgressListener
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okio.*

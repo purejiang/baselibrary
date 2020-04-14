@@ -2,14 +2,11 @@ package com.nice.baselibrary.widget.refresh
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nice.baselibrary.R
-import com.nice.baselibrary.base.adapter.NiceAdapter
+import com.nice.baselibrary.base.adapter.BaseAdapter
 import kotlinx.android.synthetic.main.view_refresh_load.view.*
 
 
@@ -61,7 +58,7 @@ class JRefreshView(mContext: Context?, attrs: AttributeSet?) : ViewGroup(mContex
 //        })
 //    }
 
-    fun setAdapter(adapter: NiceAdapter<*>): JRefreshView {
+    fun setAdapter(adapter: BaseAdapter<*>): JRefreshView {
         rcy_jrefresh_view.layoutManager = mRvManager
         mRvManager.orientation = RecyclerView.VERTICAL
         rcy_jrefresh_view.adapter = adapter

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import com.jplus.manyfunction.R
-import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
+import com.nice.baselibrary.base.entity.vo.JDownloadInfo
 import com.nice.baselibrary.base.utils.StringUtils
 import com.nice.baselibrary.widget.BaseCircleProgress
 import com.nice.baselibrary.widget.JTextView

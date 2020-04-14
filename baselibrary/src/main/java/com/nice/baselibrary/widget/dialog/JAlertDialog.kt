@@ -6,7 +6,7 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nice.baselibrary.base.adapter.NiceAdapter
+import com.nice.baselibrary.base.adapter.BaseAdapter
 
 
 /**
@@ -22,7 +22,7 @@ open class JAlertDialog : JDialogFragment() {
 
 
     override fun bindView(view: View) {
-        val viewHolder = NiceAdapter.VH(view)
+        val viewHolder = BaseAdapter.VH(view)
         //设置是否可点击
         mController.getIds()?.forEach {
             val view2 = viewHolder.getView<View>(it)
@@ -107,7 +107,7 @@ open class JAlertDialog : JDialogFragment() {
 //        return mController.getListItemClickListener()
 //    }
 
-    private fun getListAdapter():NiceAdapter<*>?{
+    private fun getListAdapter():BaseAdapter<*>?{
         return mController.getAdapter()
     }
 
@@ -126,10 +126,10 @@ open class JAlertDialog : JDialogFragment() {
     }
 
     interface OnViewClickListener {
-        fun onClick(viewHolder: NiceAdapter.VH, view: View, dialog: JAlertDialog)
+        fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: JAlertDialog)
     }
     interface OnBindViewListener {
-        fun onBindView(viewHolder: NiceAdapter.VH)
+        fun onBindView(viewHolder: BaseAdapter.VH)
     }
 
     class Builder(mFragmentManager: FragmentManager) {
@@ -311,7 +311,7 @@ open class JAlertDialog : JDialogFragment() {
          * @param adapter
          * @return Builder
          */
-        fun setAdapter(adapter: NiceAdapter<*>): Builder {
+        fun setAdapter(adapter: BaseAdapter<*>): Builder {
             params.mAdapter = adapter
             return this
         }

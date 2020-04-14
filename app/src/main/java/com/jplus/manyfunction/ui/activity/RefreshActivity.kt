@@ -1,12 +1,15 @@
 package com.jplus.manyfunction.ui.activity
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jplus.manyfunction.R
-import com.nice.baselibrary.base.adapter.NiceAdapter
+import com.nice.baselibrary.base.adapter.BaseAdapter
+import com.nice.baselibrary.base.adapter.BaseAdapterWrapper
 import com.nice.baselibrary.base.utils.showNormalToast
 import kotlinx.android.synthetic.main.activity_refresh.*
 
@@ -20,7 +23,7 @@ class RefreshActivity : AppCompatActivity() {
         for (i in 1..100) {
             list.add("item$i")
         }
-        val niceAdapter = object : NiceAdapter<String>(list) {
+        val niceAdapter = object : BaseAdapter<String>(list) {
             override fun getLayout(viewType: Int): Int {
                 return R.layout.view_test_jry
             }
@@ -29,15 +32,23 @@ class RefreshActivity : AppCompatActivity() {
                 holder.getView<TextView>(R.id.tv_jry_test).text = item
             }
         }
-        niceAdapter.addFootView(R.layout.view_test_foot)
-        niceAdapter.setItemClickListener(object : NiceAdapter.ItemClickListener<String> {
-            override fun setItemClick(holder: NiceAdapter.VH, item: String, position: Int) {
+
+        niceAdapter.setItemClickListener(object : BaseAdapter.ItemClickListener<String> {
+            override fun setItemClick(holder: BaseAdapter.VH, item: String, position: Int) {
                 this@RefreshActivity.showNormalToast("setItemClick$position")
             }
 
-            override fun setItemLongClick(holder: NiceAdapter.VH, item: String, position: Int): Boolean {
+            override fun setItemLongClick(holder: BaseAdapter.VH, item: String, position: Int): Boolean {
                 this@RefreshActivity.showNormalToast("setItemLongClick$position")
                 return true
+            }
+        })
+        val adapterWrapper = BaseAdapterWrapper(niceAdapter, object :BaseAdapterWrapper.CreatedListener{
+            override fun setHeadView(): View {
+                return LayoutInflater.from(this@RefreshActivity).inflate(R.layout.view_test_head, null)
+            }
+            override fun setFootView(): View {
+                return LayoutInflater.from(this@RefreshActivity).inflate(R.layout.view_test_foot, null)
             }
         })
         smrl_test.setOnRefreshListener { refreshlayout ->
@@ -51,7 +62,7 @@ class RefreshActivity : AppCompatActivity() {
         rvManager.reverseLayout =true
         rcy_test.layoutManager = rvManager
         rcy_test.itemAnimator = DefaultItemAnimator()
-        rcy_test.adapter = niceAdapter
+        rcy_test.adapter = adapterWrapper
 //        jrv_test.setJRefreshViewListener(object : JRefreshView.JRefreshListener {
 //            override fun refreshListener() {
 //                NiceShowView.instance.NormalToast("refreshListener").show()

@@ -29,7 +29,7 @@ class Constant {
             companion object {
                 val ROOT_DIR = Environment.getExternalStoragePublicDirectory("").absolutePath
                 val CRASH_INFO_DIR = "crash"
-                val LOGCAT_INFO_DIR = "logcat"
+                val LOGCAT_INFO_DIR = "log"
                 val DOWNLOAD_DIR = "download"
                 val PATCH_DEX_DIR = "patch"
                 val CAMERA_DIR = "pic"

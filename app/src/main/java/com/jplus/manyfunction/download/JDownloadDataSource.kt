@@ -1,8 +1,8 @@
 package com.jplus.manyfunction.download
 
 import android.content.Context
-import com.nice.baselibrary.base.net.download.db.JDataSource
-import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
+import com.nice.baselibrary.base.db.JDataSource
+import com.nice.baselibrary.base.entity.vo.JDownloadInfo
 
 
 
@@ -20,20 +20,21 @@ class JDownloadDataSource(context: Context) : JDataSource<JDownloadInfo>() {
         return mDownloadDataHelper.query(pages, limit)
     }
 
-    override fun addData(data: JDownloadInfo): JDownloadInfo? {
-        return mDownloadDataHelper.add(data)
+    override fun addData(data: JDownloadInfo): Boolean {
+       return mDownloadDataHelper.add(data)
     }
 
-    override fun addDataList(dataList: MutableList<JDownloadInfo>): MutableList<JDownloadInfo>? {
-        dataList.forEach { mDownloadDataHelper.add(it) }
-        return null
+    override fun addDataList(dataList: MutableList<JDownloadInfo>): Boolean {
+        var result = true
+        dataList.forEach { result = result&&mDownloadDataHelper.add(it) }
+        return result
     }
 
     override fun removeDataList(dataList: MutableList<JDownloadInfo>): Boolean {
         return mDownloadDataHelper.remove(dataList)
     }
 
-    override fun modifyData(data: JDownloadInfo): JDownloadInfo? {
+    override fun modifyData(data: JDownloadInfo): Boolean {
         return mDownloadDataHelper.update(data)
     }
 

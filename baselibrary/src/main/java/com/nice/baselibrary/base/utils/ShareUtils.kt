@@ -9,8 +9,8 @@ import java.io.File
  * @date 2019/11/23.
  */
 object ShareUtils {
-    fun shareFile(activity: Activity, file:File, title:String){
-        val uri = activity.getUriByPath(file.absolutePath)
+    fun shareFile(activity: Activity, path:String, title:String, authority:String){
+        val uri = activity.path2Uri(path, authority)
         var shareIntent = Intent()
         shareIntent.action = Intent.ACTION_SEND
         //其中imgUri为图片的标识符

@@ -24,45 +24,53 @@ object LogUtils {
     /**
      * log的tag
      */
-    private var mTag = "tag"
+    private var mTag = ""
+    /**
+     * 日志最大数量
+     */
     private var mMaxNum = 0
-    private var mDirPath = Constant.Path.ROOT_DIR
+    /**
+     * 存放日志目录
+     */
+    private var mDir:File?=null
 
-    fun init(context:Context, debug:Boolean){
-        val maxNum =1
-        val dir = Constant.Path.ROOT_DIR + File.separator + context.packageName + File.separator + Constant.Path.LOGCAT_INFO_DIR
-        val tag = "${context.packageName} -log"
-        init(debug, maxNum, tag, dir)
-    }
-
-    fun init(debug:Boolean, maxNum:Int, tag:String, dir:String){
+    /**
+     * 初始化
+     * @param context 上下文
+     * @param debug debug开关，默认开启
+     * @param maxNum 最大数量。默认为3
+     * @param tag 日志的tag，默认为 <包名> -log
+     * @param dir 存放目录，默认为根目录下+包名+log目录
+     */
+    fun init(context: Context, debug: Boolean = true, maxNum: Int = 3, tag: String = "${context.packageName} -log", dir: File = File(File(Constant.Path.ROOT_DIR, context.packageName), Constant.Path.LOGCAT_INFO_DIR)) {
         mDebug = debug
         mTag = tag
-        mDirPath = dir
+        mDir = dir
         mMaxNum = maxNum
     }
 
-    fun e(message:String, tag:String=mTag){
-        if(mDebug) Log.e(tag, message)
-    }
-    fun d(message:String, tag:String=mTag){
-        if(mDebug) Log.d(tag, message)
-    }
-    fun w(message:String, tag:String=mTag){
-        if(mDebug) Log.w(tag, message)
-    }
-    fun v(message:String, tag:String=mTag){
-        if(mDebug) Log.v(tag, message)
-    }
-    fun i(message:String, tag:String=mTag){
-        if(mDebug) Log.i(tag, message)
+    fun e(message: String, tag: String = mTag) {
+        if (mDebug) Log.e(tag, message)
     }
 
-    /**
-     * 保存log到文件
-     * @param file 默认为根目录下
-     */
-    fun saveLog(file:File= File(mDirPath, Date(System.currentTimeMillis()).getDateTimeByMillis(false)+".log")){
+    fun d(message: String, tag: String = mTag) {
+        if (mDebug) Log.d(tag, message)
+    }
+
+    fun w(message: String, tag: String = mTag) {
+        if (mDebug) Log.w(tag, message)
+    }
+
+    fun v(message: String, tag: String = mTag) {
+        if (mDebug) Log.v(tag, message)
+    }
+
+    fun i(message: String, tag: String = mTag) {
+        if (mDebug) Log.i(tag, message)
+    }
+
+
+    fun saveLog(file: File = File(mDir, Date(System.currentTimeMillis()).getDateTimeByMillis(false) + ".log")) {
         //要过滤的类型 *:W表示warm ，我们也可以换成 *:D ：debug， *:I：info，*:E：error等等,*后不加代表全部
         val running = arrayOf("logcat", "-s", "adb logcat *:V")
         //执行命令行
@@ -76,7 +84,7 @@ object LogUtils {
      * @return 日志文件列表
      */
     fun getAllFiles(): MutableList<File>? {
-        return File(mDirPath).getDirFiles()
+        return mDir?.getDirFiles()
     }
 
     /**
@@ -86,7 +94,7 @@ object LogUtils {
     fun getNewFile(): File? {
         //筛选出最近最新的一次崩溃日志
         return getAllFiles()?.let {
-            if (it.size>0) it.reversed()[0] else null
+            if (it.size > 0) it.reversed()[0] else null
         }
     }
 
@@ -97,7 +105,7 @@ object LogUtils {
                 it.sorted()[0].delete()
             }
             //继续存崩溃日志，协程写入文件
-            GlobalScope.launch{
+            GlobalScope.launch {
                 file.writeFile(input, false)
             }
         }

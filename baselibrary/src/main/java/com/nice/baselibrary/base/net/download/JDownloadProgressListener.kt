@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.net.download.listener
+package com.nice.baselibrary.base.net.download
 
 /**
  * 下载进度监听

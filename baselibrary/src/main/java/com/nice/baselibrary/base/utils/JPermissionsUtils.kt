@@ -225,12 +225,12 @@ object JPermissionsUtils  {
                 .setTitle(title)
                 .setMessage(sb.toString())
                 .setCanceled(mIsCancelable)
-                .setCancel("取消", object : JDialog.DialogClickListener {
+                .setCancel("取消", true, object : JDialog.DialogClickListener {
                     override fun onClick() {
 
                     }
                 })
-                .setConfirm("去设置", object : JDialog.DialogClickListener {
+                .setConfirm("去设置",true, object : JDialog.DialogClickListener {
                     override fun onClick() {
                         startActivityToSetting(activity)
                     }
@@ -249,12 +249,12 @@ object JPermissionsUtils  {
                 .setTitle(title)
                 .setMessage(message)
                 .setCanceled(mIsCancelable)
-                .setCancel("取消", object : JDialog.DialogClickListener {
+                .setCancel("取消",true, object : JDialog.DialogClickListener {
                     override fun onClick() {
 //                        destroy()
                     }
                 })
-                .setConfirm("去设置", object : JDialog.DialogClickListener {
+                .setConfirm("去设置", true,object : JDialog.DialogClickListener {
                     override fun onClick() {
                         startActivityToOverlay(activity)
                     }

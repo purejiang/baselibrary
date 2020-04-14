@@ -4,9 +4,9 @@ package com.jplus.manyfunction.download
 import com.nice.baselibrary.base.net.JRetrofitHelper
 import com.nice.baselibrary.base.net.download.JDownloadInterceptor
 import com.nice.baselibrary.base.net.download.JDownloadState
-import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
+import com.nice.baselibrary.base.net.download.JDownloadCallback
 import com.nice.baselibrary.base.net.download.JDownloadSubscriber
-import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
+import com.nice.baselibrary.base.entity.vo.JDownloadInfo
 import com.nice.baselibrary.base.utils.LogUtils
 import com.nice.baselibrary.base.utils.writeRandomAccessFile
 import io.reactivex.android.schedulers.AndroidSchedulers

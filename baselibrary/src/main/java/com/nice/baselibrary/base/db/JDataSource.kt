@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.net.download.db
+package com.nice.baselibrary.base.db
 
 
 /**

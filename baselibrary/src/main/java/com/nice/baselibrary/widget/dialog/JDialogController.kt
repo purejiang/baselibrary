@@ -4,11 +4,9 @@ package com.nice.baselibrary.widget.dialog
 import android.content.DialogInterface
 import android.view.Gravity
 import android.view.View
-import android.view.WindowManager
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import com.nice.baselibrary.R
-import com.nice.baselibrary.base.adapter.NiceAdapter
+import com.nice.baselibrary.base.adapter.BaseAdapter
 
 /**
  * 自定义dialog的工具类
@@ -40,7 +38,7 @@ class JDialogController private constructor() {
     private var mIds: IntArray? = null
     private var mAnimationRes:Int?=null
     private var mDialogView: View? = null
-    private var mAdapter: NiceAdapter<*>? = null
+    private var mAdapter: BaseAdapter<*>? = null
     private var mFragmentManager: FragmentManager? = null
     private var mOnKeyListener: DialogInterface.OnKeyListener? = null
     private var mOnViewClickListener: JAlertDialog.OnViewClickListener? = null
@@ -125,7 +123,7 @@ class JDialogController private constructor() {
         列表Dialog用到的方法
     */
 
-    fun getAdapter(): NiceAdapter<*>? {
+    fun getAdapter(): BaseAdapter<*>? {
         return mAdapter
     }
 
@@ -163,7 +161,7 @@ class JDialogController private constructor() {
         var mIds: IntArray? = null
         var mAnimationRes:Int?=null
         var mDialogView: View? = null
-        var mAdapter: NiceAdapter<*>? = null
+        var mAdapter: BaseAdapter<*>? = null
         var mFragmentManager: FragmentManager? = null
         var mOnKeyListener: DialogInterface.OnKeyListener? = null
         var mOnViewClickListener: JAlertDialog.OnViewClickListener? = null

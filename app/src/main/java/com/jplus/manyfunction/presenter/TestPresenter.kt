@@ -10,16 +10,15 @@ import com.jplus.jvideoview.data.Video
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.common.Constant
 import com.jplus.manyfunction.contract.TestContract
-import com.jplus.manyfunction.ui.activity.RefreshActivity
 import com.nice.baselibrary.base.common.BaseLibrary
-import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
-import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
+import com.nice.baselibrary.base.net.download.JDownloadCallback
+import com.nice.baselibrary.base.entity.vo.JDownloadInfo
 import com.jplus.manyfunction.download.JDownloadManager
 import com.jplus.manyfunction.net.HostList
 import com.jplus.manyfunction.net.dto.*
 
 import com.nice.baselibrary.base.net.download.JDownloadState
-import com.nice.baselibrary.base.net.OkhttpManager
+import com.nice.baselibrary.base.net.RequestTool
 import com.nice.baselibrary.base.utils.*
 import com.nice.baselibrary.widget.dialog.JAlertDialog
 import okhttp3.MediaType
@@ -47,7 +46,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
 
     init {
         mView.setPresenter(this)
-        mPhotoUtils = PhotoUtils(true)
+        mPhotoUtils = PhotoUtils(true, "${activity.packageName}.provider")
     }
 
     override fun checkToCameraOrPhoto(view: View, jDialog: JAlertDialog) {
@@ -100,7 +99,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
             R.id.ntv_photo_dialog_photo -> {
                 if (mIsCanOpen) {
                     mView.getFragActivity()?.let {
-                        mPhotoUtils?.openPhoto(it, true,
+                        mPhotoUtils?.openPhotoAlbum(it, true,
                                 object : PhotoUtils.ChoosePictureCallback {
                                     override fun onSuccess(path: String) {
                                         uploadPic("http://192.168.11.175:8000/upload_file/", path)
@@ -124,7 +123,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
         val initRequest = InitializeRequest(activity.packageName,
                 activity.getAppVersionName(),
                 getOsLevel(),
-                activity.getDeviceImei(),
+                activity.getDeviceIMEI(),
                 "Android",
                 "",
                 "",
@@ -133,7 +132,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
                 "",
                 "",
                 "")
-        OkhttpManager.doPost(HostList.BASE_HOST[0].url + Constant.init, initRequest, HostList.BASE_HOST[0].timeOut, object : Callback<ResponseBody> {
+        RequestTool.doPost(HostList.BASE_HOST[0].url + Constant.init, initRequest, object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 LogUtils.d("连接服务器失败：message:" + t.printStackTrace())
 
@@ -165,7 +164,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
 
     private fun requestShow(token:String, num:Long){
         val request  = InitShowRequest(token, num)
-        OkhttpManager.doPost(HostList.BASE_HOST[0].url + Constant.init_show, request, HostList.BASE_HOST[0].timeOut, object : Callback<ResponseBody> {
+        RequestTool.doPost(HostList.BASE_HOST[0].url + Constant.init_show, request, object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 LogUtils.d("连接服务器失败：message:" + t.printStackTrace())
 
@@ -202,7 +201,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
         val request = RequestBody.create(MediaType.parse("multipart/form-data"), File(path))
         val body = MultipartBody.Part.createFormData("pic", File(path).name, request)
 
-        OkhttpManager.uploadFile(url, body, 15L, object : Callback<ResponseBody> {
+        RequestTool.uploadFile(url, body, object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 LogUtils.d("连接服务器失败：message:" + t.printStackTrace())
                 mView.uploadResultView(null)
@@ -272,7 +271,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
         if (!checkAccountPwd(phone, password)) {
             return
         }
-        OkhttpManager.doPost("http://192.168.11.175:8000/login/", LoginRequest(phone, password),15, object : Callback<ResponseBody> {
+        RequestTool.doPost("http://192.168.11.175:8000/login/", LoginRequest(phone, password), object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 LogUtils.d("连接服务器失败：message:" + t.printStackTrace())
                 mView.uploadResultView(null)
@@ -304,7 +303,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
     }
     override fun share(file: File) {
         mView.getFragActivity()?.let {
-            ShareUtils.shareFile(it, file, "分享文件")
+            ShareUtils.shareFile(it, file.absolutePath, "分享文件", activity.packageName+".provider")
         }
     }
 

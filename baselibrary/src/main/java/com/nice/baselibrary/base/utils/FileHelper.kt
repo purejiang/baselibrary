@@ -207,6 +207,36 @@ fun Context.writePrivateFile(filePath: String, content: String) {
         it.close()
     }
 }
+/**
+ * 文件流写入私有目录
+ * @param name
+ * @param stream
+ * @return
+ */
+fun Context.writePrivateFile(name:String, stream: InputStream): Boolean {
+    var outputStream: OutputStream? = null
+    try {
+        outputStream = this.openFileOutput(name, Context.MODE_PRIVATE)
+        val data = ByteArray(1024)
+        var length = 0
+        while ({ length = stream.read(data); length }() != -1) {
+            outputStream.write(data, 0, length)
+        }
+        outputStream.flush()
+        return true
+    } catch (e: FileNotFoundException) {
+        throw RuntimeException("FileNotFoundException occurred. ", e)
+    } catch (e: IOException) {
+        throw RuntimeException("IOException occurred. ", e)
+    } finally {
+        try {
+            outputStream?.close()
+            stream.close()
+        } catch (e: IOException) {
+            throw RuntimeException("IOException occurred. ", e)
+        }
+    }
+}
 
 /**
  * 生成私有文件夹

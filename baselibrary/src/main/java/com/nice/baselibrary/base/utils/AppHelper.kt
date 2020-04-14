@@ -28,16 +28,14 @@ import java.util.*
  * 获取当前应用名称
  * @return
  */
-fun Context.getApplicationName(): String {
-    val packageManager: PackageManager
-    val applicationInfo: ApplicationInfo
-    try {
-        packageManager = this.applicationContext.packageManager
-        applicationInfo = packageManager.getApplicationInfo(this.packageName, 0)
+fun Context.getAppName(): String {
+    return try {
+        this.packageManager.let {
+            it.getApplicationLabel(it.getApplicationInfo(this.packageName, 0)) as String
+        }
     } catch (e: PackageManager.NameNotFoundException) {
-        return Constant.Persistence.DEFAULT_APP_NAME
+        Constant.Persistence.DEFAULT_APP_NAME
     }
-    return packageManager.getApplicationLabel(applicationInfo) as String
 }
 
 /**
@@ -48,27 +46,26 @@ fun Context.getApplicationName(): String {
 fun Context.getAppsInfo(isSystem: Boolean): MutableList<AppInfo> {
     val appsInfo: MutableList<AppInfo> = ArrayList()
     val packageList: List<PackageInfo> = this.packageManager.getInstalledPackages(0)
-    for (packageInfo in packageList) {
+    packageList.forEach {
         val term: Boolean = if (!isSystem) {
-            (packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0
+            (it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0
         } else {
-            (packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
+            (it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
         }
 
         if (term) {
-            val info: ApplicationInfo = this.packageManager.getApplicationInfo(packageInfo.packageName, 0)
-            val date = Date(packageInfo.firstInstallTime)
+            val info: ApplicationInfo = this.packageManager.getApplicationInfo(it.packageName, 0)
+            val date = Date(it.firstInstallTime)
             val sp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val appInfo = AppInfo(
-                    appName = packageInfo.applicationInfo.loadLabel(this.packageManager).toString(),
-                    packageName = packageInfo.packageName,
-                    versionCode = packageInfo.versionCode,
-                    versionName = packageInfo.versionName,
+                    appName = it.applicationInfo.loadLabel(this.packageManager).toString(),
+                    packageName = it.packageName,
+                    versionCode = it.versionCode,
+                    versionName = it.versionName,
                     icon = info.loadIcon(this.packageManager),
                     inTime = sp.format(date),
-                    signMd5 = (this.packageManager.getPackageInfo(
-                            packageInfo.packageName, PackageManager.GET_SIGNATURES).signatures[0].toByteArray()).encryptionMD5(),
-                    permission = getPermissions(packageInfo.packageName, this.packageManager)
+                    signMd5 = this.getSignerMD5(it.packageName),
+                    permission = this.getPermissions(it.packageName)
             )
             appsInfo.add(appInfo)
         }
@@ -76,19 +73,24 @@ fun Context.getAppsInfo(isSystem: Boolean): MutableList<AppInfo> {
     return appsInfo
 }
 
+fun Context.getSignerMD5(packageName: String): String {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        this.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES).signingInfo.apkContentsSigners[0].toByteArray().encryptionMD5()
+    } else {
+        this.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures[0].toByteArray().encryptionMD5()
+    }
+}
+
 /**
  * 获取指定包名的应用的权限列表
- * @param packageName
- * @param packageManager
+ * @param packageName 包名
  * @return
  */
-private fun Context.getPermissions(packageName: String, packageManager: PackageManager): MutableList<String> {
-    val pi: PackageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
-    var permissions: MutableList<String> = mutableListOf()
-    pi.requestedPermissions?.let {
-        permissions = it.toMutableList()
+private fun Context.getPermissions(packageName: String): MutableList<String> {
+    this.packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS).requestedPermissions?.let {
+        return it.toMutableList()
     }
-    return permissions
+    return mutableListOf()
 }
 
 /**
@@ -96,27 +98,16 @@ private fun Context.getPermissions(packageName: String, packageManager: PackageM
  * @return
  */
 fun Context.getPackageName(): String {
-    return this.applicationInfo?.packageName ?: ""
+    return this.packageName
 }
-
 
 /**
  * 获取设备标识
  * @return
  */
-@SuppressLint("MissingPermission")
-fun Context.getDeviceImei(): String {
+fun Context.getDeviceIMEI(): String {
     val tm = this.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-    val deviceId = when {
-        Build.VERSION.SDK_INT > Build.VERSION_CODES.P -> Settings.System.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
-        Build.VERSION.SDK_INT > Build.VERSION_CODES.O -> try {
-            tm.imei
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Settings.System.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
-        }
-        else -> tm.deviceId
-    }
+    val deviceId = Settings.System.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
     return deviceId ?: "" // ?:左边为空才执行右边
 }
 
@@ -126,9 +117,7 @@ fun Context.getDeviceImei(): String {
  */
 fun Context.getAppVersionName(): String {
     return try {
-        val pm = this.applicationContext?.packageManager
-        val packageInfo = pm?.getPackageInfo(this.packageName, PackageManager.GET_ACTIVITIES)
-        packageInfo?.versionName ?: "0"
+        this.packageManager.getPackageInfo(this.packageName, PackageManager.GET_ACTIVITIES).versionName
     } catch (e: PackageManager.NameNotFoundException) {
         e.printStackTrace()
         "0"
@@ -141,12 +130,8 @@ fun Context.getAppVersionName(): String {
  */
 fun Context.getAppVersionCode(): Int {
     return try {
-        val pm = this.applicationContext?.packageManager
-        val packageInfo = pm?.getPackageInfo(this.packageName, PackageManager.GET_ACTIVITIES)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            packageInfo?.longVersionCode?.toInt() ?: 0
-        } else {
-            packageInfo?.versionCode ?: 0
+        this.packageManager.getPackageInfo(this.packageName, PackageManager.GET_ACTIVITIES).let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) it.longVersionCode.toInt() else it.versionCode
         }
     } catch (e: PackageManager.NameNotFoundException) {
         e.printStackTrace()
@@ -167,11 +152,7 @@ fun getMaxMemory(): Int {
  * @return
  */
 fun getCpuABI(): String {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        Arrays.toString(Build.SUPPORTED_ABIS)
-    } else {
-        Build.CPU_ABI
-    }
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) Arrays.toString(Build.SUPPORTED_ABIS) else Build.CPU_ABI
 }
 
 /**
@@ -204,8 +185,7 @@ fun getDeviceInfo(): String {
  */
 @SuppressLint("MissingPermission")
 fun Context.getMacAddress(): String {
-    val wm = this.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-    return wm.connectionInfo.macAddress
+    return (this.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager).connectionInfo.macAddress
 }
 
 /**
@@ -217,7 +197,7 @@ fun getDeviceProduct(): String {
 }
 
 /**
- *  获取设备屏幕宽度
+ *  获取可用显示尺寸的绝对宽度（以像素为单位）
  *  @return
  */
 
@@ -226,7 +206,7 @@ fun Context.getScreenWidth(): Int {
 }
 
 /**
- *  获取设备屏幕高度
+ *  获取可用显示尺寸的绝对高度（以像素为单位）
  *  @return
  */
 fun Context.getScreenHeight(): Int {
@@ -234,13 +214,13 @@ fun Context.getScreenHeight(): Int {
 }
 
 /**
-*  根据包名跳转到第三方应用，不重复启动
+ *  根据包名跳转到第三方应用，不重复启动
  *  @param packageName
-*  @return
-*/
-fun Context.startAppByPackageName(packageName: String){
-    var mainAct =""
+ *  @return
+ */
+fun Context.startAppByPackageName(packageName: String) {
     Intent(Intent.ACTION_MAIN).let {
+        var mainAct = ""
         it.addCategory(Intent.CATEGORY_LAUNCHER)
         it.flags = Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED or Intent.FLAG_ACTIVITY_NEW_TASK
         val list = this.packageManager.queryIntentActivities(it, PackageManager.MATCH_DEFAULT_ONLY)
@@ -257,12 +237,30 @@ fun Context.startAppByPackageName(packageName: String){
         this.startActivity(it)
     }
 }
+
+/**
+ * 安装apk
+ * @param path apk文件路径
+ * @param authority fileProvider的authority
+ */
+fun Context.installApk(path: String, authority: String) {
+    Intent(Intent.ACTION_VIEW).let {
+        it.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        it.setDataAndType(
+                this.path2Uri(path, authority),
+                "application/vnd.android.package-archive"
+        )
+        this.startActivity(it);
+    }
+}
+
 /**
  *  卸载第三方应用
  *  @return
  */
-fun Context.deleteAppByPackageName(packageName: String){
-    Intent(Intent.ACTION_DELETE).let{
+fun Context.deleteAppByPackageName(packageName: String) {
+    Intent(Intent.ACTION_DELETE).let {
         it.data = Uri.parse("package:$packageName")
         it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(it)

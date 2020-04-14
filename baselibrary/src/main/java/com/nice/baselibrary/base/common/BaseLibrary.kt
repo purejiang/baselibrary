@@ -2,11 +2,9 @@ package com.nice.baselibrary.base.common
 
 import android.app.Activity
 import android.content.Context
-import com.nice.baselibrary.base.utils.CrashHandler
-import com.nice.baselibrary.base.utils.JPermissionsUtils
-import com.nice.baselibrary.base.utils.LogUtils
-import com.nice.baselibrary.base.utils.PatchDexUtils
+import com.nice.baselibrary.base.utils.*
 import java.io.File
+import java.util.*
 
 
 /**
@@ -23,21 +21,28 @@ class BaseLibrary private constructor() {
 
     /**
      * 初始化，最好写在application中
-     *
+     * @param context 上下文
+     * @param isDebug 是否debug模式
+     * @param dexDir 热修复dex存放目录,为空时不加载dex
      */
-    fun initUtils(context: Context, isDebug:Boolean){
-        context.applicationContext.let{
+    fun initUtils(context: Context, isDebug: Boolean, dexDir: File? = null) {
+        context.applicationContext.let {
             //初始化权限管理工具
             JPermissionsUtils.init(it)
 
             //加载dex,用于热修复
-            PatchDexUtils.loadDex(it, File(Constant.Path.ROOT_DIR, Constant.Path.PATCH_DEX_DIR))
-
+            dexDir?.let { dir ->
+                PatchDexUtils.loadDex(it, dir)
+            }
             //初始化日志工具
             LogUtils.init(it, isDebug)
 
             //崩溃日志工具
-            CrashHandler.init(it)
+            CrashHandler.init(it, listener = object :CrashHandler.CrashListener{
+                override fun backFileRule(): String {
+                    return "crash_" + Date(System.currentTimeMillis()).getDateTimeByMillis(false).replace(":", "-") + ".text"
+                }
+            })
         }
     }
 

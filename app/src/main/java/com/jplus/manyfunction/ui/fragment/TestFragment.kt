@@ -26,14 +26,13 @@ import com.jplus.manyfunction.ui.activity.DownloadListActivity
 import com.jplus.manyfunction.ui.activity.RefreshActivity
 import com.jplus.manyfunction.ui.activity.WebActivity
 import com.jplus.manyfunction.utils.ParseVideoInUrl
-import com.nice.baselibrary.base.adapter.NiceAdapter
+import com.nice.baselibrary.base.adapter.BaseAdapter
 import com.nice.baselibrary.base.common.Constant
 import com.nice.baselibrary.base.listener.NotDoubleOnClickListener
-import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
+import com.nice.baselibrary.base.net.download.JDownloadCallback
 import com.nice.baselibrary.base.ui.BaseFragment
 import com.nice.baselibrary.base.utils.*
 import com.nice.baselibrary.base.vo.AppInfo
-import com.nice.baselibrary.widget.BaseCircleProgress
 import com.nice.baselibrary.widget.JTextView
 import com.nice.baselibrary.widget.dialog.JAlertDialog
 import com.nice.baselibrary.widget.dialog.JDialog
@@ -131,14 +130,14 @@ class TestFragment : BaseFragment(), TestContract.View {
                 ?.setCanceled(response.is_cancel)
                 ?.let {
                     if (response.cancel_msg.isNotEmpty()) {
-                        it.setCancel(response.cancel_msg, object : JDialog.DialogClickListener {
+                        it.setCancel(response.cancel_msg, true,object : JDialog.DialogClickListener {
                             override fun onClick() {
 
                             }
                         })
                     }
                     if (response.confirm_msg.isNotEmpty()) {
-                        it.setConfirm(response.confirm_msg, object : JDialog.DialogClickListener {
+                        it.setConfirm(response.confirm_msg, true,object : JDialog.DialogClickListener {
                             override fun onClick() {
 
                             }
@@ -161,7 +160,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setGravity(Gravity.BOTTOM)
                     .setDimAmount(0.0f)
                     .setBindViewListener(object : JAlertDialog.OnBindViewListener {
-                        override fun onBindView(viewHolder: NiceAdapter.VH) {
+                        override fun onBindView(viewHolder: BaseAdapter.VH) {
                             viewHolder.getView<JTextView>(R.id.ntv_photo_dialog_camera).text = "相机"
                             viewHolder.getView<JTextView>(R.id.ntv_photo_dialog_photo).text = "照片"
                             viewHolder.getView<JTextView>(R.id.ntv_photo_dialog_cancel).text = "取消"
@@ -170,7 +169,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     })
                     .addClickedId(R.id.ntv_photo_dialog_camera, R.id.ntv_photo_dialog_photo, R.id.ntv_photo_dialog_cancel)
                     .setViewClickListener(object : JAlertDialog.OnViewClickListener {
-                        override fun onClick(viewHolder: NiceAdapter.VH, view: View, dialog: JAlertDialog) {
+                        override fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: JAlertDialog) {
                             dialog.dismiss()
                             mPresenter?.checkToCameraOrPhoto(view, dialog)
                         }
@@ -187,11 +186,11 @@ class TestFragment : BaseFragment(), TestContract.View {
                 ?.setTitle("关于权限")
                 ?.setMessage(content)
                 ?.setCanceled(true)
-                ?.setCancel("取消", object : JDialog.DialogClickListener {
+                ?.setCancel("取消", true,object : JDialog.DialogClickListener {
                     override fun onClick() {
 
                     }
-                })?.setConfirm("去设置", object : JDialog.DialogClickListener {
+                })?.setConfirm("去设置",true, object : JDialog.DialogClickListener {
                     override fun onClick() {
                         JPermissionsUtils.startActivityToSetting(context as Activity)
                     }
@@ -212,7 +211,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setGravity(Gravity.BOTTOM)
                     .setDimAmount(0.0f)
                     .setBindViewListener(object : JAlertDialog.OnBindViewListener {
-                        override fun onBindView(viewHolder: NiceAdapter.VH) {
+                        override fun onBindView(viewHolder: BaseAdapter.VH) {
                             viewHolder.getView<JTextView>(R.id.ntv_photo_dialog_camera).text = "相机"
                             viewHolder.getView<JTextView>(R.id.ntv_photo_dialog_photo).text = "照片"
                             viewHolder.getView<JTextView>(R.id.ntv_photo_dialog_cancel).text = "取消"
@@ -221,7 +220,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     })
                     .addClickedId(R.id.ntv_photo_dialog_camera, R.id.ntv_photo_dialog_photo, R.id.ntv_photo_dialog_cancel)
                     .setViewClickListener(object : JAlertDialog.OnViewClickListener {
-                        override fun onClick(viewHolder: NiceAdapter.VH, view: View, dialog: JAlertDialog) {
+                        override fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: JAlertDialog) {
                             dialog.dismiss()
                             mPresenter?.checkToCameraOrPhoto(view, dialog)
                         }
@@ -246,12 +245,12 @@ class TestFragment : BaseFragment(), TestContract.View {
 
     override fun showAppInfo(infos: MutableList<AppInfo>) {
         this.activity?.let {
-            val adapter= object :NiceAdapter<AppInfo>(infos) {
+            val adapter= object :BaseAdapter<AppInfo>(infos) {
                 override fun getLayout(viewType: Int): Int {
                     return R.layout.app_info_view
                 }
 
-                override fun convert(holder: NiceAdapter.VH, item: AppInfo, position: Int, payloads: MutableList<Any>?) {
+                override fun convert(holder: BaseAdapter.VH, item: AppInfo, position: Int, payloads: MutableList<Any>?) {
                     holder.getView<TextView>(R.id.tv_app_name).text = item.appName
                     holder.getView<TextView>(R.id.tv_package_name).text = item.packageName
                     holder.getView<ImageButton>(R.id.imb_del_app).setOnClickListener {
@@ -266,12 +265,12 @@ class TestFragment : BaseFragment(), TestContract.View {
                     }
                 }
             }
-            adapter.setItemClickListener(object : NiceAdapter.ItemClickListener<AppInfo> {
-                override fun setItemClick(holder: NiceAdapter.VH, item: AppInfo, position: Int) {
+            adapter.setItemClickListener(object : BaseAdapter.ItemClickListener<AppInfo> {
+                override fun setItemClick(holder: BaseAdapter.VH, item: AppInfo, position: Int) {
                     it.showNormalToast(infos[position].appName)
                 }
 
-                override fun setItemLongClick(holder: NiceAdapter.VH, item: AppInfo, position: Int): Boolean {
+                override fun setItemLongClick(holder: BaseAdapter.VH, item: AppInfo, position: Int): Boolean {
                     it.showNormalToast(infos[position].signMd5)
                     return true
                 }
@@ -306,7 +305,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setDimAmount(0.0f)
                     .addClickedId(R.id.btn_patch_download)
                     .setViewClickListener(object : JAlertDialog.OnViewClickListener {
-                        override fun onClick(viewHolder: NiceAdapter.VH, view: View, dialog: JAlertDialog) {
+                        override fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: JAlertDialog) {
                             when (view.id) {
                                 R.id.btn_patch_download -> {
                                     LogUtils.d("btn_patch_download.setOnClickListener")
@@ -363,7 +362,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setDimAmount(0.0f)
                     .addClickedId(R.id.btn_login_login)
                     .setViewClickListener(object : JAlertDialog.OnViewClickListener {
-                        override fun onClick(viewHolder: NiceAdapter.VH, view: View, dialog: JAlertDialog) {
+                        override fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: JAlertDialog) {
                             when (view.id) {
                                 R.id.btn_login_login -> {
                                     val phone = viewHolder.getView<TextInputEditText>(R.id.input_edit_phone_login).text.toString()
@@ -399,7 +398,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setGravity(Gravity.CENTER)
                     .setDimAmount(0.8f)
                     .setBindViewListener(object :JAlertDialog.OnBindViewListener{
-                        override fun onBindView(viewHolder: NiceAdapter.VH) {
+                        override fun onBindView(viewHolder: BaseAdapter.VH) {
                             this@TestFragment.activity?.let{ activity->
                                 presenter = JVideoViewPresenter(
                                         activity,

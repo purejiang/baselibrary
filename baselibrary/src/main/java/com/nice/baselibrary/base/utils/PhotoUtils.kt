@@ -2,7 +2,6 @@ package com.nice.baselibrary.base.utils
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -15,7 +14,7 @@ import java.io.File
  * @author JPlus
  * @date 2019/4/24.
  */
-class PhotoUtils constructor(private val mIsCache: Boolean) {
+class PhotoUtils constructor(private val mIsCache: Boolean, private val authority: String) {
     private var mCameraCode = 0
     private var mPhotoCode = 1
     private var mCameraCropCode = 2
@@ -57,7 +56,7 @@ class PhotoUtils constructor(private val mIsCache: Boolean) {
             }
             it.action = MediaStore.ACTION_IMAGE_CAPTURE
             mImagePath?.let { path ->
-                it.putExtra(MediaStore.EXTRA_OUTPUT, activity.getUriByPath(path))  // 保存拍照的图片到uri而不是系统相册
+                it.putExtra(MediaStore.EXTRA_OUTPUT, activity.path2Uri(path, authority))  // 保存拍照的图片到uri而不是系统相册
             }
             LogUtils.e("--openCamera--")
             activity.startActivityForResult(it, requestCode)
@@ -71,7 +70,7 @@ class PhotoUtils constructor(private val mIsCache: Boolean) {
      * @param requestCode
      * @param cropCode
      */
-    fun openPhoto(activity: Activity, isCrop: Boolean, photoCallBack: ChoosePictureCallback, requestCode: Int, cropCode: Int) {
+    fun openPhotoAlbum(activity: Activity, isCrop: Boolean, photoCallBack: ChoosePictureCallback, requestCode: Int, cropCode: Int) {
         mPhotoCallBack = photoCallBack
         mPhotoCode = requestCode
         mPhotoCropCode = cropCode
@@ -130,11 +129,9 @@ class PhotoUtils constructor(private val mIsCache: Boolean) {
         if (path != null) {
             LogUtils.d(" --ChoosePictureCallBack.onSuccess--")
             callBack?.onSuccess(path)
-
         } else {
             LogUtils.d(" --ChoosePictureCallBack.onFail--")
             callBack?.onFail()
-
         }
     }
 
@@ -142,28 +139,23 @@ class PhotoUtils constructor(private val mIsCache: Boolean) {
         if (resultCode == Activity.RESULT_OK)
             when (requestCode) {
                 mCameraCode -> {
-                    //是否执行裁剪
-                    if (mCameraIsCrop) {
-                        mImagePath?.let {
-                            cropImage(activity, requestCode, activity.getUriByPath(it))
+                    mImagePath?.let {
+                        //是否执行裁剪
+                        if (mCameraIsCrop) {
+                            cropImage(activity, requestCode, activity.path2Uri(it, authority))
+                        } else {
+                            //回调通知
+                            onRunCallback(mCameraCallBack, it)
                         }
-
-                    } else {
-                        //回调通知
-                        onRunCallback(mCameraCallBack, mImagePath)
                     }
                 }
                 mPhotoCode -> {
-                    if (mPhotoIsCrop) {
-                        data?.data?.let {
-                            cropImage(activity, mPhotoCropCode, activity.getUriByPath(activity.parseUri(it)))
-                        }
-
-                    } else {
-                        data?.data?.let {
+                    data?.data?.let {
+                        if (mPhotoIsCrop) {
+                            cropImage(activity, mPhotoCropCode, activity.path2Uri(activity.parseUri(it), authority))
+                        } else {
                             onRunCallback(mPhotoCallBack, activity.parseUri(it))
                         }
-
                     }
                 }
                 mCameraCropCode -> {

@@ -18,20 +18,21 @@ import java.util.*
 object CrashHandler : Thread.UncaughtExceptionHandler {
 
     private var mMaxNum = 0
-    private var mFileName = "crash"
     private var mSysInfo = "暂无信息"
-
+    private var mListener: CrashListener? = null
     private var mDirPath: String? = null
     private var mDefaultCrashHandler: Thread.UncaughtExceptionHandler? = null
     /**
      * 初始化
+     * @param context 上下文
      * @param maxNum 最大保存文件数量，默认为1
      * @param dir 存储文件的目录，默认为应用私有文件夹下crash目录
+     * @param listener 发生崩溃时走的回调
      */
-    fun init(context: Context, maxNum: Int = 1, dir: String = context.writePrivateDir("crash").absolutePath) {
+    fun init(context: Context, maxNum: Int = 1, dir: String = context.writePrivateDir("crash").absolutePath, listener: CrashListener?=null) {
         mDirPath = dir
         mMaxNum = maxNum
-        mFileName =  "crash_"+Date(System.currentTimeMillis()).getDateTimeByMillis(false).replace(":", "-")
+        mListener = listener
         mSysInfo = getSysInfo(context)
         mDefaultCrashHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler(this)
@@ -75,11 +76,13 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
      * @param exception
      */
     override fun uncaughtException(thread: Thread?, exception: Throwable?) {
-        val exceptionInfo = StringBuilder(mFileName + "\n\n" + mSysInfo + "\n\n" + exception?.message)
+        val defaultName = "crash_" + Date(System.currentTimeMillis()).getDateTimeByMillis(false).replace(":", "-") + ".log"
+        val exceptionInfo = StringBuilder(mListener?.backFileRule() ?:defaultName +"\n\n" + mSysInfo + "\n\n"
+        + exception?.message)
         exceptionInfo.append("\n" + getExceptionInfo(exception))
         mDirPath?.let {
             if (mMaxNum > 0) {
-                writeNewFile(it, "$mFileName.log", exceptionInfo.toString())
+                writeNewFile(it, mListener?.backFileRule() ?:defaultName, exceptionInfo.toString())
             }
         }
         // 系统默认处理
@@ -93,7 +96,7 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
         map["os"] = "android"
         map["os_level"] = "Android ${getOsLevel()}"
         map["api_level"] = "Level ${getApiLevel()}"
-        map["device_id"] = context.getDeviceImei()
+        map["device_id"] = context.getDeviceIMEI()
         map["product"] = getDeviceProduct()
         map["cpu"] = getCpuABI()
         val str = StringBuilder("=".repeat(10) + "PhoneInfo" + "=".repeat(10) + "\n")
@@ -109,6 +112,14 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
         val pw = PrintWriter(sw)
         exception?.printStackTrace(pw)
         return sw.toString()
+    }
+
+    interface CrashListener {
+        /**
+         * 返回每次发生崩溃时的日志文件名
+         * @return 文件名
+         */
+        fun backFileRule(): String
     }
 
 }

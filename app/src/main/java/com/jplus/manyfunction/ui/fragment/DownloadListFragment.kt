@@ -13,11 +13,11 @@ import com.google.android.material.textfield.TextInputEditText
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.adapter.DownloadAdapter
 import com.jplus.manyfunction.contract.DownloadListContract
-import com.nice.baselibrary.base.adapter.NiceAdapter
+import com.nice.baselibrary.base.adapter.BaseAdapter
 import com.nice.baselibrary.base.common.Constant
 import com.nice.baselibrary.base.net.download.JDownloadState
-import com.nice.baselibrary.base.net.download.listener.JDownloadCallback
-import com.nice.baselibrary.base.net.download.vo.JDownloadInfo
+import com.nice.baselibrary.base.net.download.JDownloadCallback
+import com.nice.baselibrary.base.entity.vo.JDownloadInfo
 import com.nice.baselibrary.base.ui.BaseFragment
 import com.nice.baselibrary.base.utils.StringUtils
 import com.nice.baselibrary.base.utils.showGravityToast
@@ -66,12 +66,12 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
                         .setDimAmount(0.0f)
                         .addClickedId(R.id.btn_input_url)
                         .setBindViewListener(object : JAlertDialog.OnBindViewListener {
-                            override fun onBindView(viewHolder: NiceAdapter.VH) {
+                            override fun onBindView(viewHolder: BaseAdapter.VH) {
                                 viewHolder.getView<TextInputEditText>(R.id.input_edit_input_url).setText(urls)
                             }
                         })
                         .setViewClickListener(object : JAlertDialog.OnViewClickListener {
-                            override fun onClick(viewHolder: NiceAdapter.VH, view: View, dialog: JAlertDialog) {
+                            override fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: JAlertDialog) {
                                 when (view.id) {
                                     R.id.btn_input_url -> {
                                         val url = viewHolder.getView<TextInputEditText>(R.id.input_edit_input_url).text.toString()

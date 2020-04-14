@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.net.download.vo
+package com.nice.baselibrary.base.entity.vo
 
 /**
  * 下载实体类

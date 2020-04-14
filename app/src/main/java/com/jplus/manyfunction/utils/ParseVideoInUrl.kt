@@ -1,6 +1,6 @@
 package com.jplus.manyfunction.utils
 
-import com.nice.baselibrary.base.net.OkhttpManager
+import com.nice.baselibrary.base.net.RequestTool
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -14,7 +14,7 @@ class ParseVideoInUrl {
 
 
     fun getResponse(url:String){
-        OkhttpManager.doGet(url, 5, object : Callback<ResponseBody>{
+        RequestTool.doGet(url, 5, object : Callback<ResponseBody>{
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
             }
