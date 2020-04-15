@@ -5,7 +5,7 @@ This base dependency library contains some tool classes and some custom views.
 ### Utils:
 ***
 ##### [ActivityCollect](https://github.com/nicejiang/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/ActivityCollect.kt)
-- 通过集合的方式 管理所有的Activity（推荐在BaseActivity）的onCreate和onDestroy中添加和移除
+- 通过集合的方式 管理所有的Activity（推荐在BaseActivity的onCreate和onDestroy中添加和移除）
 
 ##### [AppHelper](https://github.com/nicejiang/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/AppHelper.kt)
 - 通过扩展函数实现的App相关方法集
