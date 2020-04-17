@@ -126,16 +126,16 @@ class JTitleBar :RelativeLayout,View.OnClickListener {
         }
         mBackJTextView?.let {
             it.setCompoundDrawables(leftDrawable, null, left2Drawable, null)
-            it.setLeftDrawableListener(object : JTextView.LeftDrawableListener {
-                override fun onLeftDrawableListener() {
-                    leftListener?.onClickListener()
-                }
-            })
-            it.setRightDrawableListener(object : JTextView.RightDrawableListener {
-                override fun onRightDrawableListener() {
-                    left2Listener?.onClickListener()
-                }
-            })
+//            it.setLeftDrawableListener(object : JTextView.LeftDrawableListener {
+//                override fun onLeftDrawableListener() {
+//                    leftListener?.onClickListener()
+//                }
+//            })
+//            it.setRightDrawableListener(object : JTextView.RightDrawableListener {
+//                override fun onRightDrawableListener() {
+//                    left2Listener?.onClickListener()
+//                }
+//            })
         }
 
 
@@ -165,16 +165,16 @@ class JTitleBar :RelativeLayout,View.OnClickListener {
         mMenuJTextView?.let{
             it.setCompoundDrawables(rightDrawable, null, right2Drawable, null)
 
-            it.setLeftDrawableListener(object : JTextView.LeftDrawableListener {
-                override fun onLeftDrawableListener() {
-                    rightListener?.onClickListener()
-                }
-            })
-            it.setRightDrawableListener(object : JTextView.RightDrawableListener {
-                override fun onRightDrawableListener() {
-                    right2Listener?.onClickListener()
-                }
-            })
+//            it.setLeftDrawableListener(object : JTextView.LeftDrawableListener {
+//                override fun onLeftDrawableListener() {
+//                    rightListener?.onClickListener()
+//                }
+//            })
+//            it.setRightDrawableListener(object : JTextView.RightDrawableListener {
+//                override fun onRightDrawableListener() {
+//                    right2Listener?.onClickListener()
+//                }
+//            })
         }
     }
 

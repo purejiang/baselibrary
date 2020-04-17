@@ -25,7 +25,7 @@
     </declare-styleable>
 
     <declare-styleable name="JEditTextView">
-        <attr name="delete_pic" format="reference" />
+        <attr name="right_pic" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="LinesLoadingView">

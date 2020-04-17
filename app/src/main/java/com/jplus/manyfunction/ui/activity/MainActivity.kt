@@ -5,11 +5,14 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.presenter.TestPresenter
 import com.jplus.manyfunction.ui.fragment.TestFragment
 import com.nice.baselibrary.base.ui.BaseActivity
 import com.nice.baselibrary.widget.dialog.JAlertDialog
+import com.nice.baselibrary.widget.loading.LoadingListener
+import com.nice.baselibrary.widget.loading.LoadingManager
 
 
 class MainActivity : BaseActivity() {
@@ -23,6 +26,8 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
 //        AppUtils.instance.init(this)
 //        LogUtils.init(this, true)
 //        JPermissionsUtils.instance.init(this)
@@ -46,6 +51,7 @@ class MainActivity : BaseActivity() {
         super.onConfigurationChanged(newConfig)
         Log.d("pipa", "onConfigurationChanged")
     }
+
     override fun onStart() {
         super.onStart()
 //        throw RuntimeException("test failed")
@@ -95,7 +101,7 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onFindView() {
-        if(mFragment ==null){
+        if (mFragment == null) {
             mFragment = TestFragment()
         }
         val translation = supportFragmentManager.beginTransaction()
@@ -104,7 +110,7 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onBindListener() {
-        mFragment?.let{
+        mFragment?.let {
             TestPresenter(it, this)
         }
     }

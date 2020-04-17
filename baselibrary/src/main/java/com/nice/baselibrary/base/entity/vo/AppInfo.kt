@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.vo
+package com.nice.baselibrary.base.entity.vo
 
 
 import android.graphics.drawable.Drawable

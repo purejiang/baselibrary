@@ -7,7 +7,7 @@ import com.jplus.manyfunction.net.dto.InitShowResponse
 import com.nice.baselibrary.base.net.download.JDownloadCallback
 import com.nice.baselibrary.base.mvp.BaseView
 import com.nice.baselibrary.base.mvp.BasePresenter
-import com.nice.baselibrary.base.vo.AppInfo
+import com.nice.baselibrary.base.entity.vo.AppInfo
 import com.nice.baselibrary.widget.dialog.JAlertDialog
 import java.io.File
 

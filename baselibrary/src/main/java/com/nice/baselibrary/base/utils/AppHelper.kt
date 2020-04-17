@@ -13,7 +13,7 @@ import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import com.nice.baselibrary.base.common.Constant
-import com.nice.baselibrary.base.vo.AppInfo
+import com.nice.baselibrary.base.entity.vo.AppInfo
 import java.text.SimpleDateFormat
 import java.util.*
 

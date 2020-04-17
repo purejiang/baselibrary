@@ -32,7 +32,7 @@ import com.nice.baselibrary.base.listener.NotDoubleOnClickListener
 import com.nice.baselibrary.base.net.download.JDownloadCallback
 import com.nice.baselibrary.base.ui.BaseFragment
 import com.nice.baselibrary.base.utils.*
-import com.nice.baselibrary.base.vo.AppInfo
+import com.nice.baselibrary.base.entity.vo.AppInfo
 import com.nice.baselibrary.widget.JTextView
 import com.nice.baselibrary.widget.dialog.JAlertDialog
 import com.nice.baselibrary.widget.dialog.JDialog
@@ -63,6 +63,7 @@ class TestFragment : BaseFragment(), TestContract.View {
         this.activity?.let {
             mPresenter?.init(it)
         }
+
     }
 
     override fun bindListener() {

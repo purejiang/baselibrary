@@ -14,6 +14,7 @@ import com.nice.baselibrary.base.common.BaseLibrary
 import com.nice.baselibrary.base.net.download.JDownloadCallback
 import com.nice.baselibrary.base.entity.vo.JDownloadInfo
 import com.jplus.manyfunction.download.JDownloadManager
+import com.jplus.manyfunction.entity.test
 import com.jplus.manyfunction.net.HostList
 import com.jplus.manyfunction.net.dto.*
 

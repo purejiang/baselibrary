@@ -1,6 +1,7 @@
 package com.jplus.manyfunction.ui.activity
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -11,14 +12,50 @@ import com.jplus.manyfunction.R
 import com.nice.baselibrary.base.adapter.BaseAdapter
 import com.nice.baselibrary.base.adapter.BaseAdapterWrapper
 import com.nice.baselibrary.base.utils.showNormalToast
+import com.nice.baselibrary.widget.loading.LoadingListener
+import com.nice.baselibrary.widget.loading.LoadingManager
 import kotlinx.android.synthetic.main.activity_refresh.*
 
 
 class RefreshActivity : AppCompatActivity() {
-
+    private var mloadingmanager: LoadingManager? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_refresh)
+        mloadingmanager = LoadingManager(this, object : LoadingListener() {
+            override fun setRetryEvent(retryView: View?) {
+
+            }
+
+            override fun setEmptyEvent(emptyView: View?) {
+
+            }
+
+            override fun setLoadingEvent(loadingView: View?) {
+
+            }
+
+            override fun generateLoadingLayoutId(): Int {
+                return super.generateLoadingLayoutId()
+            }
+        })
+        mloadingmanager?.showLoading()
+        Handler().postDelayed({
+            initView()
+        },3000)
+
+//        jrv_test.setJRefreshViewListener(object : JRefreshView.JRefreshListener {
+//            override fun refreshListener() {
+//                NiceShowView.instance.NormalToast("refreshListener").show()
+//            }
+//            override fun loadListener() {
+//                NiceShowView.instance.NormalToast("loadListener").show()
+//            }
+//        }).setAdapter(niceAdapter)
+
+    }
+
+    private fun initView() {
         val list = arrayListOf<String>()
         for (i in 1..100) {
             list.add("item$i")
@@ -43,10 +80,11 @@ class RefreshActivity : AppCompatActivity() {
                 return true
             }
         })
-        val adapterWrapper = BaseAdapterWrapper(niceAdapter, object :BaseAdapterWrapper.CreatedListener{
+        val adapterWrapper = BaseAdapterWrapper(niceAdapter, object : BaseAdapterWrapper.CreatedListener {
             override fun setHeadView(): View {
                 return LayoutInflater.from(this@RefreshActivity).inflate(R.layout.view_test_head, null)
             }
+
             override fun setFootView(): View {
                 return LayoutInflater.from(this@RefreshActivity).inflate(R.layout.view_test_foot, null)
             }
@@ -59,18 +97,10 @@ class RefreshActivity : AppCompatActivity() {
         }
         val rvManager = LinearLayoutManager(this)
         rvManager.stackFromEnd = true
-        rvManager.reverseLayout =true
+        rvManager.reverseLayout = true
         rcy_test.layoutManager = rvManager
         rcy_test.itemAnimator = DefaultItemAnimator()
         rcy_test.adapter = adapterWrapper
-//        jrv_test.setJRefreshViewListener(object : JRefreshView.JRefreshListener {
-//            override fun refreshListener() {
-//                NiceShowView.instance.NormalToast("refreshListener").show()
-//            }
-//            override fun loadListener() {
-//                NiceShowView.instance.NormalToast("loadListener").show()
-//            }
-//        }).setAdapter(niceAdapter)
-
+        mloadingmanager?.showContent()
     }
 }
