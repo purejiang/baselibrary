@@ -121,6 +121,21 @@ class TestFragment : BaseFragment(), TestContract.View {
                 mPresenter?.showWebView("")
             }
         })
+        jtv_text.setDrawableClickListener(object :JTextView.DrawableClickListener{
+            override fun onClickListener(type: Int) {
+                activity?.showNormalToast("click$type")
+                when(type){
+                    JTextView.DRAWABLE_TOP->
+                        activity?.showNormalToast("click top")
+                    JTextView.DRAWABLE_RIGHT->
+                        activity?.showNormalToast("click right")
+                    JTextView.DRAWABLE_LEFT->
+                        activity?.showNormalToast("click left")
+                    JTextView.DRAWABLE_BOTTOM->
+                        activity?.showNormalToast("click bottom")
+                }
+            }
+        })
     }
 
 

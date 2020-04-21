@@ -7,7 +7,7 @@ package com.nice.baselibrary.base.utils
  */
 class StringUtils {
     companion object {
-        private val hexDigits = charArrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
+        private  val HEX_DIGITS = charArrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
 
         /**
          * 解析URL中的文件名
@@ -48,13 +48,37 @@ class StringUtils {
             val ret = CharArray(len.shl(1))
             var j = 0
             for (i in bytes) {
-                ret[j++] = hexDigits[i.toInt().shr(4) and 0x0f]
-                ret[j++] = hexDigits[i.toInt() and 0x0f]
+                ret[j++] = HEX_DIGITS[i.toInt().shr(4) and 0x0f]
+                ret[j++] = HEX_DIGITS[i.toInt() and 0x0f]
             }
             return String(ret)
         }
+        /**
+         * string 转 unicode
+         * @param string
+         * @return
+         */
+        fun string2Unicode(string: String): String {
+            val unicode = StringBuffer()
+            for (element in string) { // 取出每一个字符
+                // 转换为unicode
+                unicode.append("\\u" + Integer.toHexString(element.toInt()))
+            }
+            return unicode.toString()
+        }
 
-
+        /**
+         * 占位符替换
+         * @param ts 替换的字符串集合
+         * @return 返回替换后的新字符串
+         */
+        fun String.format2Str(vararg ts: String): String {
+            var content = this
+            for ((index, i) in ts.indices.withIndex()) {
+                content = content.replace("{$index}", ts[i], false)
+            }
+            return content
+        }
     }
 
 }

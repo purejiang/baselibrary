@@ -1,6 +1,5 @@
 package com.jplus.manyfunction.ui.activity
 
-import android.content.Intent
 import android.os.Bundle
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.presenter.DownloadListPresenter
@@ -36,7 +35,7 @@ class DownloadListActivity : BaseActivity() {
     }
 
     override fun onBindListener() {
-        bt_download.setMainTitle("下载列表")
+        bt_download.setMiddleTitle("下载列表")
         DownloadListPresenter(this, mDownloadFragment)
     }
 

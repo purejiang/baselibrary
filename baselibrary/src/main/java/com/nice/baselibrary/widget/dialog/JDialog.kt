@@ -72,7 +72,7 @@ class JDialog
      */
     fun setTitle(title: String): JDialog {
         mTitle?.visibility = View.VISIBLE
-        mTitle?.setMainTitle(title)
+        mTitle?.setMiddleTitle(title)
         return this
     }
     /**

@@ -1,14 +1,9 @@
 package com.nice.baselibrary.base.utils
 
-import android.annotation.SuppressLint
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.net.Uri
-import android.net.wifi.WifiManager
 import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
@@ -39,8 +34,8 @@ fun Context.getAppName(): String {
 }
 
 /**
- * 获取手机已安装的非系统应用
- * @param isSystem
+ * 获取手机已安装的应用
+ * @param isSystem 是否包含系统应用
  * @return
  */
 fun Context.getAppsInfo(isSystem: Boolean): MutableList<AppInfo> {
@@ -73,6 +68,9 @@ fun Context.getAppsInfo(isSystem: Boolean): MutableList<AppInfo> {
     return appsInfo
 }
 
+/**
+ * 获取指定app的签名md5
+ */
 fun Context.getSignerMD5(packageName: String): String {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
         this.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES).signingInfo.apkContentsSigners[0].toByteArray().encryptionMD5()
@@ -147,122 +145,3 @@ fun getMaxMemory(): Int {
     return (Runtime.getRuntime().maxMemory() / 1024).toInt()
 }
 
-/**
- * 获取当前手机的cpu架构
- * @return
- */
-fun getCpuABI(): String {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) Arrays.toString(Build.SUPPORTED_ABIS) else Build.CPU_ABI
-}
-
-/**
- * 获取当前手机Android API版本
- * @return
- */
-fun getApiLevel(): Int {
-    return Build.VERSION.SDK_INT
-}
-
-/**
- * 获取手机Android 版本
- * @return
- */
-fun getOsLevel(): String {
-    return Build.VERSION.RELEASE
-}
-
-/**
- * 获取当前手机设备信息,生产厂家+品牌+型号
- * @return
- */
-fun getDeviceInfo(): String {
-    return Build.MANUFACTURER + "_" + Build.BRAND + "_" + Build.MODEL
-}
-
-/**
- * 获取设备mac地址
- * @return
- */
-@SuppressLint("MissingPermission")
-fun Context.getMacAddress(): String {
-    return (this.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager).connectionInfo.macAddress
-}
-
-/**
- * 品牌名
- * @return
- */
-fun getDeviceProduct(): String {
-    return Build.PRODUCT
-}
-
-/**
- *  获取可用显示尺寸的绝对宽度（以像素为单位）
- *  @return
- */
-
-fun Context.getScreenWidth(): Int {
-    return this.resources.displayMetrics.widthPixels
-}
-
-/**
- *  获取可用显示尺寸的绝对高度（以像素为单位）
- *  @return
- */
-fun Context.getScreenHeight(): Int {
-    return this.resources.displayMetrics.heightPixels
-}
-
-/**
- *  根据包名跳转到第三方应用，不重复启动
- *  @param packageName
- *  @return
- */
-fun Context.startAppByPackageName(packageName: String) {
-    Intent(Intent.ACTION_MAIN).let {
-        var mainAct = ""
-        it.addCategory(Intent.CATEGORY_LAUNCHER)
-        it.flags = Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED or Intent.FLAG_ACTIVITY_NEW_TASK
-        val list = this.packageManager.queryIntentActivities(it, PackageManager.MATCH_DEFAULT_ONLY)
-        for (i in list.indices) {
-            val info = list[i]
-            if (info.activityInfo.packageName == packageName) {
-                mainAct = info.activityInfo.name
-                break
-            }
-        }
-        if (mainAct.isEmpty()) return
-
-        it.component = ComponentName(packageName, mainAct)
-        this.startActivity(it)
-    }
-}
-
-/**
- * 安装apk
- * @param path apk文件路径
- * @param authority fileProvider的authority
- */
-fun Context.installApk(path: String, authority: String) {
-    Intent(Intent.ACTION_VIEW).let {
-        it.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        it.setDataAndType(
-                this.path2Uri(path, authority),
-                "application/vnd.android.package-archive"
-        )
-        this.startActivity(it);
-    }
-}
-
-/**
- *  卸载第三方应用
- *  @return
- */
-fun Context.deleteAppByPackageName(packageName: String) {
-    Intent(Intent.ACTION_DELETE).let {
-        it.data = Uri.parse("package:$packageName")
-        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(it)
-    }
-}

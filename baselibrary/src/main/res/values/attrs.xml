@@ -32,4 +32,18 @@
         <attr name="lines_color" format="color" />
         <attr name="rate" format="float" />
     </declare-styleable>
+    <declare-styleable name="JTitleBar">
+        <attr name="left_txt" format="string" />
+        <attr name="right_txt" format="string" />
+        <attr name="middle_txt" format="string"/>
+        <attr name="left_txt_color" format="color" />
+        <attr name="right_txt_color" format="color" />
+        <attr name="middle_txt_color" format="color"/>
+        <attr name="left_middletxt_img" format="reference"/>
+        <attr name="right_middletxt_img" format="reference"/>
+        <attr name="left_lefttxt_img" format="reference" />
+        <attr name="right_lefttxt_img" format="reference" />
+        <attr name="left_righttxt_img" format="reference" />
+        <attr name="right_righttxt_img" format="reference" />
+    </declare-styleable>
 </resources>
