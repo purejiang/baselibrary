@@ -1,6 +1,7 @@
 package com.nice.baselibrary.base.utils
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -147,7 +148,7 @@ fun Context.startAppByPackageName(packageName: String) {
  * @param path apk文件路径
  * @param authority fileProvider的authority
  */
-fun Context.installApk(path: String, authority: String) {
+fun Activity.installApk(path: String, authority: String, requestCode:Int) {
     Intent(Intent.ACTION_VIEW).let {
         it.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -155,7 +156,7 @@ fun Context.installApk(path: String, authority: String) {
                 this.path2Uri(path, authority),
                 "application/vnd.android.package-archive"
         )
-        this.startActivity(it);
+        this.startActivityForResult(it, requestCode);
     }
 }
 
