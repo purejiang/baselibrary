@@ -2,6 +2,7 @@ package com.nice.baselibrary.base.common
 
 import android.app.Activity
 import android.content.Context
+import android.os.Environment
 import com.nice.baselibrary.base.utils.*
 import java.io.File
 import java.util.*

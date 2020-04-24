@@ -13,6 +13,7 @@ import com.nice.baselibrary.base.ui.BaseActivity
 import com.nice.baselibrary.widget.dialog.JAlertDialog
 import com.nice.baselibrary.widget.loading.LoadingListener
 import com.nice.baselibrary.widget.loading.LoadingManager
+import java.lang.RuntimeException
 
 
 class MainActivity : BaseActivity() {
@@ -27,7 +28,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
+//            throw RuntimeException("aaaaa")
 //        AppUtils.instance.init(this)
 //        LogUtils.init(this, true)
 //        JPermissionsUtils.instance.init(this)

@@ -35,7 +35,7 @@ class DownloadListActivity : BaseActivity() {
     }
 
     override fun onBindListener() {
-        bt_download.setMiddleTitle("下载列表")
+//        bt_download.setMiddleTitle("下载列表")
         DownloadListPresenter(this, mDownloadFragment)
     }
 

@@ -26,7 +26,6 @@ fun File.writeFile(stream: InputStream, append: Boolean): Boolean {
     var outputStream: OutputStream? = null
     LogUtils.d("writeFile:" + this.absoluteFile)
     try {
-        if(!this.createFile()) return false
         outputStream = FileOutputStream(this, append)
         val data = ByteArray(1024)
         var length = 0
@@ -56,10 +55,10 @@ fun File.writeFile(stream: InputStream, append: Boolean): Boolean {
  * @return
  */
 fun File.writeFile(content: String, append: Boolean): Boolean {
-    LogUtils.d("writeFile:" + this.absoluteFile)
     var writer: BufferedWriter? = null
     try {
-        if(!this.createFile()) return false
+        LogUtils.d("writeFile:" + this.absoluteFile)
+        //FileWriter 文件不存在则会创建
         writer = BufferedWriter(FileWriter(this, append))
         writer.write(content)
         return true
@@ -263,7 +262,7 @@ fun getFolderName(filePath: String): String {
  */
 fun File.createFile(): Boolean {
     if (this.exists()) return true
-    if (this.isFile) File(getFolderName(this.absolutePath)).createDir() else return false
+    if (this.isDirectory) File(getFolderName(this.absolutePath)).createDir() else return false
     return try {
         this.createNewFile()
     } catch (e: IOException) {

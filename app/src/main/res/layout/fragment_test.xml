@@ -108,18 +108,14 @@
             android:drawableLeft="@mipmap/ic_del_grey"
             android:text="input"/>
 
-        <com.nice.baselibrary.widget.JTitleBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/gray"
-            app:left_txt="返回"
-            app:left_lefttxt_img="@mipmap/ic_launcher"
-            app:middle_txt_color="@color/aquamarine"
-            app:right_txt="菜单"
-            app:left_middletxt_img="@mipmap/ic_launcher"
-            app:right_txt_color="@color/aqua"
-            app:middle_txt="标题内容"
-            app:right_righttxt_img="@mipmap/ic_launcher"
-            app:left_txt_color="@color/burlywood"/>
+       <com.nice.baselibrary.widget.JItemLinearView
+           android:layout_width="match_parent"
+           android:layout_height="?actionBarSize"
+           app:left_img="@mipmap/ic_video_back"
+           app:middle_txt="标题"
+           app:left_txt="返回"
+           app:right_txt="进入"
+           app:right_img="@mipmap/ic_home_focus"
+           app:view_type="setting"/>
             </LinearLayout>
     </ScrollView>

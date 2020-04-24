@@ -32,6 +32,7 @@
         <attr name="lines_color" format="color" />
         <attr name="rate" format="float" />
     </declare-styleable>
+
     <declare-styleable name="JTitleBar">
         <attr name="left_txt" format="string" />
         <attr name="right_txt" format="string" />
@@ -45,5 +46,22 @@
         <attr name="right_lefttxt_img" format="reference" />
         <attr name="left_righttxt_img" format="reference" />
         <attr name="right_righttxt_img" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="JItemLinearView">
+        <attr name="view_type" format="dimension">
+            <!-- 默认设置条 -->
+            <enum name="setting" value="0" />
+            <!-- 进入条/返回条-->
+            <enum name="normal" value="1" />
+        </attr>
+        <attr name="left_text" format="string" />
+        <attr name="right_text" format="string" />
+        <attr name="middle_text" format="string"/>
+        <attr name="left_text_color" format="color" />
+        <attr name="right_text_color" format="color" />
+        <attr name="middle_text_color" format="color"/>
+        <attr name="left_img" format="reference"/>
+        <attr name="right_img" format="reference"/>
     </declare-styleable>
 </resources>

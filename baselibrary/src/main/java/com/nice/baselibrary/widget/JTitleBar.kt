@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import com.nice.baselibrary.R
@@ -16,7 +17,8 @@ import com.nice.baselibrary.R
  * @author JPlus
  * @date 2019/1/21.
  */
-class JTitleBar : RelativeLayout {
+@Deprecated("to use JItemLinearView.")
+class JTitleBar : LinearLayout {
     private var mRightTextView: JTextView? = null
     private var mMiddleTextView: JTextView? = null
     private var mLeftTextView: JTextView? = null
