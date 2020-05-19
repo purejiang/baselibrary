@@ -7,6 +7,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.InputStream
+import java.lang.RuntimeException
 import java.util.*
 
 /**
@@ -32,7 +33,7 @@ object LogUtils {
     /**
      * 存放日志目录
      */
-    private var mDir:File?=null
+    private var mDir: File? = null
 
     /**
      * 初始化
@@ -50,23 +51,28 @@ object LogUtils {
     }
 
     fun e(message: String, tag: String = mTag) {
-        if (mDebug) Log.e(tag, message)
+        val info = getAutoJumpLogInfo()
+        if (mDebug) Log.e(tag, "info:${info[0]} ${info[1]} ${info[2]}, msg:$message")
     }
 
     fun d(message: String, tag: String = mTag) {
-        if (mDebug) Log.d(tag, message)
+        val info = getAutoJumpLogInfo()
+        if (mDebug) Log.d(tag, "info:${info[0]} ${info[1]} ${info[2]}, msg:$message")
     }
 
     fun w(message: String, tag: String = mTag) {
-        if (mDebug) Log.w(tag, message)
+        val info = getAutoJumpLogInfo()
+        if (mDebug) Log.w(tag, "info${info[0]} ${info[1]} ${info[2]}, msg:$message")
     }
 
     fun v(message: String, tag: String = mTag) {
-        if (mDebug) Log.v(tag, message)
+        val info = getAutoJumpLogInfo()
+        if (mDebug) Log.v(tag, "info:${info[0]} ${info[1]} ${info[2]}, msg:$message")
     }
 
     fun i(message: String, tag: String = mTag) {
-        if (mDebug) Log.i(tag, message)
+        val info = getAutoJumpLogInfo()
+        if (mDebug) Log.i(tag, "info:${info[0]} ${info[1]} ${info[2]}, msg:$message")
     }
 
 
@@ -111,4 +117,23 @@ object LogUtils {
         }
     }
 
+    /**
+     * 获取当前log所在的堆栈信息
+     * @return Array<String>{类名， 方法名， 行数}
+     */
+    private fun getAutoJumpLogInfo(): Array<String> {
+        val info = Array(3) {
+            ""
+        }
+        val elements = Thread.currentThread().stackTrace
+
+        return if (elements.size < 5) {
+            info
+        } else {
+            info[0] = elements[5].className.substring(elements[5].className.lastIndexOf(".") + 1)
+            info[1] = elements[5].methodName + "()"
+            info[2] = " at (" + elements[5].className + ".java:" + elements[5].lineNumber + ")"
+            info
+        }
+    }
 }
