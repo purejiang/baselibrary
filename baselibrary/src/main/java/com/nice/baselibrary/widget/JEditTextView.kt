@@ -17,7 +17,7 @@ import com.nice.baselibrary.R
  */
 class JEditTextView(context: Context, attrs: AttributeSet?) : AppCompatEditText(context, attrs) {
     private var mRightPic: Drawable? = null
-
+    private var mCallBack:(()->Unit)?=null
     private val mTypeArray by lazy {
         context.obtainStyledAttributes(attrs, R.styleable.JEditTextView)
     }
@@ -35,6 +35,8 @@ class JEditTextView(context: Context, attrs: AttributeSet?) : AppCompatEditText(
             }
 
             override fun afterTextChanged(s: Editable) {
+                if(length()==0) mCallBack?.let{it()}
+
                 //设置editText右图
                 mRightPic?.let {
                     //使用setCompoundDrawables()是没有效果的
@@ -42,6 +44,10 @@ class JEditTextView(context: Context, attrs: AttributeSet?) : AppCompatEditText(
                 }
             }
         })
+    }
+
+    fun setEditCallBack(callBack:(()->Unit)){
+        mCallBack = callBack
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -57,4 +63,6 @@ class JEditTextView(context: Context, attrs: AttributeSet?) : AppCompatEditText(
         }
         return super.onTouchEvent(event)
     }
+
+
 }
