@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.db
+package com.nice.baselibrary.base.source
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper
  * @author JPlus
  * @date 2019/2/16.
  */
-abstract class JDBHelper<T>(context: Context, dataName: String, factory: SQLiteDatabase.CursorFactory?, dataVersion: Int) : SQLiteOpenHelper(context, dataName, factory, dataVersion) {
+abstract class BaseDbHelper<T>(context: Context, dataName: String, factory: SQLiteDatabase.CursorFactory?, dataVersion: Int) : SQLiteOpenHelper(context, dataName, factory, dataVersion) {
 
     override fun onCreate(db: SQLiteDatabase?) {
         onCreated(db)
@@ -63,7 +63,7 @@ abstract class JDBHelper<T>(context: Context, dataName: String, factory: SQLiteD
      * @param map
      * @return
      */
-    abstract fun query(map:MutableMap<String, out String>): MutableList<T>?
+    abstract fun query(map:MutableMap<String, out String>): MutableList<T>
     /**
      * 通过id查询数据
      * @param id
@@ -76,12 +76,12 @@ abstract class JDBHelper<T>(context: Context, dataName: String, factory: SQLiteD
      * @param limit
      * @return
      */
-    abstract fun query(pages:Int, limit:Int):MutableList<T>?
+    abstract fun query(pages:Int, limit:Int):MutableList<T>
     /**
      * 查询所有数据
      * @return
      */
-    abstract fun queryAll():MutableList<T>?
+    abstract fun queryAll():MutableList<T>
     /**
      * 查询数据项
      * @return
