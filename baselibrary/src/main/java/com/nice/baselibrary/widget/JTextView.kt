@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatTextView
+import com.nice.baselibrary.base.utils.LogUtils
 
 
 /**
@@ -39,10 +40,14 @@ class JTextView : AppCompatTextView {
         this.isSelected = true
     }
 
+    override fun performClick(): Boolean {
+        return super.performClick()
+    }
+
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         when (event?.action) {
             MotionEvent.ACTION_UP -> {
-                Log.d("pipa", " MotionEvent.ACTION_DOWN")
+                LogUtils.d(" MotionEvent.ACTION_DOWN")
                 mDrawableListener?.let {
                     val leftDrawable = compoundDrawables[DRAWABLE_LEFT] //获取左边图片
                     if (leftDrawable != null && event.rawX <= (left + leftDrawable.bounds.width())) {//判断点击是否在图片区域中
@@ -65,6 +70,7 @@ class JTextView : AppCompatTextView {
                         return true
                     }
                 }
+                performClick()
             }
         }
         return super.onTouchEvent(event)

@@ -17,7 +17,7 @@ import com.nice.baselibrary.R
  * @author JPlus
  * @date 2019/1/21.
  */
-@Deprecated("to use JItemLinearView.")
+@Deprecated("Please to use JItemLinearView.")
 class JTitleBar : LinearLayout {
     private var mRightTextView: JTextView? = null
     private var mMiddleTextView: JTextView? = null

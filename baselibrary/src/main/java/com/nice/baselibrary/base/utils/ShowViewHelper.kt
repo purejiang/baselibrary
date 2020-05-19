@@ -5,7 +5,7 @@ import android.view.Gravity
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import com.nice.baselibrary.R
-import com.nice.baselibrary.widget.dialog.JAlertDialog
+import com.nice.baselibrary.widget.dialog.BaseAlertDialog
 import com.nice.baselibrary.widget.dialog.JDialog
 
 /**
@@ -28,8 +28,8 @@ fun Context.createDialog(resInt: Int, resIntArray: Array<Int>, styleable: Int): 
  * 返回一个弹出框Builder
  * @return Builder
  */
-fun FragmentActivity.getAlertDialog(): JAlertDialog.Builder {
-    return JAlertDialog.Builder(this.supportFragmentManager)
+fun FragmentActivity.getAlertDialog(): BaseAlertDialog.Builder {
+    return BaseAlertDialog.Builder(this.supportFragmentManager)
 }
 
 /**

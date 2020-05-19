@@ -170,7 +170,6 @@ class BaseCircleProgress(context: Context, attrs: AttributeSet?) : BaseLoadingVi
      * @param isShowNum
      */
     private fun drawByProgress(progress: Double, canvas: Canvas, isShowNum: Boolean) {
-        Log.e("pipa", "draw:$progress")
         when (progress) {
             LOADING_NORMAL -> {
                 //未下载

@@ -4,11 +4,11 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.google.android.material.textfield.TextInputEditText
@@ -29,12 +29,13 @@ import com.jplus.manyfunction.utils.ParseVideoInUrl
 import com.nice.baselibrary.base.adapter.BaseAdapter
 import com.nice.baselibrary.base.common.Constant
 import com.nice.baselibrary.base.listener.NotDoubleOnClickListener
-import com.nice.baselibrary.base.net.download.JDownloadCallback
+import com.jplus.manyfunction.download.DownloadCallback
 import com.nice.baselibrary.base.ui.BaseFragment
 import com.nice.baselibrary.base.utils.*
 import com.nice.baselibrary.base.entity.vo.AppInfo
+import com.nice.baselibrary.widget.JEditTextView
 import com.nice.baselibrary.widget.JTextView
-import com.nice.baselibrary.widget.dialog.JAlertDialog
+import com.nice.baselibrary.widget.dialog.BaseAlertDialog
 import com.nice.baselibrary.widget.dialog.JDialog
 import kotlinx.android.synthetic.main.fragment_test.*
 import okhttp3.ResponseBody
@@ -105,11 +106,10 @@ class TestFragment : BaseFragment(), TestContract.View {
                 mPresenter?.download()
             }
         })
-        btn_app_refresh?.setOnClickListener(object :NotDoubleOnClickListener(){
+        btn_app_refresh?.setOnClickListener(object : NotDoubleOnClickListener() {
             override fun notDoubleOnClick(view: View) {
                 mPresenter?.refreshLoadView()
             }
-
         })
         btn_app_share?.setOnClickListener(object : NotDoubleOnClickListener() {
             override fun notDoubleOnClick(view: View) {
@@ -121,21 +121,9 @@ class TestFragment : BaseFragment(), TestContract.View {
                 mPresenter?.showWebView("")
             }
         })
-        jtv_text.setDrawableClickListener(object :JTextView.DrawableClickListener{
-            override fun onClickListener(type: Int) {
-                activity?.showNormalToast("click$type")
-                when(type){
-                    JTextView.DRAWABLE_TOP->
-                        activity?.showNormalToast("click top")
-                    JTextView.DRAWABLE_RIGHT->
-                        activity?.showNormalToast("click right")
-                    JTextView.DRAWABLE_LEFT->
-                        activity?.showNormalToast("click left")
-                    JTextView.DRAWABLE_BOTTOM->
-                        activity?.showNormalToast("click bottom")
-                }
-            }
-        })
+        jdt_text?.setEditCallBack {
+            Log.d("pipa", "jdt_text.changedToEmpty")
+        }
     }
 
 
@@ -175,7 +163,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setAnimationRes(R.style.NiceDialogAnim)
                     .setGravity(Gravity.BOTTOM)
                     .setDimAmount(0.0f)
-                    .setBindViewListener(object : JAlertDialog.OnBindViewListener {
+                    .setBindViewListener(object : BaseAlertDialog.OnBindViewListener {
                         override fun onBindView(viewHolder: BaseAdapter.VH) {
                             viewHolder.getView<JTextView>(R.id.ntv_photo_dialog_camera).text = "相机"
                             viewHolder.getView<JTextView>(R.id.ntv_photo_dialog_photo).text = "照片"
@@ -184,8 +172,8 @@ class TestFragment : BaseFragment(), TestContract.View {
                         }
                     })
                     .addClickedId(R.id.ntv_photo_dialog_camera, R.id.ntv_photo_dialog_photo, R.id.ntv_photo_dialog_cancel)
-                    .setViewClickListener(object : JAlertDialog.OnViewClickListener {
-                        override fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: JAlertDialog) {
+                    .setViewClickListener(object : BaseAlertDialog.OnViewClickListener {
+                        override fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: BaseAlertDialog) {
                             dialog.dismiss()
                             mPresenter?.checkToCameraOrPhoto(view, dialog)
                         }
@@ -226,7 +214,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setAnimationRes(R.style.NiceDialogAnim)
                     .setGravity(Gravity.BOTTOM)
                     .setDimAmount(0.0f)
-                    .setBindViewListener(object : JAlertDialog.OnBindViewListener {
+                    .setBindViewListener(object : BaseAlertDialog.OnBindViewListener {
                         override fun onBindView(viewHolder: BaseAdapter.VH) {
                             viewHolder.getView<JTextView>(R.id.ntv_photo_dialog_camera).text = "相机"
                             viewHolder.getView<JTextView>(R.id.ntv_photo_dialog_photo).text = "照片"
@@ -235,8 +223,8 @@ class TestFragment : BaseFragment(), TestContract.View {
                         }
                     })
                     .addClickedId(R.id.ntv_photo_dialog_camera, R.id.ntv_photo_dialog_photo, R.id.ntv_photo_dialog_cancel)
-                    .setViewClickListener(object : JAlertDialog.OnViewClickListener {
-                        override fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: JAlertDialog) {
+                    .setViewClickListener(object : BaseAlertDialog.OnViewClickListener {
+                        override fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: BaseAlertDialog) {
                             dialog.dismiss()
                             mPresenter?.checkToCameraOrPhoto(view, dialog)
                         }
@@ -300,8 +288,6 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setAnimationRes(R.style.NiceDialogAnim)
                     .setGravity(Gravity.CENTER)
                     .setDimAmount(0.2f)
-                    .setListRes(R.id.recycler_test, LinearLayoutManager.VERTICAL)
-                    .setAdapter(adapter)
                     .create()
                     .show()
 
@@ -310,7 +296,7 @@ class TestFragment : BaseFragment(), TestContract.View {
 
     override fun showPatchDownLoad() {
         this.activity?.let {
-            JAlertDialog.Builder(it.supportFragmentManager)
+            BaseAlertDialog.Builder(it.supportFragmentManager)
                     .setLayoutRes(R.layout.view_patch_dialog)
                     .setCancelable(true)
                     .setTag("newDialog")
@@ -320,13 +306,13 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setGravity(Gravity.CENTER)
                     .setDimAmount(0.0f)
                     .addClickedId(R.id.btn_patch_download)
-                    .setViewClickListener(object : JAlertDialog.OnViewClickListener {
-                        override fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: JAlertDialog) {
+                    .setViewClickListener(object : BaseAlertDialog.OnViewClickListener {
+                        override fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: BaseAlertDialog) {
                             when (view.id) {
                                 R.id.btn_patch_download -> {
                                     LogUtils.d("btn_patch_download.setOnClickListener")
                                     val dirPath = File(Constant.Path.ROOT_DIR, Constant.Path.PATCH_DEX_DIR).absolutePath
-                                    mPresenter?.downLoadPatch("http://192.168.11.175:8000/file/upload/class2.dex", dirPath, object : JDownloadCallback {
+                                    mPresenter?.downLoadPatch("http://192.168.11.175:8000/file/upload/class2.dex", dirPath, object : DownloadCallback {
                                         override fun next(responseBody: ResponseBody) {
 
                                         }
@@ -367,7 +353,7 @@ class TestFragment : BaseFragment(), TestContract.View {
         ParseVideoInUrl().getResponse("https://z1.m1907.cn/?jx=安家")
 //        throw RuntimeException("Is RuntimeException.")
         this.activity?.let {
-            JAlertDialog.Builder(it.supportFragmentManager)
+            BaseAlertDialog.Builder(it.supportFragmentManager)
                     .setLayoutRes(R.layout.view_login_dialog)
                     .setCancelable(true)
                     .setTag("newDialog")
@@ -377,8 +363,8 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setGravity(Gravity.CENTER)
                     .setDimAmount(0.0f)
                     .addClickedId(R.id.btn_login_login)
-                    .setViewClickListener(object : JAlertDialog.OnViewClickListener {
-                        override fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: JAlertDialog) {
+                    .setViewClickListener(object : BaseAlertDialog.OnViewClickListener {
+                        override fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: BaseAlertDialog) {
                             when (view.id) {
                                 R.id.btn_login_login -> {
                                     val phone = viewHolder.getView<TextInputEditText>(R.id.input_edit_phone_login).text.toString()
@@ -405,7 +391,7 @@ class TestFragment : BaseFragment(), TestContract.View {
     override fun showVideoView(urlList: MutableList<Video>) {
         this.activity?.let {
             JDialog
-            JAlertDialog.Builder(it.supportFragmentManager)
+            BaseAlertDialog.Builder(it.supportFragmentManager)
                     .setLayoutRes(R.layout.view_video)
                     .setCancelable(false)
                     .setScreenWidthPercent(1.0f)
@@ -413,7 +399,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setAnimationRes(R.style.NiceDialogAnim)
                     .setGravity(Gravity.CENTER)
                     .setDimAmount(0.8f)
-                    .setBindViewListener(object :JAlertDialog.OnBindViewListener{
+                    .setBindViewListener(object :BaseAlertDialog.OnBindViewListener{
                         override fun onBindView(viewHolder: BaseAdapter.VH) {
                             this@TestFragment.activity?.let{ activity->
                                 presenter = JVideoViewPresenter(

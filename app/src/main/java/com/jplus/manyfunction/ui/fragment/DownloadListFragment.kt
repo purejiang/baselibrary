@@ -15,15 +15,15 @@ import com.jplus.manyfunction.adapter.DownloadAdapter
 import com.jplus.manyfunction.contract.DownloadListContract
 import com.nice.baselibrary.base.adapter.BaseAdapter
 import com.nice.baselibrary.base.common.Constant
-import com.nice.baselibrary.base.net.download.JDownloadState
-import com.nice.baselibrary.base.net.download.JDownloadCallback
-import com.nice.baselibrary.base.entity.vo.JDownloadInfo
+import com.nice.baselibrary.base.download.DownloadState
+import com.jplus.manyfunction.download.DownloadCallback
+import com.nice.baselibrary.base.entity.vo.DownloadInfo
 import com.nice.baselibrary.base.ui.BaseFragment
 import com.nice.baselibrary.base.utils.StringUtils
 import com.nice.baselibrary.base.utils.showGravityToast
 import com.nice.baselibrary.widget.BaseCircleProgress
 import com.nice.baselibrary.widget.JTextView
-import com.nice.baselibrary.widget.dialog.JAlertDialog
+import com.nice.baselibrary.widget.dialog.BaseAlertDialog
 import kotlinx.android.synthetic.main.fragemnt_download.*
 import okhttp3.ResponseBody
 import java.io.File
@@ -39,7 +39,7 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
     private var mDownloadRecy: RecyclerView? = null
     private var mDownloadAdapter: DownloadAdapter? = null
     private var mShowDelete = false
-    private var mCheckItems: ArrayList<JDownloadInfo> = arrayListOf()
+    private var mCheckItems: ArrayList<DownloadInfo> = arrayListOf()
 
     override fun getInitView(view: View?, bundle: Bundle?) {
         mDownloadRecy = view?.findViewById(R.id.rcy_downloads)
@@ -51,11 +51,11 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
     }
 
     override fun bindListener() {
-        val urls = "https://cn5.3days.cc/hls/20190804/ebfd96741e2e6e854144b2e012c30755/1564883639/film_00000.ts"
+        val urls = "http://eyepetizer-test.oss-cn-beijing.aliyuncs.com/files/eyepetizer/5.3.482/eyepetizer-eyepetizer_web.apk"
 
         fab_input_url.setOnClickListener {
             this.activity?.let {
-                JAlertDialog.Builder(it.supportFragmentManager)
+                BaseAlertDialog.Builder(it.supportFragmentManager)
                         .setLayoutRes(R.layout.view_input_url_dialog)
                         .setCancelable(true)
                         .setTag("newDialog")
@@ -65,13 +65,13 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
                         .setGravity(Gravity.CENTER)
                         .setDimAmount(0.0f)
                         .addClickedId(R.id.btn_input_url)
-                        .setBindViewListener(object : JAlertDialog.OnBindViewListener {
+                        .setBindViewListener(object : BaseAlertDialog.OnBindViewListener {
                             override fun onBindView(viewHolder: BaseAdapter.VH) {
                                 viewHolder.getView<TextInputEditText>(R.id.input_edit_input_url).setText(urls)
                             }
                         })
-                        .setViewClickListener(object : JAlertDialog.OnViewClickListener {
-                            override fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: JAlertDialog) {
+                        .setViewClickListener(object : BaseAlertDialog.OnViewClickListener {
+                            override fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: BaseAlertDialog) {
                                 when (view.id) {
                                     R.id.btn_input_url -> {
                                         val url = viewHolder.getView<TextInputEditText>(R.id.input_edit_input_url).text.toString()
@@ -104,10 +104,10 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
         activity?.showGravityToast(message)
     }
 
-    override fun addDownload(item: JDownloadInfo) {
+
+    override fun addDownload(item: DownloadInfo) {
         activity?.runOnUiThread {
             mDownloadAdapter?.addItem(item)
-
         }
     }
 
@@ -143,9 +143,10 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
         mPresenter?.unSubscribe()
     }
 
-    override fun showData(items: MutableList<JDownloadInfo>) {
+    override fun showData(items: MutableList<DownloadInfo>) {
+        Log.d("pipa", "showData====${items}")
         mDownloadAdapter = DownloadAdapter(items, object : DownloadAdapter.ItemClickListener {
-            override fun setItemCheck(itemView: DownloadAdapter.VH, item: JDownloadInfo, position: Int, checked: Boolean) {
+            override fun setItemCheck(itemView: DownloadAdapter.VH, item: DownloadInfo, position: Int, checked: Boolean) {
                 if (checked) {
                     Log.d("pipa", "position:$position, checked:$checked")
                     mCheckItems.add(item)
@@ -156,14 +157,14 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
                 }
             }
 
-            override fun setItemClick(itemView: DownloadAdapter.VH, item: JDownloadInfo, position: Int) {
+            override fun setItemClick(itemView: DownloadAdapter.VH, item: DownloadInfo, position: Int) {
                 Log.d("pipa", "setItemClick:info:$item")
                 mPresenter?.controlDownload(item, setBindView(itemView))
 
             }
 
             @SuppressLint("RestrictedApi")
-            override fun setItemLongClick(itemView: DownloadAdapter.VH, item: JDownloadInfo, position: Int): Boolean {
+            override fun setItemLongClick(itemView: DownloadAdapter.VH, item: DownloadInfo, position: Int): Boolean {
                 if (mShowDelete) {
                     mCheckItems.clear()
                     fab_input_url.visibility = View.VISIBLE
@@ -180,8 +181,8 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
             }
         })
         mDownloadAdapter?.setItemBindListener(object : DownloadAdapter.ItemBindListener {
-            override fun onBindListener(itemView: DownloadAdapter.VH, item: JDownloadInfo, position: Int): Boolean {
-                if (item.status == JDownloadState.DOWNLOAD_ING) {
+            override fun onBindListener(itemView: DownloadAdapter.VH, item: DownloadInfo, position: Int): Boolean {
+                if (item.status == DownloadState.DOWNLOAD_ING) {
                     mPresenter?.reBindListener(item, setBindView(itemView))
                     return false
                 }
@@ -191,24 +192,30 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
         mDownloadRecy?.adapter = mDownloadAdapter
     }
 
-    private fun setBindView(itemView: DownloadAdapter.VH): JDownloadCallback {
-        return object : JDownloadCallback {
+    private fun setBindView(itemView: DownloadAdapter.VH): DownloadCallback {
+        return object : DownloadCallback {
             override fun next(responseBody: ResponseBody) {
 
             }
 
             override fun update(read: Long, count: Long, done: Boolean) {
-                itemView.getView<BaseCircleProgress>(R.id.bcp_download_item).loading(String.format("%.1f", read * 100.0 / count).toDouble())
-                itemView.getView<JTextView>(R.id.btv_download_item_ratio).text = "${StringUtils.parseByteSize(read)}/${StringUtils.parseByteSize(count)}"
+                activity?.runOnUiThread {
+                    itemView.getView<BaseCircleProgress>(R.id.bcp_download_item).loading(String.format("%.1f", read * 100.0 / count).toDouble())
+                    itemView.getView<JTextView>(R.id.btv_download_item_ratio).text = "${StringUtils.parseByteSize(read)}/${StringUtils.parseByteSize(count)}"
+                }
             }
 
             override fun downloadSuccess() {
-                itemView.getView<BaseCircleProgress>(R.id.bcp_download_item).success()
+                activity?.runOnUiThread {
+                    itemView.getView<BaseCircleProgress>(R.id.bcp_download_item).success()
+                }
             }
 
             override fun downloadFailed(e: Throwable) {
                 Log.e("pipa", e.message)
-                itemView.getView<BaseCircleProgress>(R.id.bcp_download_item).failed()
+                activity?.runOnUiThread {
+                    itemView.getView<BaseCircleProgress>(R.id.bcp_download_item).failed()
+                }
             }
 
             override fun pause() {
@@ -216,16 +223,18 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
             }
 
             override fun downloadCancel() {
-                itemView.getView<BaseCircleProgress>(R.id.bcp_download_item).cancel()
+                activity?.runOnUiThread {
+                    itemView.getView<BaseCircleProgress>(R.id.bcp_download_item).cancel()
+                }
             }
         }
     }
 
-    override fun addDownloads(jDownloads: MutableList<JDownloadInfo>) {
+    override fun addDownloads(downloads: MutableList<DownloadInfo>) {
 
     }
 
-    override fun removeDownloads(items: MutableList<JDownloadInfo>) {
+    override fun removeDownloads(items: MutableList<DownloadInfo>) {
         mDownloadAdapter?.deleteItems(items)
     }
 }

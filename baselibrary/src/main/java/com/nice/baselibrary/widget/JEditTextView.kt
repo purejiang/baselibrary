@@ -50,19 +50,26 @@ class JEditTextView(context: Context, attrs: AttributeSet?) : AppCompatEditText(
         mCallBack = callBack
     }
 
+    override fun performClick(): Boolean {
+        return super.performClick()
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (mRightPic != null && event.action == MotionEvent.ACTION_UP) {
-            val eventX = event.rawX.toInt()
-            val eventY = event.rawY.toInt()
-            val rect = Rect()
-            this.getGlobalVisibleRect(rect)
-            rect.left = rect.right - 100
-            if (rect.contains(eventX, eventY)) {
-                this.text?.clear()
+        when(event.action){
+            MotionEvent.ACTION_UP->{
+                if (mRightPic != null) {
+                    val eventX = event.rawX.toInt()
+                    val eventY = event.rawY.toInt()
+                    val rect = Rect()
+                    this.getGlobalVisibleRect(rect)
+                    rect.left = rect.right - 100
+                    if (rect.contains(eventX, eventY)) {
+                        this.text?.clear()
+                    }
+                }
+                performClick()
             }
         }
         return super.onTouchEvent(event)
     }
-
-
 }

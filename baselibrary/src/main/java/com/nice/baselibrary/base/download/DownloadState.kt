@@ -1,11 +1,11 @@
-package com.nice.baselibrary.base.net.download
+package com.nice.baselibrary.base.download
 
 /**
  * 下载状态
  * @author JPlus
  * @date 2019/12/11.
  */
-class JDownloadState {
+class DownloadState {
         companion object {
             /**
              *未知

@@ -5,28 +5,26 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.presenter.TestPresenter
 import com.jplus.manyfunction.ui.fragment.TestFragment
 import com.nice.baselibrary.base.ui.BaseActivity
-import com.nice.baselibrary.widget.dialog.JAlertDialog
-import com.nice.baselibrary.widget.loading.LoadingListener
-import com.nice.baselibrary.widget.loading.LoadingManager
-import java.lang.RuntimeException
+import com.nice.baselibrary.widget.dialog.BaseAlertDialog
 
 
 class MainActivity : BaseActivity() {
 
 
-    private var jDialog: JAlertDialog? = null
+    private var jDialog: BaseAlertDialog? = null
 
     private var mFragment: TestFragment? = null
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
 //            throw RuntimeException("aaaaa")
 //        AppUtils.instance.init(this)
@@ -37,6 +35,7 @@ class MainActivity : BaseActivity() {
 //        Log.d("pipa", "getdate" + DateUtils.getEndDateTime(true,Date(System.currentTimeMillis())))
 //        LeniuPaySdk.getInstance(this).showPayDialog("元宝", null, "50")
     }
+
 
     override fun onContentChanged() {
         super.onContentChanged()
@@ -67,34 +66,6 @@ class MainActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
     }
-/*
-
-*/
-
-
-//        Assist.init(this)
-//        Assist.getAutoNetWork(false).SetOnNetWorkChangeListener(object :NetWorkReceiver.OnNetWorkChangeListener{
-//            override fun getNetStatus(isOnline: Boolean) {
-//                LogUtils.e("isOnline:"+isOnline)
-//            }
-//
-//            override fun getNetType(type: Int) {
-//                val message = when(type){
-//                    NetWorkReceiver.NETWORK_MOBILE -> "移动网络已连接！"
-//                    NetWorkReceiver.NETWORK_WIFI -> "Wifi已连接"
-//                    NetWorkReceiver.NETWORK_INVALID ->"网络未连接"
-//                    else -> {
-//                        "未知网络类型"
-//                    }
-//                }
-//                NiceShowView.instance.NormalToast(message).show()
-////                niceDialog?.dismiss()
-//            }
-//
-//            override fun getNetStrength(strength: Int) {
-//                LogUtils.e("strength:"+strength)
-//            }
-//        })
 
 
     override fun onInit() {

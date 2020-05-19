@@ -13,10 +13,10 @@ import com.nice.baselibrary.base.adapter.BaseAdapter
  * @author JPlus
  * @date 2019/4/17.
  */
-class JDialogController private constructor() {
+class BaseDialogController private constructor() {
     companion object {
-        fun create(): JDialogController {
-            return JDialogController()
+        fun create(): BaseDialogController {
+            return BaseDialogController()
         }
     }
 
@@ -24,15 +24,13 @@ class JDialogController private constructor() {
     private var mGravity = 0
     private var mLayoutRes = 0
     private var mOrientation = 0
-    var mDialogHeight = 0
-    var mDialogWidth = 0
+    private var mDialogHeight = 0
+    private var mDialogWidth = 0
     private var mDialogWidthPercent = -1f
     private var mDialogHeightPercent = -1f
 
     private var mDimAmount = 0.0f
     private var mBackgroundRes = 0
-    private var mListRecyclerId = 0
-    private var mListOrientation = 0
     private var mIsCancelable = false
 
     private var mIds: IntArray? = null
@@ -41,10 +39,9 @@ class JDialogController private constructor() {
     private var mAdapter: BaseAdapter<*>? = null
     private var mFragmentManager: FragmentManager? = null
     private var mOnKeyListener: DialogInterface.OnKeyListener? = null
-    private var mOnViewClickListener: JAlertDialog.OnViewClickListener? = null
-    private var mOnBindViewListener: JAlertDialog.OnBindViewListener? = null
+    private var mOnViewClickListener: BaseAlertDialog.OnViewClickListener? = null
+    private var mOnBindViewListener: BaseAlertDialog.OnBindViewListener? = null
     private var mOnDismissListener: DialogInterface.OnDismissListener? = null
-//    private var mListItemClickListener: NiceAdapter.ItemClickListener<*>? = null
 
 
     /*
@@ -60,6 +57,9 @@ class JDialogController private constructor() {
 
     fun getTag(): String {
         return mTag
+    }
+    fun getDialogView():View?{
+        return mDialogView
     }
 
     fun getGravity(): Int {
@@ -108,38 +108,17 @@ class JDialogController private constructor() {
     /*
        普通Dialog用到的方法
     */
-    fun getOnViewClickListener(): JAlertDialog.OnViewClickListener? {
+    fun getOnViewClickListener(): BaseAlertDialog.OnViewClickListener? {
         return mOnViewClickListener
     }
 
-    fun getOnBindViewListener(): JAlertDialog.OnBindViewListener? {
+    fun getOnBindViewListener(): BaseAlertDialog.OnBindViewListener? {
         return mOnBindViewListener
     }
 
     fun getOnDismissListener():DialogInterface.OnDismissListener?{
         return  mOnDismissListener
     }
-    /*
-        列表Dialog用到的方法
-    */
-
-    fun getAdapter(): BaseAdapter<*>? {
-        return mAdapter
-    }
-
-//    fun getListItemClickListener(): NiceAdapter.ItemClickListener<*>? {
-//        return mListItemClickListener
-//    }
-
-
-    fun getListRecyclerId(): Int {
-        return mListRecyclerId
-    }
-
-    fun getListOrientation(): Int {
-        return mListOrientation
-    }
-
     /**
      * 自定义dialog的参数类
      */
@@ -153,8 +132,6 @@ class JDialogController private constructor() {
         var mTag = ""
         var mDimAmount = 0.0f
         var mOrientation = 0
-        var mListRecyclerId = 0
-        var mListOrientation = 0
         var mIsCancelable = false
         var mGravity = Gravity.CENTER
 
@@ -164,35 +141,31 @@ class JDialogController private constructor() {
         var mAdapter: BaseAdapter<*>? = null
         var mFragmentManager: FragmentManager? = null
         var mOnKeyListener: DialogInterface.OnKeyListener? = null
-        var mOnViewClickListener: JAlertDialog.OnViewClickListener? = null
-        var mOnBindViewListener: JAlertDialog.OnBindViewListener? = null
+        var mOnViewClickListener: BaseAlertDialog.OnViewClickListener? = null
+        var mOnBindViewListener: BaseAlertDialog.OnBindViewListener? = null
         var mOnDismissListener: DialogInterface.OnDismissListener? = null
-//        var mListItemClickListener: NiceAdapter.ItemClickListener<*>? = null
 
 
-        fun apply(jDialogController: JDialogController?) {
-            jDialogController?.mFragmentManager = mFragmentManager
-            jDialogController?.mLayoutRes = mLayoutRes
-            jDialogController?.mDialogHeightPercent = mDialogHeightPercent
-            jDialogController?.mDialogWidthPercent = mDialogWidthPercent
-            jDialogController?.mDimAmount = mDimAmount
-            jDialogController?.mGravity = mGravity
-            jDialogController?.mTag = mTag
-            jDialogController?.mIds = mIds
-            jDialogController?.mIsCancelable = mIsCancelable
-            jDialogController?.mOrientation = mOrientation
-            jDialogController?.mAnimationRes = mAnimationRes
-            jDialogController?.mDialogView = mDialogView
-            jDialogController?.mOnViewClickListener = mOnViewClickListener
-            jDialogController?.mOnBindViewListener = mOnBindViewListener
-            jDialogController?.mOnDismissListener = mOnDismissListener
-            jDialogController?.mOnKeyListener = mOnKeyListener
-            jDialogController?.mBackgroundRes = mBackgroundRes
+        fun apply(baseDialogController: BaseDialogController?) {
+            baseDialogController?.mFragmentManager = mFragmentManager
+            baseDialogController?.mLayoutRes = mLayoutRes
+            baseDialogController?.mDialogHeightPercent = mDialogHeightPercent
+            baseDialogController?.mDialogWidthPercent = mDialogWidthPercent
+            baseDialogController?.mDimAmount = mDimAmount
+            baseDialogController?.mGravity = mGravity
+            baseDialogController?.mTag = mTag
+            baseDialogController?.mIds = mIds
+            baseDialogController?.mIsCancelable = mIsCancelable
+            baseDialogController?.mOrientation = mOrientation
+            baseDialogController?.mAnimationRes = mAnimationRes
+            baseDialogController?.mDialogView = mDialogView
+            baseDialogController?.mOnViewClickListener = mOnViewClickListener
+            baseDialogController?.mOnBindViewListener = mOnBindViewListener
+            baseDialogController?.mOnDismissListener = mOnDismissListener
+            baseDialogController?.mOnKeyListener = mOnKeyListener
+            baseDialogController?.mBackgroundRes = mBackgroundRes
 
-            jDialogController?.mAdapter = mAdapter
-//            jDialogController?.mListItemClickListener = mListItemClickListener
-            jDialogController?.mListOrientation = mListOrientation
-            jDialogController?.mListRecyclerId = mListRecyclerId
+            baseDialogController?.mAdapter = mAdapter
 
         }
 

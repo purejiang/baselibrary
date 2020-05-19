@@ -3,12 +3,13 @@ package com.jplus.manyfunction.presenter
 import android.content.Context
 import android.util.Log
 import com.jplus.manyfunction.contract.DownloadListContract
-import com.jplus.manyfunction.download.JDownloadDataSource
+import com.jplus.manyfunction.download.DownloadCallback
+import com.jplus.manyfunction.download.DownloadDataSource
+import com.jplus.manyfunction.download.DownloadDbHelper
 import com.jplus.manyfunction.download.JDownloadManager
-import com.nice.baselibrary.base.net.download.JDownloadState
-import com.nice.baselibrary.base.net.download.JDownloadCallback
-import com.nice.baselibrary.base.entity.vo.JDownloadInfo
-import com.nice.baselibrary.base.utils.LogUtils
+import com.nice.baselibrary.base.source.DataSource
+import com.nice.baselibrary.base.entity.vo.DownloadInfo
+import com.nice.baselibrary.base.download.DownloadState
 import com.nice.baselibrary.base.utils.StringUtils
 import java.io.File
 
@@ -19,9 +20,8 @@ import java.io.File
  */
 class DownloadListPresenter(context: Context, private val mView: DownloadListContract.View) : DownloadListContract.Presenter {
 
-
-    private val mDataSource: JDownloadDataSource by lazy {
-        JDownloadDataSource(context)
+    private val mDataSource: DownloadDataSource by lazy {
+        DownloadDataSource(DownloadDbHelper(context))
     }
 
     init {
@@ -29,15 +29,17 @@ class DownloadListPresenter(context: Context, private val mView: DownloadListCon
     }
 
     override fun subscribe() {
-        val infoList = mDataSource.getAllData()
-        infoList?.let {
-            LogUtils.d("getAllData:it:$it")
-            if (it.size == 0) {
-                mView.showData(it)
-            } else {
-                mView.showData(it)
+        mDataSource.getAllData(object : DataSource.LoadDataListCallback<DownloadInfo> {
+            override fun onDataLoaded(dataList: MutableList<DownloadInfo>) {
+                Log.d("pipa", "getAllData====${dataList.size}")
+                mView.showData(dataList)
             }
-        }
+
+            override fun onDataNotAvailable(throwable: Throwable) {
+
+            }
+        })
+
 
     }
 
@@ -51,52 +53,77 @@ class DownloadListPresenter(context: Context, private val mView: DownloadListCon
 
     override fun addDownload(url: String, dirPath: String) {
         val name = StringUtils.parseUrlName(url)
-        mDataSource.getData(mutableMapOf(Pair("url", url), Pair("name", name))).let {
-            if (it.size == 0) {
-                val filePath = dirPath + File.separator + name
-                val download = JDownloadInfo(0, name, url, filePath, "${System.currentTimeMillis()}", "", 0L, 0L, JDownloadState.DOWNLOAD_READY)
-                mDataSource.addData(download)
-                mView.addDownload( mDataSource.getData(mutableMapOf(Pair("url", download.url), Pair("name",download.name)))[0])
+        mDataSource.getData(mutableMapOf(Pair("url", url), Pair("name", name)), object : DataSource.LoadDataListCallback<DownloadInfo> {
+            override fun onDataLoaded(dataList: MutableList<DownloadInfo>) {
+                    if (dataList.size == 0) {
+                        val filePath = dirPath + File.separator + name
+                        val download = DownloadInfo(0, name, url, filePath, "${System.currentTimeMillis()}", "", 0L, 0L, DownloadState.DOWNLOAD_READY, "")
+                        mDataSource.addData(download) { result->
+                            if(result) Log.d("pipa", "aaaa")
+                        }
+                        mDataSource.getData(mutableMapOf(Pair("url", download.url), Pair("name", download.name)), object : DataSource.LoadDataListCallback<DownloadInfo> {
+                            override fun onDataLoaded(dataList: MutableList<DownloadInfo>) {
+                                mView.addDownload(dataList[0])
+                            }
 
-            } else {
-                mView.downloadIsExist("$name 已在下载列表中")
+                            override fun onDataNotAvailable(throwable: Throwable) {
+
+                            }
+                        })
+                    } else {
+                        mView.downloadIsExist("$name 已在下载列表中")
+                    }
+                }
+
+            override fun onDataNotAvailable(throwable: Throwable) {
+
+            }
+        })
+    }
+
+
+    override fun controlDownload(downloadInfo: DownloadInfo, downloadCallback: DownloadCallback) {
+        mDataSource.getData(downloadInfo.id, object : DataSource.LoadDataCallback<DownloadInfo> {
+            override fun onDataLoaded(data: DownloadInfo?) {
+                when (data?.status) {
+                    DownloadState.DOWNLOAD_ING -> JDownloadManager.pauseDownload(downloadInfo.id)
+                    DownloadState.DOWNLOAD_PAUSE -> JDownloadManager.reStartDownload(downloadInfo.id, downloadCallback, mDataSource)
+                    DownloadState.DOWNLOAD_READY -> JDownloadManager.addNewDownload(downloadInfo, downloadCallback, mDataSource, true)
+                }
+
+            }
+
+            override fun onDataNotAvailable(throwable: Throwable) {
+
+            }
+        })
+
+    }
+
+    override fun reBindListener(downloadInfo: DownloadInfo, downloadCallback: DownloadCallback) {
+        Log.d("pipa", "onBindListener====$downloadInfo")
+
+        JDownloadManager.reBindListener(downloadInfo.id, downloadCallback, mDataSource)
+    }
+
+//    override fun isInDataBase(id: Int): Boolean {
+//        return mDataSource.getData(id) != null
+//    }
+
+
+    override fun addDownloads(downloads: MutableList<DownloadInfo>) {
+        mDataSource.addDataList(downloads) {
+            if (it) mView.addDownloads(downloads)
+        }
+    }
+
+    override fun removeDownloads(downloads: MutableList<DownloadInfo>) {
+        Log.d("pipa", "removeDownloads:$downloads")
+        mDataSource.removeDataList(downloads){
+            if (it) {
+                JDownloadManager.deleteDownloads(downloads)
+                mView.removeDownloads(downloads)
             }
         }
-    }
-
-    override fun getStatus(id: Int): String {
-        return mDataSource.getData(id)?.status ?: JDownloadState.DOWNLOAD_UNKNOWN
-    }
-
-
-    override fun controlDownload(jDownloadInfo: JDownloadInfo, jDownloadCallback: JDownloadCallback) {
-        when (getStatus(jDownloadInfo.id)) {
-            JDownloadState.DOWNLOAD_ING -> JDownloadManager.pauseDownload(jDownloadInfo.id)
-            JDownloadState.DOWNLOAD_PAUSE -> JDownloadManager.reStartDownload(jDownloadInfo.id, jDownloadCallback, mDataSource)
-            JDownloadState.DOWNLOAD_READY -> JDownloadManager.addNewDownload(jDownloadInfo, jDownloadCallback, mDataSource, true)
-        }
-
-    }
-
-    override fun reBindListener(jDownloadInfo: JDownloadInfo, jDownloadCallback: JDownloadCallback) {
-        JDownloadManager.reBindListener(jDownloadInfo.id, jDownloadCallback, mDataSource)
-    }
-    override fun isInDataBase(id: Int): Boolean {
-        return mDataSource.getData(id) != null
-    }
-
-
-    override fun addDownloads(jDownloads: MutableList<JDownloadInfo>) {
-        mDataSource.addDataList(jDownloads)
-        mView.addDownloads(jDownloads)
-    }
-
-    override fun removeDownloads(jDownloads: MutableList<JDownloadInfo>) {
-        Log.d("pipa", "removeDownloads:$jDownloads")
-        if (mDataSource.removeDataList(jDownloads)) {
-            Log.d("pipa", "removeDownloads:True")
-        }
-        JDownloadManager.deleteDownloads(jDownloads)
-        mView.removeDownloads(jDownloads)
     }
 }

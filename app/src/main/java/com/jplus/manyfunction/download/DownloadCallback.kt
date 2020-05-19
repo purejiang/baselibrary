@@ -1,4 +1,4 @@
-package com.nice.baselibrary.base.net.download
+package com.jplus.manyfunction.download
 
 import okhttp3.ResponseBody
 
@@ -7,7 +7,7 @@ import okhttp3.ResponseBody
  * @author JPlus
  * @date 2019/2/22.
  */
-interface JDownloadCallback {
+interface DownloadCallback {
     /**
      * 下载中
      * @param read 读取中的大小

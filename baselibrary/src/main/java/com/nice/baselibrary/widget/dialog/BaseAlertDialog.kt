@@ -4,8 +4,6 @@ package com.nice.baselibrary.widget.dialog
 import android.content.DialogInterface
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.nice.baselibrary.base.adapter.BaseAdapter
 
 
@@ -15,11 +13,10 @@ import com.nice.baselibrary.base.adapter.BaseAdapter
  * @date 2019/4/17.
  */
 
-open class JAlertDialog : JDialogFragment() {
-    private val mController: JDialogController by lazy {
-        JDialogController.create()
+open class BaseAlertDialog : BaseDialogFragment() {
+    private val mController: BaseDialogController by lazy {
+        BaseDialogController.create()
     }
-
 
     override fun bindView(view: View) {
         val viewHolder = BaseAdapter.VH(view)
@@ -32,46 +29,26 @@ open class JAlertDialog : JDialogFragment() {
             }
             }
         this.getBindViewListener()?.onBindView(viewHolder)
-
-        //adapter不为空则设置adapter和recyclerView
-        getListAdapter()?.let{
-//            it.setItemClickListener(getListItemClickListener())
-            val layoutManager = LinearLayoutManager(view.context, getListOrientation(), false)
-            view.findViewById<RecyclerView>(getListRecyclerId()).run{
-                setLayoutManager(layoutManager)
-                adapter = getListAdapter()
-            }
-            it.notifyDataSetChanged()
-        }
-
     }
-
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         getDismissListener()?.onDismiss(dialog)
-
     }
-
     override fun getLayoutRes(): Int {
         return mController.getLayoutRes()
     }
-
     override fun getGravity(): Int {
         return mController.getGravity()
     }
-
     override fun getCancelable(): Boolean {
         return mController.getCancelable()
     }
-
     override fun getAnimationRes(): Int? {
         return mController.getAnimationRes()
     }
-
     override fun getDialogHeight(): Int {
         return mController.getDialogHeight()
     }
-
     override fun getDialogWidth(): Int {
         return mController.getDialogWidth()
     }
@@ -85,7 +62,6 @@ open class JAlertDialog : JDialogFragment() {
     override fun getDimAmount(): Float {
         return mController.getDimAmount()
     }
-
     override fun getKeyListener(): DialogInterface.OnKeyListener? {
         return mController.getKeyListener()
     }
@@ -103,30 +79,14 @@ open class JAlertDialog : JDialogFragment() {
         return mController.getOnViewClickListener()
     }
 
-//    private fun getListItemClickListener(): NiceAdapter.ItemClickListener<*>? {
-//        return mController.getListItemClickListener()
-//    }
-
-    private fun getListAdapter():BaseAdapter<*>?{
-        return mController.getAdapter()
-    }
-
-    private fun getListRecyclerId():Int{
-        return mController.getListRecyclerId()
-    }
-    private fun getListOrientation():Int{
-        return mController.getListOrientation()
-    }
-
-    open fun show(): JAlertDialog {
+    open fun show() {
             mController.getFragmentManager()?.let{
                 this.show(it, mController.getTag())
             }
-        return this
     }
 
     interface OnViewClickListener {
-        fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: JAlertDialog)
+        fun onClick(viewHolder: BaseAdapter.VH, view: View, dialog: BaseAlertDialog)
     }
     interface OnBindViewListener {
         fun onBindView(viewHolder: BaseAdapter.VH)
@@ -134,8 +94,8 @@ open class JAlertDialog : JDialogFragment() {
 
     class Builder(mFragmentManager: FragmentManager) {
 
-        private val params: JDialogController.Params by lazy {
-            JDialogController.Params()
+        private val params: BaseDialogController.Params by lazy {
+            BaseDialogController.Params()
         }
 
         init {
@@ -268,15 +228,6 @@ open class JAlertDialog : JDialogFragment() {
             params.mOnViewClickListener = clickListener
             return this
         }
-//        /**
-//         * 设置列表条目点击事件
-//         * @param clickListener
-//         * @return Builder
-//         */
-//        fun setListItemClickListener(clickListener: NiceAdapter.ItemClickListener<*>): Builder {
-//            params.mListItemClickListener = clickListener
-//            return this
-//        }
         /**
          * 设置dialog关闭的回调
          * @param dismissListener
@@ -296,31 +247,11 @@ open class JAlertDialog : JDialogFragment() {
             return this
         }
         /**
-         * 设置列表recyclerId和滚动方向
-         * @param recyclerId
-         * @param orientation
-         * @return Builder
-         */
-        fun setListRes(recyclerId:Int, orientation:Int): Builder {
-            params.mListRecyclerId =recyclerId
-            params.mListOrientation = orientation
-            return this
-        }
-        /**
-         * 设置适配器
-         * @param adapter
-         * @return Builder
-         */
-        fun setAdapter(adapter: BaseAdapter<*>): Builder {
-            params.mAdapter = adapter
-            return this
-        }
-        /**
          * 创建NiceDialog
          * @return NiceAlertDialog
          */
-        fun create(): JAlertDialog {
-            val dialog = JAlertDialog()
+        fun create(): BaseAlertDialog {
+            val dialog = BaseAlertDialog()
             //将数据从Builder的Params中传递到Dialog中
             params.apply(dialog.mController)
             return dialog

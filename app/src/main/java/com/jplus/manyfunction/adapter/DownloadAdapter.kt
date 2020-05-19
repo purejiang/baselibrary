@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import com.jplus.manyfunction.R
-import com.nice.baselibrary.base.entity.vo.JDownloadInfo
+import com.nice.baselibrary.base.entity.vo.DownloadInfo
 import com.nice.baselibrary.base.utils.StringUtils
 import com.nice.baselibrary.widget.BaseCircleProgress
 import com.nice.baselibrary.widget.JTextView
@@ -18,7 +18,7 @@ import com.nice.baselibrary.widget.JTextView
  * @author JPlus
  * @date 2019/1/16.
  */
-class DownloadAdapter(private var mItems: MutableList<JDownloadInfo>,private val mItemClickListener: ItemClickListener) : RecyclerView.Adapter<DownloadAdapter.VH>() {
+class DownloadAdapter(private var mItems: MutableList<DownloadInfo>, private val mItemClickListener: ItemClickListener) : RecyclerView.Adapter<DownloadAdapter.VH>() {
     private var mItemBindListener:ItemBindListener?=null
     private var mIsShowCheck = false
     private var mCheck = false
@@ -27,7 +27,7 @@ class DownloadAdapter(private var mItems: MutableList<JDownloadInfo>,private val
         return R.layout.view_download_item
     }
 
-    fun addItem(item: JDownloadInfo) {
+    fun addItem(item: DownloadInfo) {
         Log.d("pipa", "addItem$item")
         mItems.add(item)
         notifyItemInserted(mItems.size-1)
@@ -37,7 +37,7 @@ class DownloadAdapter(private var mItems: MutableList<JDownloadInfo>,private val
         mItemBindListener = itemBindListener
     }
 
-    fun deleteItems(infos: MutableList<JDownloadInfo>) {
+    fun deleteItems(infos: MutableList<DownloadInfo>) {
         for(info in infos){
             mItems.remove(info)
         }
@@ -93,7 +93,7 @@ class DownloadAdapter(private var mItems: MutableList<JDownloadInfo>,private val
          * @param position
          * @return 是否刷新进度
          */
-        fun onBindListener(itemView: VH, item: JDownloadInfo, position: Int):Boolean
+        fun onBindListener(itemView: VH, item: DownloadInfo, position: Int):Boolean
     }
     interface ItemClickListener {
         /**
@@ -102,7 +102,7 @@ class DownloadAdapter(private var mItems: MutableList<JDownloadInfo>,private val
          * @param item
          * @param position
          */
-        fun setItemClick(itemView: VH, item: JDownloadInfo, position: Int)
+        fun setItemClick(itemView: VH, item: DownloadInfo, position: Int)
         /**
          * item的选择事件
          * @param itemView
@@ -110,7 +110,7 @@ class DownloadAdapter(private var mItems: MutableList<JDownloadInfo>,private val
          * @param position
          * @param checked
          */
-        fun setItemCheck(itemView: VH, item: JDownloadInfo, position: Int, checked: Boolean)
+        fun setItemCheck(itemView: VH, item: DownloadInfo, position: Int, checked: Boolean)
         /**
          * item的长按事件
          * @param itemView
@@ -118,7 +118,7 @@ class DownloadAdapter(private var mItems: MutableList<JDownloadInfo>,private val
          * @param position
          * @return
          */
-        fun setItemLongClick(itemView: VH, item: JDownloadInfo, position:Int):Boolean
+        fun setItemLongClick(itemView: VH, item: DownloadInfo, position:Int):Boolean
     }
 
 

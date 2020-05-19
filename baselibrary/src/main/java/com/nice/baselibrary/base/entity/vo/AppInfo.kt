@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable
 
 /**
  * @author JPlus
- * on 2018/9/27.
+ * @date 2018/9/27.
  */
 data class AppInfo(
       val appName:String,

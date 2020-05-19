@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.nice.baselibrary.R
+import com.nice.baselibrary.base.utils.LogUtils
 
 
 /**
@@ -114,7 +115,7 @@ class CircleLoadingView(context: Context, attrs: AttributeSet) : View(context, a
             mWidth = widthSize
             mHeight = heightSize
         }
-        Log.d("pipa", "mWidth:$mWidth, mHeight:$mHeight")
+      LogUtils.d("mWidth:$mWidth, mHeight:$mHeight")
         if (mStrokeWidth == 0f) {
             mStrokeWidth = mWidth / 10f
             mOutProgressPaint?.strokeWidth = mStrokeWidth

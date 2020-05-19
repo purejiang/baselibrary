@@ -98,24 +98,11 @@
             android:text="Web"
             android:textAllCaps="false"
             />
-        <com.nice.baselibrary.widget.JTextView
-            android:id="@+id/jtv_text"
-            android:layout_width="wrap_content"
+        <com.nice.baselibrary.widget.JEditTextView
+            android:id="@+id/jdt_text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableTop="@mipmap/ic_del_grey"
-            android:drawableBottom="@mipmap/ic_del_grey"
-            android:drawableRight="@mipmap/ic_del_grey"
-            android:drawableLeft="@mipmap/ic_del_grey"
+            app:right_pic="@mipmap/ic_del_grey"
             android:text="input"/>
-
-       <com.nice.baselibrary.widget.JItemLinearView
-           android:layout_width="match_parent"
-           android:layout_height="?actionBarSize"
-           app:left_img="@mipmap/ic_video_back"
-           app:middle_txt="标题"
-           app:left_txt="返回"
-           app:right_txt="进入"
-           app:right_img="@mipmap/ic_home_focus"
-           app:view_type="setting"/>
-            </LinearLayout>
+    </LinearLayout>
     </ScrollView>

@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * @author JPlus
  * @date 2019/2/22.
  */
-class JRetrofitHelper( baseUrl:String, okHttpClient: OkHttpClient) {
+class RetrofitHelper(baseUrl:String, okHttpClient: OkHttpClient) {
 
     private val httpRetrofit:Retrofit by lazy {
         Retrofit.Builder()
@@ -25,7 +25,7 @@ class JRetrofitHelper( baseUrl:String, okHttpClient: OkHttpClient) {
      * 创建新的service
      * @return
      */
-    fun getService(): JHttpService {
-        return httpRetrofit.create(JHttpService::class.java)
+    fun getService(): HttpService {
+        return httpRetrofit.create(HttpService::class.java)
     }
 }

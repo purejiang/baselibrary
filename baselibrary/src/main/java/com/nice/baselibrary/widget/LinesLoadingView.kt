@@ -12,6 +12,7 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.core.content.ContextCompat
 import com.nice.baselibrary.R
+import com.nice.baselibrary.base.utils.LogUtils
 
 
 /**
@@ -94,7 +95,7 @@ class LinesLoadingView(context: Context, attrs: AttributeSet) : View(context, at
             mWidth = widthSize
             mHeight = heightSize
         }
-        Log.d("pipa", "mWidth:$mWidth, mHeight:$mHeight,mRate$mRate")
+        LogUtils.d("mWidth:$mWidth, mHeight:$mHeight,mRate$mRate")
         if (mStrokeWidth == 0f) {
             mStrokeWidth = mWidth / 9f
             mPaint?.strokeWidth = mStrokeWidth

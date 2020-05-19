@@ -17,7 +17,7 @@ import com.nice.baselibrary.base.utils.getScreenWidth
  * @author JPlus
  * @date 2019/4/16.
  */
-abstract class JDialogFragment : DialogFragment() {
+abstract class BaseDialogFragment : DialogFragment() {
     companion object {
         private const val AMOUNT_DEFAULT = 0.2f
         private const val DIALOG_TAG = "niceDialog"
@@ -26,7 +26,6 @@ abstract class JDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         LogUtils.d("${this.javaClass.simpleName} --onCreateDialog")
         return super.onCreateDialog(savedInstanceState)
-
     }
 
 
@@ -109,7 +108,6 @@ abstract class JDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LogUtils.d("${this.javaClass.simpleName} --onCreate")
-
     }
 
     override fun onAttach(context: Context) {
@@ -147,13 +145,11 @@ abstract class JDialogFragment : DialogFragment() {
      * @return
      */
     abstract fun getLayoutRes(): Int
-
     /**
      * 获得view
      * @param view
      */
     abstract fun bindView(view: View)
-
 
     /**
      * 获取dialog在屏幕中的位置

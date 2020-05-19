@@ -1,24 +1,20 @@
 package com.jplus.manyfunction.download
 
 
-import com.nice.baselibrary.base.net.JRetrofitHelper
-import com.nice.baselibrary.base.net.download.JDownloadInterceptor
-import com.nice.baselibrary.base.net.download.JDownloadState
-import com.nice.baselibrary.base.net.download.JDownloadCallback
-import com.nice.baselibrary.base.net.download.JDownloadSubscriber
-import com.nice.baselibrary.base.entity.vo.JDownloadInfo
+import com.nice.baselibrary.base.source.DataSource
+import com.nice.baselibrary.base.entity.vo.DownloadInfo
+import com.nice.baselibrary.base.net.RetrofitHelper
+import com.nice.baselibrary.base.download.DownloadInterceptor
+import com.nice.baselibrary.base.download.DownloadState
+import com.nice.baselibrary.base.download.DownloadSubscriber
 import com.nice.baselibrary.base.utils.LogUtils
 import com.nice.baselibrary.base.utils.writeRandomAccessFile
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import java.io.File
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -28,8 +24,8 @@ import java.net.URL
  */
 object JDownloadManager {
     //下载
-    private val mDownloadQueue: MutableMap<Int, JDownloadSubscriber> by lazy {
-        mutableMapOf<Int, JDownloadSubscriber>()
+    private val M_DOWNLOAD_QUEUE: MutableMap<Int, DownloadSubscriber> by lazy {
+        mutableMapOf<Int, DownloadSubscriber>()
     }
     //最大下载数
     private val mMax: Int = 8
@@ -42,61 +38,71 @@ object JDownloadManager {
      * @param downloadCallback
      * @param downloadDataSource
      */
-    fun addNewDownload(oldDownloadInfo: JDownloadInfo, downloadCallback: JDownloadCallback, downloadDataSource: JDownloadDataSource?, isStart:Boolean) {
-        LogUtils.d("download[add]--oldDownloadInfo:$oldDownloadInfo")
+    fun addNewDownload(oldDownloadInfo: DownloadInfo, downloadCallback: DownloadCallback?, downloadDataSource: DownloadDataSource?, isStart: Boolean) {
+        LogUtils.d("download[add]--oldDownloadInfo:$oldDownloadInfo", "pipa")
 
         //新建订阅，添加对应关系
-        JDownloadSubscriber(oldDownloadInfo, getListener(downloadCallback, downloadDataSource)).let{
+        DownloadSubscriber(oldDownloadInfo, getListener(downloadCallback, downloadDataSource)).let {
             //添加到下载队列
-            mDownloadQueue[oldDownloadInfo.id] = it
+            M_DOWNLOAD_QUEUE[oldDownloadInfo.id] = it
+            LogUtils.d("download[add]--oldDownloadInfo:${oldDownloadInfo.id}", "pipa")
             //添加到数据库
-            downloadDataSource?.modifyData(it.getDownloadInfo())
-            //开始下载
-            if (isStart) runDownload(it, downloadDataSource)
-            }
+            downloadDataSource?.modifyData(it.getDownloadInfo()){result->
+                    //开始下载
+                    if (result) runDownload(it, downloadDataSource)
+                }
         }
-
-    fun isInQueue(id: Int):Boolean {
-        return mDownloadQueue.containsKey(id)
     }
 
+    fun isInQueue(id: Int): Boolean {
+        return M_DOWNLOAD_QUEUE.containsKey(id)
+    }
 
-    private fun getListener(downloadCallback: JDownloadCallback, downloadDataSource: JDownloadDataSource?): JDownloadSubscriber.SubscriberListener{
-        return object : JDownloadSubscriber.SubscriberListener{
-            override fun onStart(downloadInfo: JDownloadInfo) {
+    private fun getListener(downloadCallback: DownloadCallback?, downloadDataSource: DownloadDataSource?): DownloadSubscriber.SubscriberListener {
+        return object : DownloadSubscriber.SubscriberListener {
+            override fun onStart(info: DownloadInfo) {
                 LogUtils.d("onStart")
-                downloadDataSource?.modifyData(downloadInfo)
+                downloadDataSource?.modifyData(info){
+                }
             }
 
             //绑定监听回调
-            override fun onNext(downloadInfo: JDownloadInfo, responseBody: ResponseBody) {
+            override fun onNext(info: DownloadInfo, body: ResponseBody) {
                 LogUtils.d("onNext")
-                downloadDataSource?.modifyData(downloadInfo)
-                downloadCallback.next(responseBody)
+                downloadDataSource?.modifyData(info){
+                }
+                downloadCallback?.next(body)
             }
 
-            override fun onUpdate(downloadInfo: JDownloadInfo, done:Boolean) {
+            override fun onUpdate(info: DownloadInfo, done: Boolean) {
                 LogUtils.d("onUpdate")
-                downloadCallback.update(downloadInfo.read, downloadInfo.count, done)
+                downloadCallback?.update(info.read, info.count, done)
             }
 
-            override fun onError(downloadInfo: JDownloadInfo, e: Throwable) {
+            override fun onError(info: DownloadInfo, e: Throwable) {
                 LogUtils.d("onError")
-                downloadDataSource?.modifyData(downloadInfo)
-                downloadCallback.downloadFailed(e)
+                downloadDataSource?.modifyData(info){
+                }
+                downloadCallback?.downloadFailed(e)
             }
 
-            override fun onComplete(downloadInfo: JDownloadInfo) {
+            override fun onCancel(info: DownloadInfo) {
+
+            }
+
+            override fun onComplete(info: DownloadInfo) {
                 LogUtils.d("onComplete")
-                downloadDataSource?.modifyData(downloadInfo)
-                downloadCallback.downloadSuccess()
-                mDownloadQueue.remove(downloadInfo.id)
+                downloadDataSource?.modifyData(info){
+                }
+                downloadCallback?.downloadSuccess()
+                M_DOWNLOAD_QUEUE.remove(info.id)
             }
 
-            override fun onPause(downloadInfo: JDownloadInfo) {
+            override fun onPause(info: DownloadInfo) {
                 LogUtils.d("onPause")
-                downloadDataSource?.modifyData(downloadInfo)
-                downloadCallback.pause()
+                downloadDataSource?.modifyData(info){
+                }
+                downloadCallback?.pause()
             }
         }
     }
@@ -107,32 +113,41 @@ object JDownloadManager {
      * @param downloadCallback
      * @param downloadDataSource
      */
-    fun reStartDownload(id: Int, downloadCallback: JDownloadCallback, downloadDataSource: JDownloadDataSource) {
+    fun reStartDownload(id: Int, downloadCallback: DownloadCallback, downloadDataSource: DownloadDataSource) {
         //包含id则复用原有的下载任务，不包含id则重新构建下载任务
-        if (mDownloadQueue.containsKey(id)) {
+        if (M_DOWNLOAD_QUEUE.containsKey(id)) {
             LogUtils.d("download[restart]: id:${id}")
-            mDownloadQueue.remove(id)
+            M_DOWNLOAD_QUEUE.remove(id)
         }
         //暂停后重新从数据取数据，新建订阅并绑定监听回调
         LogUtils.d("重新构建下载任务")
-        val downloadInfo = downloadDataSource.getData(id)
-        downloadInfo?.let { info ->
-            addNewDownload(info, downloadCallback, downloadDataSource, true)
-        }
+        downloadDataSource.getData(id,object :DataSource.LoadDataCallback<DownloadInfo>{
+            override fun onDataLoaded(data: DownloadInfo?) {
+                data?.let{
+                    addNewDownload(it, downloadCallback, downloadDataSource, true)
+                }
+            }
+
+            override fun onDataNotAvailable(throwable: Throwable) {
+
+            }
+        })
     }
+
     /**
      * 重新绑定监听
      * @param id
      * @param downloadCallback
      * @param downloadDataSource
      */
-    fun reBindListener(id: Int, downloadCallback: JDownloadCallback, downloadDataSource: JDownloadDataSource) {
+    fun reBindListener(id: Int, downloadCallback: DownloadCallback, downloadDataSource: DownloadDataSource) {
+        LogUtils.d("download[reBind]: id:${id}", "pipa")
         //包含id则复用原有的下载任务
-        if (mDownloadQueue.containsKey(id)) {
-            LogUtils.d("download[reBind]: id:${id}")
-            mDownloadQueue[id]?.let {
+        if (M_DOWNLOAD_QUEUE.containsKey(id)) {
+            LogUtils.d("download[reBind]:111111 id:${id}", "pipa")
+            M_DOWNLOAD_QUEUE[id]?.let {
                 //下载中重新绑定监听回调
-                if (it.getDownloadInfo().status == JDownloadState.DOWNLOAD_ING) {
+                if (it.getDownloadInfo().status == DownloadState.DOWNLOAD_ING) {
                     LogUtils.d("下载中重新绑定监听回调")
                     it.setCallBack(getListener(downloadCallback, downloadDataSource))
                 }
@@ -143,23 +158,29 @@ object JDownloadManager {
     /**
      * 暂停下载
      * @param id
-     * @param downloadDataSource
      */
     fun pauseDownload(id: Int) {
-        LogUtils.d("download[pause]: id:${id}, ${mDownloadQueue.containsKey(id)}")
-        mDownloadQueue[id]?.let {
+        LogUtils.d("download[pause]: id:${id}, ${M_DOWNLOAD_QUEUE.containsKey(id)}")
+        M_DOWNLOAD_QUEUE[id]?.let {
             //保存到数据库
             it.pause()
-
         }
     }
 
+    /**
+     * 下载完成
+     * @param id
+     */
+    fun finishDownload(id: Int) {
+        M_DOWNLOAD_QUEUE.remove(id)
+
+    }
 
     /**
      * 取消下载
-     * @param jDownloadInfo
+     * @param downloadInfo
      */
-    fun cancelDownload(jDownloadInfo: JDownloadInfo, jDownloadDataSource: JDownloadDataSource) {
+    fun cancelDownload(downloadInfo: DownloadInfo, jDownloadDataSource: DownloadDataSource) {
 //        LogUtils.d("download[cancel]: status:${jDownloadInfo.status}")
 
     }
@@ -168,10 +189,10 @@ object JDownloadManager {
      * 删除下载
      * @param downloadInfos
      */
-    fun deleteDownloads(downloadInfos: MutableList<JDownloadInfo>) {
+    fun deleteDownloads(downloadInfos: MutableList<DownloadInfo>) {
         LogUtils.d("deleteDownloads")
         for (download in downloadInfos) {
-            mDownloadQueue.remove(download.id)
+            M_DOWNLOAD_QUEUE.remove(download.id)
         }
     }
 
@@ -180,22 +201,27 @@ object JDownloadManager {
      * @param subscriber
      * @param downloadDataSource
      */
-    private fun runDownload(subscriber: JDownloadSubscriber, downloadDataSource: JDownloadDataSource?) {
-        //添加到数据库
-        downloadDataSource?.modifyData(subscriber.getDownloadInfo().apply {
-            status = JDownloadState.DOWNLOAD_ING
-        })
-        //开始下载
+    private fun runDownload(subscriber: DownloadSubscriber, downloadDataSource: DownloadDataSource?) {
+        val info = subscriber.getDownloadInfo().apply {
+            status = DownloadState.DOWNLOAD_ING
+        }
         LogUtils.d("download[run]: info:${subscriber.getDownloadInfo()}")
+        //添加到数据库
+        downloadDataSource?.modifyData(info){
+        }
+        //开始下载
+
         //新建okhttp客户端，拦截器监听下载进度
 
         subscriber.getDownloadInfo().let {
             val okHttpClient = OkHttpClient.Builder()
-                    .addInterceptor(JDownloadInterceptor(subscriber))
+                    .addInterceptor(DownloadInterceptor(subscriber))
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .connectTimeout(30, TimeUnit.SECONDS)
                     .build()
 
             //新建下载服务，添加对应关系
-            JRetrofitHelper("https://www.google.com", okHttpClient).getService()
+            RetrofitHelper("https://www.google.com", okHttpClient).getService()
                     .download("bytes=${it.read}-", it.url)
                     .subscribeOn(Schedulers.io())
                     ?.doOnNext { res: ResponseBody ->
@@ -208,35 +234,6 @@ object JDownloadManager {
     }
 
     fun clear() {
-        mDownloadQueue.clear()
-    }
-
-    /**
-     * 获取下载信息
-     * @param url
-     * @param countCallback
-     */
-    fun getUrlContentLength(url: String, countCallback: ContentLengthCallBack) {
-        //协程进行网络请求
-        GlobalScope.launch {
-            try {
-                // 创建连接
-                val onUrl = URL(url)
-                val conn = onUrl.openConnection() as HttpURLConnection
-                //处理下载读取长度为-1 问题
-                countCallback.onCallback(conn.contentLength * 1L)
-            } catch (e: IOException) {
-                e.printStackTrace()
-                countCallback.onCallback(-1L)
-            }
-        }
-    }
-
-    interface ContentLengthCallBack {
-        /**
-         * 测试网络联通情况，获取文件总大小
-         * @param count 文件大小，返回 -1 则连接异常
-         */
-        fun onCallback(count: Long)
+        M_DOWNLOAD_QUEUE.clear()
     }
 }

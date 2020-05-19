@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import com.nice.baselibrary.base.utils.LogUtils
 
 /**
  * @author JPlus
@@ -94,7 +95,7 @@ class LoadingLayout(context: Context) : FrameLayout(context) {
 
     fun setLoadingView(view: View?): View? {
         if (mLoadingView != null) {
-            Log.w("pipa", "you have already set a loading view and would be instead of this new one.")
+            LogUtils.w("you have already set a loading view and would be instead of this new one.")
         }
         this.removeView(mLoadingView)
         this.addView(view)
@@ -104,7 +105,7 @@ class LoadingLayout(context: Context) : FrameLayout(context) {
 
     fun setEmptyView(view: View?): View? {
         if (mEmptyView != null) {
-            Log.w("pipa", "you have already set a empty view and would be instead of this new one.");
+            LogUtils.w("you have already set a empty view and would be instead of this new one.");
         }
         this.removeView(mEmptyView);
         this.addView(view);
@@ -114,7 +115,7 @@ class LoadingLayout(context: Context) : FrameLayout(context) {
 
     fun setRetryView(view: View?): View? {
         if (mRetryView != null) {
-            Log.w("pipa", "you have already set a retry view and would be instead of this new one.");
+            LogUtils.w("you have already set a retry view and would be instead of this new one.");
         }
         this.removeView(mRetryView)
         this.addView(view)
@@ -124,7 +125,7 @@ class LoadingLayout(context: Context) : FrameLayout(context) {
 
     fun setContentView(view: View?): View? {
         if (mContentView != null) {
-            Log.w("pipa", "you have already set a retry view and would be instead of this new one.");
+            LogUtils.w("you have already set a retry view and would be instead of this new one.");
         }
         this.removeView(mContentView)
         this.addView(view)

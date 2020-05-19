@@ -4,11 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import com.jplus.jvideoview.data.Video
 import com.jplus.manyfunction.net.dto.InitShowResponse
-import com.nice.baselibrary.base.net.download.JDownloadCallback
+import com.jplus.manyfunction.download.DownloadCallback
 import com.nice.baselibrary.base.mvp.BaseView
 import com.nice.baselibrary.base.mvp.BasePresenter
 import com.nice.baselibrary.base.entity.vo.AppInfo
-import com.nice.baselibrary.widget.dialog.JAlertDialog
+import com.nice.baselibrary.widget.dialog.BaseAlertDialog
 import java.io.File
 
 /**
@@ -107,7 +107,7 @@ interface TestContract {
         /**
          * 图片上传功能
          */
-        fun checkToCameraOrPhoto(view: android.view.View, jDialog: JAlertDialog)
+        fun checkToCameraOrPhoto(view: android.view.View, jDialog: BaseAlertDialog)
         /**
          * 获取appInfos
          */
@@ -126,7 +126,7 @@ interface TestContract {
         /**
          * 热修复dex下载
          */
-        fun downLoadPatch(url: String, dirPath:String, jDownloadCallback: JDownloadCallback)
+        fun downLoadPatch(url: String, dirPath:String, downloadCallback: DownloadCallback)
 
         /**
          * 视频流播放
