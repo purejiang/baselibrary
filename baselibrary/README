@@ -1,1 +1,100 @@
-# sads
+### What is BaseLibrary?
+
+This base dependency library contains some tool classes and some custom views.
+
+### Utils:
+***
+##### [ActivityCollect](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/ActivityCollect.kt)
+- 通过集合的方式 管理所有的Activity（推荐在BaseActivity的onCreate和onDestroy中添加和移除）
+
+##### [AppHelper](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/AppHelper.kt)
+- 通过扩展函数实现的App相关方法集
+
+##### [CrashHandler](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/CrashHandler.kt)
+- 崩溃日志管理类（单例），支持自定义数量、存放目录和文件名等
+
+##### [DateHelper](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/DateHelper.kt)
+- 日期相关方法集
+
+##### [DeCodeUtils](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/DeCodeUtils.kt)
+- 编码解码工具类
+
+##### [ExcCommand](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/ExcCommand.kt)
+- 命令行工具类
+
+##### [FileHelper](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/FileHelper.kt)
+- 文件相关方法集
+
+##### [JPermissionsUtils](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/JPermissionsUtils.kt)
+- 动态权限的工具类，需配合assets/permissions.json使用
+
+##### [LogUtils](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/LogUtils.kt)
+- 日志工具类，支持自定义数量、存放目录和文件名等
+
+##### [MD5Helper](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/MD5Helper.kt)
+- MD5相关方法集
+
+##### [PatchDexUtils](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/PatchDexUtils.kt)
+- 热修复工具类，暂时只使用dex热修复
+
+##### [PhotoUtils](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/PhotoUtils.kt)
+- 系统相机、相册工具类
+
+##### [StringUtils](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/StringUtils.kt)
+- String相关工具类
+
+##### [UriHelper](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/utils/UriHelper.kt)
+- Uri解析与转换方法集
+
+### Widget:
+***
+##### [BaseAlertDialog](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/widget/dialog/BaseAlertDialog.kt)
+- 继承自JDialogFragment（继承DialogFragment）的可自定义弹出框
+
+##### [JDialog](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/widget/dialog/JDialog.kt)
+- 继承自AlertDialog的封装的简易弹出框
+
+##### [BaseCircleProgress](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/widget/BaseCircleProgress.kt)
+- 封装的圆形进度条，可选择带下载进度、无进度
+
+##### [CircleLoadingView](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/widget/CircleLoadingView.kt)
+- 可自定义的疯转LoadingView，支持单层、内外双层模式
+
+##### [JEditTextView](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/widget/JEditTextView.kt)
+- 可一键清空内容的输入框
+
+##### [JTextView](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/widget/JTextView.kt)
+- 可扩展的TextView
+
+##### [JTitleBar](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/widget/JTitleBar.kt)
+- 可扩展标题栏，已过时（请使用JItemLinearView）
+
+##### [JItemLinearView](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/widget/JItemLinearView.kt)
+- 支持自定义的ItemView，可用于标题栏和设置界面的Item
+
+##### [LinesLoadingView](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/widget/LinesLoadingView.kt)
+- 条形的loading条
+
+### Other:
+***
+##### [NotDoubleOnClickListener](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/listener/NotDoubleOnClickListener.kt)
+- 避免短时间内重复点击的点击监听（继承自View.OnClickListener）
+
+##### [BaseAdapter](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/adapter/BaseAdapter.kt)
+- RecyclerView的通用适配器
+
+##### [BaseAdapterWrapper](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/adapter/BaseAdapterWrapper.kt)
+- BaseAdapter的装饰器，用来配置headView和footView
+
+##### [BaseDbHelper](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/source/BaseDbHelper.kt)
+- 数据库操作的抽象类
+
+##### [DataSource](https://gitee.com/hanpen/baselibrary/blob/master/baselibrary/src/main/java/com/nice/baselibrary/base/source/DataSource.kt)
+- 数据处理接口
+
+##### [Download](https://gitee.com/hanpen/baselibrary/tree/master/baselibrary/src/main/java/com/nice/baselibrary/base/download)
+- 下载相关
+
+##### [net](https://gitee.com/hanpen/baselibrary/tree/master/baselibrary/src/main/java/com/nice/baselibrary/base/net)
+- 网络请求相关
+
