@@ -7,7 +7,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.InputStream
-import java.lang.RuntimeException
 import java.util.*
 
 /**
@@ -131,8 +130,8 @@ object LogUtils {
             info
         } else {
             info[0] = elements[5].className.substring(elements[5].className.lastIndexOf(".") + 1)
-            info[1] = elements[5].methodName + "()"
-            info[2] = " at (" + elements[5].className + ".java:" + elements[5].lineNumber + ")"
+            info[1] = "${elements[5].methodName}()"
+            info[2] = ":${elements[5].lineNumber}"
             info
         }
     }
