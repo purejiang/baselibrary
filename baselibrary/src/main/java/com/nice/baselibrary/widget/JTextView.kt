@@ -70,7 +70,7 @@ class JTextView : AppCompatTextView {
                         return true
                     }
                 }
-                performClick()
+//                performClick()
             }
         }
         return super.onTouchEvent(event)

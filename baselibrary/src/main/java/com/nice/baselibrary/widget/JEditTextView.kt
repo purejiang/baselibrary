@@ -67,7 +67,7 @@ class JEditTextView(context: Context, attrs: AttributeSet?) : AppCompatEditText(
                         this.text?.clear()
                     }
                 }
-                performClick()
+//                performClick()
             }
         }
         return super.onTouchEvent(event)
