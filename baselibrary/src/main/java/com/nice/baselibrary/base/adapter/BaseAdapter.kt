@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
  * @author JPlus
  * @date 2019/1/16.
  */
-abstract class BaseAdapter<T>(private val mItems: MutableList<T>) : RecyclerView.Adapter<BaseAdapter.VH>() {
+abstract class BaseAdapter<T>(private var mItems: MutableList<T>) : RecyclerView.Adapter<BaseAdapter.VH>() {
 
     private var mItemClickListener: ItemClickListener<T>? = null
 
@@ -33,10 +33,31 @@ abstract class BaseAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
     /**
      * 添加item
      * @param item
+     * @param position 插入位置（可选）
      */
-    open fun addItem(item: T, position: Int) {
-        mItems.add(position, item)
-        notifyItemInserted(position)
+    open fun addItem(item: T, position: Int = -1) {
+        if (position == -1) {
+            mItems.add(item)
+            notifyDataSetChanged()
+        } else {
+            mItems.add(position, item)
+            notifyItemInserted(position)
+        }
+    }
+    /**
+     * 更新所有数据
+     */
+    open fun updateItems(items: MutableList<T>){
+        mItems = items
+    }
+
+    /**
+     * 添加item集合
+     * @param items
+     */
+    open fun addItems(items: MutableList<T>) {
+        mItems.addAll(items)
+        notifyDataSetChanged()
     }
 
     /**
@@ -45,6 +66,15 @@ abstract class BaseAdapter<T>(private val mItems: MutableList<T>) : RecyclerView
      */
     open fun deleteItem(item: T) {
         mItems.remove(item)
+        notifyDataSetChanged()
+    }
+
+    /**
+     * 删除item集合
+     * @param items
+     */
+    open fun deleteItem(items: MutableList<T>) {
+        mItems.removeAll(items)
         notifyDataSetChanged()
     }
 
