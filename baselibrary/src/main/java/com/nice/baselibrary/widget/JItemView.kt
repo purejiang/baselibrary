@@ -1,8 +1,10 @@
 package com.nice.baselibrary.widget
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -10,14 +12,16 @@ import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.Switch
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.nice.baselibrary.R
+import kotlin.math.log
 
 /**
  * @author JPlus
  * @date 2020/4/23.
  */
-class JItemLinearView : RelativeLayout {
+class JItemView : ConstraintLayout {
     companion object {
         const val SWITCH_TYPE = 0
         const val NORMAL_TYPE = 1
@@ -44,27 +48,29 @@ class JItemLinearView : RelativeLayout {
 
     private fun initView(context: Context, attributeSet: AttributeSet?) {
 
-        val typeArray = context.obtainStyledAttributes(attributeSet, R.styleable.JItemLinearView)
+        val typeArray = context.obtainStyledAttributes(attributeSet, R.styleable.JItemView)
 
-        val leftText = typeArray.getString(R.styleable.JItemLinearView_left_text)
-        val rightText = typeArray.getString(R.styleable.JItemLinearView_right_text)
-        val middleText = typeArray.getString(R.styleable.JItemLinearView_middle_text)
+        val leftText = typeArray.getString(R.styleable.JItemView_left_text)
+        val rightText = typeArray.getString(R.styleable.JItemView_right_text)
+        val middleText = typeArray.getString(R.styleable.JItemView_middle_text)
 
-        val leftImg = typeArray.getDrawable(R.styleable.JItemLinearView_left_img)
-        val rightImg = typeArray.getDrawable(R.styleable.JItemLinearView_right_img)
-        val type = typeArray.getInt(R.styleable.JItemLinearView_view_type, NORMAL_TYPE)
+        val leftImg = typeArray.getDrawable(R.styleable.JItemView_left_img)
+        val rightImg = typeArray.getDrawable(R.styleable.JItemView_right_img)
+        val type = typeArray.getInt(R.styleable.JItemView_view_type, NORMAL_TYPE)
+        val isShow = typeArray.getBoolean(R.styleable.JItemView_show_divider, false)
 
-        val leftColor = typeArray.getColor(R.styleable.JItemLinearView_left_text_color, ContextCompat.getColor(context, R.color.black))
-        val middleColor = typeArray.getColor(R.styleable.JItemLinearView_middle_text_color, ContextCompat.getColor(context, R.color.black))
-        val rightColor = typeArray.getColor(R.styleable.JItemLinearView_right_text_color, ContextCompat.getColor(context, R.color.black))
-
-        LayoutInflater.from(context).inflate(R.layout.layout_item_line, this)?.let {
-            mLeftTextView = it.findViewById(R.id.tv_left_linear_view)
-            mMiddleTextView = it.findViewById(R.id.tv_middle_linear_view)
-            mRightTextView = it.findViewById(R.id.tv_right_linear_view)
-            mLeftImgBtn = it.findViewById(R.id.img_left_linear_view)
-            mRightImgBtn = it.findViewById(R.id.img_right_linear_view)
-            mSwitch = it.findViewById(R.id.sw_right_linear_view)
+        val leftColor = typeArray.getColor(R.styleable.JItemView_left_text_color, ContextCompat.getColor(context, R.color.black))
+        val middleColor = typeArray.getColor(R.styleable.JItemView_middle_text_color, ContextCompat.getColor(context, R.color.black))
+        val rightColor = typeArray.getColor(R.styleable.JItemView_right_text_color, ContextCompat.getColor(context, R.color.black))
+        typeArray.recycle()
+        LayoutInflater.from(context).inflate(R.layout.layout_item_setting, this)?.let {
+            mLeftTextView = it.findViewById(R.id.tv_left_item_view)
+            mMiddleTextView = it.findViewById(R.id.tv_middle_item_view)
+            mRightTextView = it.findViewById(R.id.tv_right_item_view)
+            mLeftImgBtn = it.findViewById(R.id.imb_left_item_view)
+            mRightImgBtn = it.findViewById(R.id.imb_right_item_view)
+            mSwitch = it.findViewById(R.id.sw_right_item_view)
+            it.findViewById<BaseDivider>(R.id.bdv_bottom_line)?.visibility = if(isShow) View.VISIBLE else View.GONE
         }
         when (type) {
             NORMAL_TYPE -> {
@@ -87,22 +93,37 @@ class JItemLinearView : RelativeLayout {
 
     }
 
+    override fun onDraw(canvas: Canvas?) {
+        super.onDraw(canvas)
 
+    }
+
+    /**
+     * 设置左边图片
+     * @param drawable
+     */
     fun setLeftImg(drawable: Drawable?) {
         drawable?.let {
+            mLeftImgBtn?.visibility = View.VISIBLE
             mLeftImgBtn?.setImageDrawable(it)
         }
     }
 
+    /**
+     * 设置右边图片
+     * @param drawable
+     */
     fun setRightImg(drawable: Drawable?) {
         drawable?.let {
+            mRightImgBtn?.visibility = View.VISIBLE
             mRightImgBtn?.setImageDrawable(it)
         }
     }
 
     /**
-     * 设置中文本
+     * 设置中间文本
      * @param title
+     * @param color
      */
     fun setMiddleTitle(title: String?, color: Int? = null) {
         mMiddleTextView?.visibility = View.VISIBLE

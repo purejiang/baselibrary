@@ -1,6 +1,9 @@
 package com.nice.baselibrary.base.utils
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import okhttp3.ResponseBody
 import java.io.*
 import java.nio.channels.FileChannel
@@ -24,7 +27,7 @@ import java.security.NoSuchAlgorithmException
  */
 fun File.writeFile(stream: InputStream, append: Boolean): Boolean {
     var outputStream: OutputStream? = null
-    LogUtils.d("writeFile:" + this.absoluteFile)
+    LogUtils.d("writeFile:$absoluteFile")
     try {
         outputStream = FileOutputStream(this, append)
         val data = ByteArray(1024)
@@ -57,7 +60,7 @@ fun File.writeFile(stream: InputStream, append: Boolean): Boolean {
 fun File.writeFile(content: String, append: Boolean): Boolean {
     var writer: BufferedWriter? = null
     try {
-        LogUtils.d("writeFile:" + this.absoluteFile)
+        LogUtils.d("writeFile:" + absoluteFile)
         //FileWriter 文件不存在则会创建
         writer = BufferedWriter(FileWriter(this, append))
         writer.write(content)
@@ -104,6 +107,31 @@ fun File.readFile2List(charsetName: String = "UTF-8"): ArrayList<String> {
         }
 
     }
+}
+
+/**
+ * 读取输入流为byte数组
+ * @return byte数组
+ */
+fun InputStream.inputStream2ByteArray(): ByteArray? {
+    val out = ByteArrayOutputStream()
+    try {
+        val b = ByteArray(2048)
+        var readBytes = 0
+        while (read(b).also { readBytes = it } > 0) {
+            out.write(b, 0, readBytes)
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return null
+    } finally {
+        try {
+            close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+    return out.toByteArray()
 }
 
 /**
@@ -189,8 +217,8 @@ fun File.readFile2InputStream(): InputStream {
  * @return
  */
 fun InputStream.readFile2String(charsetName: String = "UTF-8"): String {
-    val buffer = ByteArray(this.available())
-    this.read(buffer)
+    val buffer = ByteArray(available())
+    read(buffer)
     return String(buffer, charset(charsetName))
 }
 
@@ -201,7 +229,7 @@ fun InputStream.readFile2String(charsetName: String = "UTF-8"): String {
  * @param content
  */
 fun Context.writePrivateFile(filePath: String, content: String) {
-    this.openFileOutput(filePath, Context.MODE_PRIVATE).let{
+    openFileOutput(filePath, Context.MODE_PRIVATE).let{
         it.write(content.toByteArray())
         it.close()
     }
@@ -215,7 +243,7 @@ fun Context.writePrivateFile(filePath: String, content: String) {
 fun Context.writePrivateFile(name:String, stream: InputStream): Boolean {
     var outputStream: OutputStream? = null
     try {
-        outputStream = this.openFileOutput(name, Context.MODE_PRIVATE)
+        outputStream = openFileOutput(name, Context.MODE_PRIVATE)
         val data = ByteArray(1024)
         var length = 0
         while ({ length = stream.read(data); length }() != -1) {
@@ -243,7 +271,7 @@ fun Context.writePrivateFile(name:String, stream: InputStream): Boolean {
  * return
  */
 fun Context.writePrivateDir(dir: String): File {
-    return this.getDir(dir, Context.MODE_PRIVATE)
+    return getDir(dir, Context.MODE_PRIVATE)
 }
 
 /**
@@ -261,10 +289,10 @@ fun getFolderName(filePath: String): String {
  * @return 是否生成文件
  */
 fun File.createFile(): Boolean {
-    if (this.exists()) return true
-    if (this.isDirectory) File(getFolderName(this.absolutePath)).createDir() else return false
+    if (exists()) return true
+    if (isDirectory) File(getFolderName(absolutePath)).createDir() else return false
     return try {
-        this.createNewFile()
+        createNewFile()
     } catch (e: IOException) {
         e.printStackTrace()
         false
@@ -276,7 +304,7 @@ fun File.createFile(): Boolean {
  * @return 是否生成文件夹
  */
 fun File.createDir(): Boolean {
-    return if (this.exists() && this.isDirectory) true else if(this.isFile) throw IOException("File is not dir.") else this.mkdirs()
+    return if (exists() && isDirectory) true else if(isFile) throw IOException("File is not dir.") else mkdirs()
 }
 
 
@@ -323,7 +351,21 @@ fun File.getFileMD5(): ByteArray {
     return byteArrayOf()
 }
 
-
+/**
+ * 获取 文件/文件夹 的大小
+ * @return 大小
+ */
+fun File.getFolderSize(): Long {
+    var size = 0L
+    return if (isFile) {
+        length()
+    } else {
+        this.listFiles()?.forEach {
+            size += it.getFolderSize()
+        }
+        size
+    }
+}
 
 /**
  * 获取文件夹下文件列表
@@ -331,7 +373,7 @@ fun File.getFileMD5(): ByteArray {
  */
 fun File.getDirFiles(): MutableList<File>? {
     return try {
-        if (this.isDirectory) this.listFiles().toMutableList() else null
+        if (isDirectory) listFiles()?.toMutableList() else null
     } catch (e: Exception) {
         e.printStackTrace()
         null
@@ -347,10 +389,10 @@ fun File.getDirFiles(): MutableList<File>? {
  */
 @Throws(IOException::class)
 fun File.writeRandomAccessFile(responseBody: ResponseBody, read: Long, count: Long) {
-    LogUtils.d("writeRandomAccessFile: contentLength:${responseBody.contentLength()} - file_path:${this.absolutePath}\nread:$read, count:$count")
-    if (!this.parentFile.exists())
-        this.parentFile.mkdirs()
-    if(!this.exists()) this.createNewFile()
+    LogUtils.d("writeRandomAccessFile: contentLength:${responseBody.contentLength()} - file_path:${absolutePath}\nread:$read, count:$count")
+    if (parentFile?.exists()==true)
+        parentFile?.mkdirs()
+    if(!this.exists()) createNewFile()
 
     val allLength: Long = if (count == 0L) {
         responseBody.contentLength()

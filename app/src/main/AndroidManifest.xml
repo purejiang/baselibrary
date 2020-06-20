@@ -32,8 +32,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.activity.WebActivity"></activity>
-        <activity android:name=".ui.activity.RefreshActivity"></activity>
+        <activity android:name=".ui.activity.WebActivity">
+
+        </activity>
+        <activity android:name=".ui.activity.RefreshActivity">
+
+        </activity>
         <activity
             android:name=".ui.activity.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

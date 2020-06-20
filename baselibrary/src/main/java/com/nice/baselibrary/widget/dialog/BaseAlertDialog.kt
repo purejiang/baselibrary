@@ -250,7 +250,7 @@ open class BaseAlertDialog : BaseDialogFragment() {
          * 创建NiceDialog
          * @return NiceAlertDialog
          */
-        fun create(): BaseAlertDialog {
+        fun build(): BaseAlertDialog {
             val dialog = BaseAlertDialog()
             //将数据从Builder的Params中传递到Dialog中
             params.apply(dialog.mController)

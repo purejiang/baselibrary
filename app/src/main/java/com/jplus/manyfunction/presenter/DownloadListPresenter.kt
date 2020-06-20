@@ -10,7 +10,7 @@ import com.jplus.manyfunction.download.JDownloadManager
 import com.nice.baselibrary.base.source.DataSource
 import com.nice.baselibrary.base.entity.vo.DownloadInfo
 import com.nice.baselibrary.base.download.DownloadState
-import com.nice.baselibrary.base.utils.StringUtils
+import com.nice.baselibrary.base.utils.parseUrlName
 import java.io.File
 
 
@@ -52,7 +52,7 @@ class DownloadListPresenter(context: Context, private val mView: DownloadListCon
     }
 
     override fun addDownload(url: String, dirPath: String) {
-        val name = StringUtils.parseUrlName(url)
+        val name = parseUrlName(url)
         mDataSource.getData(mutableMapOf(Pair("url", url), Pair("name", name)), object : DataSource.LoadDataListCallback<DownloadInfo> {
             override fun onDataLoaded(dataList: MutableList<DownloadInfo>) {
                     if (dataList.size == 0) {

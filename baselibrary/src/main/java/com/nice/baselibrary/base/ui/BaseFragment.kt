@@ -32,6 +32,14 @@ abstract class BaseFragment : Fragment() {
      */
     abstract fun bindListener()
 
+    /**
+     * 新增
+     * onCreateView返回前对fragment的rootview进行的处理
+     * @param view
+     */
+    fun backRootView(view:View):View?{
+        return null
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -48,8 +56,9 @@ abstract class BaseFragment : Fragment() {
         LogUtils.d("Fragment:[${this.javaClass.simpleName}] --onCreateView()")
         getInitView(view, savedInstanceState)
 
-        return view
+        return backRootView(view)?:view
     }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         bindListener()//如果写在onCreateView中会因为view还没有返回导致不能直接使用布局id，或者可以直接用findViewById则不会出现此问题

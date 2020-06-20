@@ -19,7 +19,7 @@ import com.nice.baselibrary.base.download.DownloadState
 import com.jplus.manyfunction.download.DownloadCallback
 import com.nice.baselibrary.base.entity.vo.DownloadInfo
 import com.nice.baselibrary.base.ui.BaseFragment
-import com.nice.baselibrary.base.utils.StringUtils
+import com.nice.baselibrary.base.utils.parseByteSize
 import com.nice.baselibrary.base.utils.showGravityToast
 import com.nice.baselibrary.widget.BaseCircleProgress
 import com.nice.baselibrary.widget.JTextView
@@ -80,7 +80,7 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
                                 }
                             }
 
-                        }).create().show()
+                        }).build().show()
             }
         }
 
@@ -201,7 +201,7 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
             override fun update(read: Long, count: Long, done: Boolean) {
                 activity?.runOnUiThread {
                     itemView.getView<BaseCircleProgress>(R.id.bcp_download_item).loading(String.format("%.1f", read * 100.0 / count).toDouble())
-                    itemView.getView<JTextView>(R.id.btv_download_item_ratio).text = "${StringUtils.parseByteSize(read)}/${StringUtils.parseByteSize(count)}"
+                    itemView.getView<JTextView>(R.id.btv_download_item_ratio).text = "${parseByteSize(read)}/${parseByteSize(count)}"
                 }
             }
 

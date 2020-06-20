@@ -47,6 +47,7 @@ interface TestContract {
          * appInfoDemo界面
          */
         fun showAppInfo(infos:MutableList<AppInfo>)
+        fun showAppInfoDialog()
         /**
          * 登录界面
          */

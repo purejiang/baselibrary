@@ -80,7 +80,6 @@ class BaseCircleProgress(context: Context, attrs: AttributeSet?) : BaseLoadingVi
         circlePaint?.style = Paint.Style.STROKE //设置画笔风格为描边
         circlePaint?.strokeWidth = mStrokeWidth //设置画笔粗细
 
-
         //进度条画笔
         progressPaint = Paint()
         progressPaint?.color = progressColor

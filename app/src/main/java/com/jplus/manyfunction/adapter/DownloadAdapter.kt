@@ -9,7 +9,7 @@ import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import com.jplus.manyfunction.R
 import com.nice.baselibrary.base.entity.vo.DownloadInfo
-import com.nice.baselibrary.base.utils.StringUtils
+import com.nice.baselibrary.base.utils.parseByteSize
 import com.nice.baselibrary.widget.BaseCircleProgress
 import com.nice.baselibrary.widget.JTextView
 
@@ -66,7 +66,7 @@ class DownloadAdapter(private var mItems: MutableList<DownloadInfo>, private val
         mItemBindListener?.onBindListener(holder, item, position)?.let{
             if(it){
                 holder.getView<BaseCircleProgress>(R.id.bcp_download_item).loading(String.format("%.1f", item.read * 100.0 / item.count).toDouble())
-                holder.getView<JTextView>(R.id.btv_download_item_ratio).text = "${StringUtils.parseByteSize(item.read)}/${StringUtils.parseByteSize(item.count)}"
+                holder.getView<JTextView>(R.id.btv_download_item_ratio).text = "${parseByteSize(item.read)}/${parseByteSize(item.count)}"
             }
         }
 

@@ -1,4 +1,4 @@
-//package com.jplus.manyfunction.utils;
+package com.jplus.manyfunction.utils;//package com.jplus.manyfunction.utils;
 //
 //import android.app.Activity;
 //import android.content.Context;

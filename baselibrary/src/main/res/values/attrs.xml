@@ -33,22 +33,7 @@
         <attr name="rate" format="float" />
     </declare-styleable>
 
-    <declare-styleable name="JTitleBar">
-        <attr name="left_txt" format="string" />
-        <attr name="right_txt" format="string" />
-        <attr name="middle_txt" format="string"/>
-        <attr name="left_txt_color" format="color" />
-        <attr name="right_txt_color" format="color" />
-        <attr name="middle_txt_color" format="color"/>
-        <attr name="left_middletxt_img" format="reference"/>
-        <attr name="right_middletxt_img" format="reference"/>
-        <attr name="left_lefttxt_img" format="reference" />
-        <attr name="right_lefttxt_img" format="reference" />
-        <attr name="left_righttxt_img" format="reference" />
-        <attr name="right_righttxt_img" format="reference" />
-    </declare-styleable>
-
-    <declare-styleable name="JItemLinearView">
+    <declare-styleable name="JItemView">
         <attr name="view_type" format="dimension">
             <!-- 默认设置条 -->
             <enum name="setting" value="0" />
@@ -63,5 +48,28 @@
         <attr name="middle_text_color" format="color"/>
         <attr name="left_img" format="reference"/>
         <attr name="right_img" format="reference"/>
+        <attr name="show_divider" format="boolean"/>
+    </declare-styleable>
+    <declare-styleable name="BaseDivider">
+        <attr name="divider_width" format="dimension">
+            <!-- 前后都有的线 -->
+            <enum name="head_and_foot" value="0" />
+            <!-- 前面缩进的分割线 -->
+            <enum name="no_head" value="1" />
+            <!-- 后面缩进的分割线 -->
+            <enum name="no_foot" value="2" />
+            <!-- 前后都缩进的分割线-->
+            <enum name="no_head_no_foot" value="3" />
+        </attr>
+        <attr name="divider_type" format="dimension">
+            <!-- 普通分割线-->
+            <enum name="normal" value="4" />
+            <!-- 向下的阴影分割线 -->
+            <enum name="down_shadow" value="5" />
+            <!-- 向上的阴影分割线-->
+            <enum name="up_shadow" value="6" />
+        </attr>
+        <attr name="color" format="color"/>
+        <attr name="shadow_color" format="color"/>
     </declare-styleable>
 </resources>

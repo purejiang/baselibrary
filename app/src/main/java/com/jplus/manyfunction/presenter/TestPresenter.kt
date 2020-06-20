@@ -3,37 +3,36 @@ package com.jplus.manyfunction.presenter
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.os.Handler
+import android.os.Message
 import android.util.Log
-import android.view.Gravity
 import android.view.View
-import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import com.jplus.jvideoview.data.Video
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.common.Constant
 import com.jplus.manyfunction.contract.TestContract
-import com.jplus.manyfunction.download.DownloadDataSource
+import com.jplus.manyfunction.download.DownloadCallback
 import com.jplus.manyfunction.download.JDownloadManager
 import com.jplus.manyfunction.net.HostList
 import com.jplus.manyfunction.net.dto.*
-import com.nice.baselibrary.base.adapter.BaseAdapter
 import com.nice.baselibrary.base.common.BaseLibrary
-import com.nice.baselibrary.base.entity.vo.DownloadInfo
-import com.nice.baselibrary.base.net.RetrofitTool
-import com.jplus.manyfunction.download.DownloadCallback
-import com.nice.baselibrary.base.source.DataSource
 import com.nice.baselibrary.base.download.DownloadState
+import com.nice.baselibrary.base.entity.vo.AppInfo
+import com.nice.baselibrary.base.entity.vo.DownloadInfo
+import com.nice.baselibrary.base.net.doPost
+import com.nice.baselibrary.base.net.uploadFile
 import com.nice.baselibrary.base.ui.BaseActivity
 import com.nice.baselibrary.base.utils.*
 import com.nice.baselibrary.widget.dialog.BaseAlertDialog
+import io.reactivex.observers.DisposableObserver
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
 import java.util.*
 import java.util.regex.Pattern
@@ -48,11 +47,17 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
 
     private var mIsCanOpen = true
     private var mPhotoUtils: PhotoUtils? = null
-
+    private var mHandler:Handler?=null
     init {
         mView.setPresenter(this)
         mPhotoUtils = PhotoUtils(true, "${activity.packageName}.provider")
-
+        mHandler = Handler{
+            @Suppress("UNCHECKED_CAST")
+            when(it.what){
+                1->   mView.showAppInfo(it.obj as MutableList<AppInfo>)
+            }
+            true
+        }
     }
 
     override fun checkToCameraOrPhoto(view: View, jDialog: BaseAlertDialog) {
@@ -138,63 +143,61 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
                 "",
                 "",
                 "")
-        RetrofitTool.doPost(HostList.BASE_HOST[0].url + Constant.init, initRequest, object : Callback<ResponseBody> {
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                LogUtils.d("连接服务器失败：message:" + t.printStackTrace())
+        doPost(HostList.BASE_HOST[0].url + Constant.init, initRequest, object : DisposableObserver<ResponseBody>() {
+            override fun onComplete() {
 
             }
 
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    val str = response.body()?.string()
-                    LogUtils.d("请求成功：$str")
-                    val res = Gson().fromJson<BaseResponse>(str, BaseResponse::class.java)
-                    if (res.result_code == BaseResponse.SUCCESS) {
-                        val re = Gson().fromJson<InitializeResponse>(res.result_data, InitializeResponse::class.java)
-                        if (re.is_debug) {
-                            //是否debug模式
-                            requestShow("token", re.show_num)
-                        }
+            override fun onNext(response: ResponseBody) {
+                val str =response.string()
+                LogUtils.d("请求成功：$str")
+                val res = Gson().fromJson<BaseResponse>(str, BaseResponse::class.java)
+                if (res.result_code == BaseResponse.SUCCESS) {
+                    val re = Gson().fromJson<InitializeResponse>(res.result_data, InitializeResponse::class.java)
+                    if (re.is_debug) {
+                        //是否debug模式
+                        requestShow("token", re.show_num)
                     }
-                } else {
-                    LogUtils.d("连接服务器失败：code:" + response.code())
                 }
             }
-        })
+
+            override fun onError(e: Throwable) {
+                LogUtils.d("连接服务器失败：message:" + e.printStackTrace())
+
+            }
+        },"https://www.google.com")
 
     }
 
     override fun showWebView(url: String) {
-
         mView.showWebView(url)
     }
 
     private fun requestShow(token: String, num: Long) {
         val request = InitShowRequest(token, num)
-        RetrofitTool.doPost(HostList.BASE_HOST[0].url + Constant.init_show, request, object : Callback<ResponseBody> {
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                LogUtils.d("连接服务器失败：message:" + t.printStackTrace())
+        doPost(HostList.BASE_HOST[0].url + Constant.init_show, request, object : DisposableObserver<ResponseBody>() {
+            override fun onComplete() {
 
             }
 
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    val str = response.body()?.string()
-                    LogUtils.d("请求成功：$str")
-                    val res = Gson().fromJson<BaseResponse>(str, BaseResponse::class.java)
-                    if (res.result_code == BaseResponse.SUCCESS) {
-                        val re = Gson().fromJson<InitShowResponse>(res.result_data, InitShowResponse::class.java)
-                        if (re.is_h5) {
-                            mView.showInitH5View(re)
-                        } else {
-                            mView.showInitView(re)
-                        }
+            override fun onNext(response: ResponseBody) {
+                val str = response.string()
+                LogUtils.d("请求成功：$str")
+                val res = Gson().fromJson<BaseResponse>(str, BaseResponse::class.java)
+                if (res.result_code == BaseResponse.SUCCESS) {
+                    val re = Gson().fromJson<InitShowResponse>(res.result_data, InitShowResponse::class.java)
+                    if (re.is_h5) {
+                        mView.showInitH5View(re)
+                    } else {
+                        mView.showInitView(re)
                     }
-                } else {
-                    LogUtils.d("连接服务器失败：code:" + response.code())
                 }
             }
-        })
+
+            override fun onError(e: Throwable) {
+                LogUtils.d("连接服务器失败：message:" + e.printStackTrace())
+            }
+        },"https://www.google.com")
     }
 
     override fun startPhotoTest() {
@@ -207,26 +210,32 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
 
         val request = RequestBody.create(MediaType.parse("multipart/form-data"), File(path))
         val body = MultipartBody.Part.createFormData("pic", File(path).name, request)
+        uploadFile(url, body, object : DisposableObserver<ResponseBody>() {
+            override fun onComplete() {
 
-        RetrofitTool.uploadFile(url, body, object : Callback<ResponseBody> {
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                LogUtils.d("连接服务器失败：message:" + t.printStackTrace())
+            }
+
+            override fun onNext(response: ResponseBody) {
+                val str = response.string()
+                LogUtils.d("上传成功：$str")
+                val fileUrl = JSONObject(str).getJSONObject("result_data").get("file_url").toString()
+                mView.uploadResultView(fileUrl)
+            }
+
+            override fun onError(e: Throwable) {
+                LogUtils.d("连接服务器失败：message:" + e.printStackTrace())
                 mView.uploadResultView(null)
             }
-
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    val str = response.body()?.string()
-                    LogUtils.d("上传成功：$str")
-                    val fileUrl = JSONObject(str).getJSONObject("result_data").get("file_url").toString()
-                    mView.uploadResultView(fileUrl)
-
-                } else {
-                    LogUtils.d("连接服务器失败：code:" + response.code())
-                    mView.uploadResultView(null)
-                }
-            }
-        })
+        }, "https://www.google.com")
+//        uploadFile(url, body, object : Callback<ResponseBody> {
+//            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+//
+//            }
+//
+//            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+//
+//            }
+//        })
     }
 
 
@@ -256,14 +265,22 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
     }
 
     override fun getAppInfos() {
-        mView.getFragActivity()?.let {
-            val appInfos = it.getAppsInfo(false)
-            mView.showAppInfo(appInfos)
+        mView.showAppInfoDialog()
+        GlobalScope.launch {
+            val appInfos =  mView.getFragActivity()?.getAppsInfo(false)
+            Log.d("pipa", "appInfos:$appInfos")
+           mHandler?.let{
+               val msg = it.obtainMessage()
+               msg.what = 1
+               //传递对象
+               msg.obj = appInfos
+               mHandler?.sendMessage(msg)
+           }
         }
     }
 
     override fun downLoadPatch(url: String, dirPath: String, downloadCallback: DownloadCallback) {
-        val name = StringUtils.parseUrlName(url)
+        val name = parseUrlName(url)
         val download = DownloadInfo(0, name, url, dirPath + File.separator + name, Date(System.currentTimeMillis()).getDateTimeByMillis(false), "", 0, 0, DownloadState.DOWNLOAD_UNKNOWN, "")
         //不判断下载状态
         JDownloadManager.addNewDownload(download, downloadCallback, null, false)
@@ -278,21 +295,21 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
         if (!checkAccountPwd(phone, password)) {
             return
         }
-        RetrofitTool.doPost("http://192.168.11.175:8000/login/", LoginRequest(phone, password), object : Callback<ResponseBody> {
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                LogUtils.d("连接服务器失败：message:" + t.printStackTrace())
-                mView.uploadResultView(null)
+        doPost("http://192.168.11.175:8000/login/", LoginRequest(phone, password), object : DisposableObserver<ResponseBody>() {
+            override fun onComplete() {
+
             }
 
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    val str = response.body()?.string()
-                    LogUtils.d("登录成功：$str")
-                } else {
-                    LogUtils.d("连接服务器失败：code:" + response.code())
-                }
+            override fun onNext(response: ResponseBody) {
+                val str = response.string()
+                LogUtils.d("登录成功：$str")
             }
-        })
+
+            override fun onError(e: Throwable) {
+                LogUtils.d("连接服务器失败：message:" + e.printStackTrace())
+                mView.showLoginResult(false, e.message?:"")
+            }
+        },"https://www.google.com")
     }
 
     private fun checkAccountPwd(phone: String, password: String): Boolean {

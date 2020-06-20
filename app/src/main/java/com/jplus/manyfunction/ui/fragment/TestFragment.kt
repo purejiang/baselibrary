@@ -4,11 +4,12 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.google.android.material.textfield.TextInputEditText
@@ -21,6 +22,7 @@ import com.jplus.jvideoview.jvideo.JVideoView
 import com.jplus.jvideoview.jvideo.JVideoViewPresenter
 import com.jplus.manyfunction.R
 import com.jplus.manyfunction.contract.TestContract
+import com.jplus.manyfunction.download.DownloadCallback
 import com.jplus.manyfunction.net.dto.InitShowResponse
 import com.jplus.manyfunction.ui.activity.DownloadListActivity
 import com.jplus.manyfunction.ui.activity.RefreshActivity
@@ -28,12 +30,10 @@ import com.jplus.manyfunction.ui.activity.WebActivity
 import com.jplus.manyfunction.utils.ParseVideoInUrl
 import com.nice.baselibrary.base.adapter.BaseAdapter
 import com.nice.baselibrary.base.common.Constant
+import com.nice.baselibrary.base.entity.vo.AppInfo
 import com.nice.baselibrary.base.listener.NotDoubleOnClickListener
-import com.jplus.manyfunction.download.DownloadCallback
 import com.nice.baselibrary.base.ui.BaseFragment
 import com.nice.baselibrary.base.utils.*
-import com.nice.baselibrary.base.entity.vo.AppInfo
-import com.nice.baselibrary.widget.JEditTextView
 import com.nice.baselibrary.widget.JTextView
 import com.nice.baselibrary.widget.dialog.BaseAlertDialog
 import com.nice.baselibrary.widget.dialog.JDialog
@@ -47,7 +47,7 @@ import java.io.File
  */
 class TestFragment : BaseFragment(), TestContract.View {
 
-    private var presenter: JVideoViewPresenter?=null
+    private var presenter: JVideoViewPresenter? = null
     private var mPresenter: TestContract.Presenter? = null
 
     override fun getInitView(view: View?, bundle: Bundle?) {
@@ -121,9 +121,9 @@ class TestFragment : BaseFragment(), TestContract.View {
                 mPresenter?.showWebView("")
             }
         })
-        jdt_text?.setEditCallBack {
-            Log.d("pipa", "jdt_text.changedToEmpty")
-        }
+//        jdt_text?.setEditCallBack {
+//            Log.d("pipa", "jdt_text.changedToEmpty")
+//        }
     }
 
 
@@ -134,14 +134,14 @@ class TestFragment : BaseFragment(), TestContract.View {
                 ?.setCanceled(response.is_cancel)
                 ?.let {
                     if (response.cancel_msg.isNotEmpty()) {
-                        it.setCancel(response.cancel_msg, true,object : JDialog.DialogClickListener {
+                        it.setCancel(response.cancel_msg, true, object : JDialog.DialogClickListener {
                             override fun onClick() {
 
                             }
                         })
                     }
                     if (response.confirm_msg.isNotEmpty()) {
-                        it.setConfirm(response.confirm_msg, true,object : JDialog.DialogClickListener {
+                        it.setConfirm(response.confirm_msg, true, object : JDialog.DialogClickListener {
                             override fun onClick() {
 
                             }
@@ -153,13 +153,13 @@ class TestFragment : BaseFragment(), TestContract.View {
 
     override fun showInitH5View(response: InitShowResponse) {
         this.activity?.run {
-                    getAlertDialog()
+            getAlertDialog()
                     .setBackgroundRes(R.drawable.bg_normal_dialog_view)
                     .setLayoutRes(R.layout.view_photo_dialog)
                     .setCancelable(true)
                     .setTag("newDialog")
-                    .setScreenHeightPercent( 0.2f)
-                    .setScreenWidthPercent( 1.0f)
+                    .setScreenHeightPercent(0.2f)
+                    .setScreenWidthPercent(1.0f)
                     .setAnimationRes(R.style.NiceDialogAnim)
                     .setGravity(Gravity.BOTTOM)
                     .setDimAmount(0.0f)
@@ -180,7 +180,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     })
 
                     .setKeyListener(DialogInterface.OnKeyListener { _, _, _ -> false })
-                    .create()
+                    .build()
                     .show()
         }
     }
@@ -190,11 +190,11 @@ class TestFragment : BaseFragment(), TestContract.View {
                 ?.setTitle("关于权限")
                 ?.setMessage(content)
                 ?.setCanceled(true)
-                ?.setCancel("取消", true,object : JDialog.DialogClickListener {
+                ?.setCancel("取消", true, object : JDialog.DialogClickListener {
                     override fun onClick() {
 
                     }
-                })?.setConfirm("去设置",true, object : JDialog.DialogClickListener {
+                })?.setConfirm("去设置", true, object : JDialog.DialogClickListener {
                     override fun onClick() {
                         JPermissionsUtils.startActivityToSetting(context as Activity)
                     }
@@ -205,7 +205,7 @@ class TestFragment : BaseFragment(), TestContract.View {
     override fun showUploadPic() {
         //照相、相片剪裁上传、显示demo
         this.activity?.run {
-                    getAlertDialog()
+            getAlertDialog()
                     .setBackgroundRes(R.drawable.bg_normal_dialog_view)
                     .setLayoutRes(R.layout.view_photo_dialog)
                     .setCancelable(true)
@@ -231,7 +231,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     })
 
                     .setKeyListener(DialogInterface.OnKeyListener { _, _, _ -> false })
-                    .create()
+                    .build()
                     .show()
         }
     }
@@ -247,38 +247,43 @@ class TestFragment : BaseFragment(), TestContract.View {
                 .into(img_head_view)
     }
 
+    private var recyclerTest: RecyclerView? = null
     override fun showAppInfo(infos: MutableList<AppInfo>) {
-        this.activity?.let {
-            val adapter= object :BaseAdapter<AppInfo>(infos) {
-                override fun getLayout(viewType: Int): Int {
-                    return R.layout.app_info_view
-                }
+        val adapter = object : BaseAdapter<AppInfo>(infos) {
+            override fun getLayout(viewType: Int): Int {
+                return R.layout.app_info_view
+            }
 
-                override fun convert(holder: BaseAdapter.VH, item: AppInfo, position: Int, payloads: MutableList<Any>?) {
-                    holder.getView<TextView>(R.id.tv_app_name).text = item.appName
-                    holder.getView<TextView>(R.id.tv_package_name).text = item.packageName
-                    holder.getView<ImageButton>(R.id.imb_del_app).setOnClickListener {
-                        item.packageName?.let { s ->
-                            this@TestFragment.activity?.deleteAppByPackageName(s)
-                        }
+            override fun convert(holder: BaseAdapter.VH, item: AppInfo, position: Int, payloads: MutableList<Any>?) {
+                holder.getView<TextView>(R.id.tv_app_name).text = item.appName
+                holder.getView<TextView>(R.id.tv_package_name).text = item.packageName
+                holder.getView<ImageButton>(R.id.imb_del_app).setOnClickListener {
+                    item.packageName?.let { s ->
+                        this@TestFragment.activity?.deleteAppByPackageName(s)
                     }
-                    holder.getView<ImageButton>(R.id.imb_start_up).setOnClickListener {
-                        item.packageName?.let { s ->
-                            this@TestFragment.activity?.startAppByPackageName(s)
-                        }
+                }
+                holder.getView<ImageButton>(R.id.imb_start_up).setOnClickListener {
+                    item.packageName?.let { s ->
+                        this@TestFragment.activity?.startAppByPackageName(s)
                     }
                 }
             }
-            adapter.setItemClickListener(object : BaseAdapter.ItemClickListener<AppInfo> {
-                override fun setItemClick(holder: BaseAdapter.VH, item: AppInfo, position: Int) {
-                    it.showNormalToast(infos[position].appName)
-                }
+        }
+        adapter.setItemClickListener(object : BaseAdapter.ItemClickListener<AppInfo> {
+            override fun setItemClick(holder: BaseAdapter.VH, item: AppInfo, position: Int) {
+                this@TestFragment.activity?.showNormalToast(infos[position].appName)
+            }
 
-                override fun setItemLongClick(holder: BaseAdapter.VH, item: AppInfo, position: Int): Boolean {
-                    it.showNormalToast(infos[position].signMd5)
-                    return true
-                }
-            })
+            override fun setItemLongClick(holder: BaseAdapter.VH, item: AppInfo, position: Int): Boolean {
+                this@TestFragment.activity?.showNormalToast(infos[position].signMd5)
+                return true
+            }
+        })
+        recyclerTest?.adapter = adapter
+    }
+
+    override fun showAppInfoDialog() {
+        this.activity?.let {
             it.getAlertDialog()
                     .setLayoutRes(R.layout.list_dialog_test)
                     .setCancelable(true)
@@ -286,13 +291,23 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setScreenHeightPercent(0.8f)
                     .setScreenWidthPercent(0.8f)
                     .setAnimationRes(R.style.NiceDialogAnim)
+                    .setBindViewListener(object : BaseAlertDialog.OnBindViewListener {
+                        override fun onBindView(viewHolder: BaseAdapter.VH) {
+                            viewHolder.getView<RecyclerView>(R.id.recycler_test).let { rcy ->
+                                recyclerTest = rcy
+                                rcy.layoutManager = LinearLayoutManager(it).apply {
+                                    this.orientation = LinearLayoutManager.VERTICAL
+                                }
+                            }
+                        }
+                    })
                     .setGravity(Gravity.CENTER)
                     .setDimAmount(0.2f)
-                    .create()
+                    .build()
                     .show()
-
         }
     }
+
 
     override fun showPatchDownLoad() {
         this.activity?.let {
@@ -301,7 +316,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setCancelable(true)
                     .setTag("newDialog")
 //                    .setScreenHeightPercent(it, 0.4f)
-                    .setScreenWidthPercent( 0.8f)
+                    .setScreenWidthPercent(0.8f)
                     .setAnimationRes(R.style.NiceDialogAnim)
                     .setGravity(Gravity.CENTER)
                     .setDimAmount(0.0f)
@@ -344,7 +359,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                         }
 
                     })
-                    .create()
+                    .build()
                     .show()
         }
     }
@@ -357,8 +372,8 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setLayoutRes(R.layout.view_login_dialog)
                     .setCancelable(true)
                     .setTag("newDialog")
-                    .setScreenHeightPercent( 0.5f)
-                    .setScreenWidthPercent( 0.8f)
+                    .setScreenHeightPercent(0.5f)
+                    .setScreenWidthPercent(0.8f)
                     .setAnimationRes(R.style.NiceDialogAnim)
                     .setGravity(Gravity.CENTER)
                     .setDimAmount(0.0f)
@@ -373,7 +388,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                                 }
                             }
                         }
-                    }).create()
+                    }).build()
                     .show()
         }
     }
@@ -399,9 +414,9 @@ class TestFragment : BaseFragment(), TestContract.View {
                     .setAnimationRes(R.style.NiceDialogAnim)
                     .setGravity(Gravity.CENTER)
                     .setDimAmount(0.8f)
-                    .setBindViewListener(object :BaseAlertDialog.OnBindViewListener{
+                    .setBindViewListener(object : BaseAlertDialog.OnBindViewListener {
                         override fun onBindView(viewHolder: BaseAdapter.VH) {
-                            this@TestFragment.activity?.let{ activity->
+                            this@TestFragment.activity?.let { activity ->
                                 presenter = JVideoViewPresenter(
                                         activity,
                                         viewHolder.getView<JVideoView>(R.id.jv_video_main),
@@ -415,7 +430,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                     }).setDismissListener(DialogInterface.OnDismissListener {
                         LogUtils.d("view_video.dismiss()")
                         presenter?.unSubscribe()
-                    }).create()
+                    }).build()
                     .show()
         }
     }

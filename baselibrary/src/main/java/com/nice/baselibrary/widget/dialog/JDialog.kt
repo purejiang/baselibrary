@@ -3,12 +3,13 @@ package com.nice.baselibrary.widget.dialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import com.nice.baselibrary.R
 import com.nice.baselibrary.widget.BaseCircleProgress
 import com.nice.baselibrary.widget.JTextView
-import com.nice.baselibrary.widget.JTitleBar
 import com.nice.baselibrary.base.utils.LogUtils
+import com.nice.baselibrary.widget.JItemView
 
 /**
  * 可修改弹出框
@@ -22,19 +23,17 @@ class JDialog
  * @param resInt dialog使用的布局
  * @param resIntArray 控件的id
  */
-(context: Context, resInt: Int, resIntArray: Array<Int>, styleable: Int) : AlertDialog(context, styleable) {
+(context: Context, resInt: Int, resIntArray: List<Int?>, styleable: Int) : AlertDialog(context, styleable) {
     companion object {
-
         val DIALOG_NORMAL = "normal"
         val DIALOG_SMALLER = "smaller"
         val DIALOG_SMALL = "small"
         val DIALOG_BIG = "big"
-
     }
-    private var mTitle: JTitleBar? = null
+    private var mTitle: JItemView? = null
     private var mMessage: JTextView? = null
-    private var mCancel: JTextView? = null
-    private var mConfirm: JTextView? = null
+    private var mCancel: Button? = null
+    private var mConfirm: Button? = null
     private var mProgress: BaseCircleProgress?=null
 
     init {
@@ -47,12 +46,21 @@ class JDialog
 
         //去掉默认dialog弹出后的半透明背景
         window?.setDimAmount(0f)
-
-        mTitle = view.findViewById(resIntArray[0])
-        mMessage = view.findViewById(resIntArray[1])
-        mCancel = view.findViewById(resIntArray[2])
-        mConfirm = view.findViewById(resIntArray[3])
-        mProgress = view.findViewById(resIntArray[4])
+        resIntArray[0]?.let {
+            mTitle = view.findViewById(it)
+        }
+        resIntArray[1]?.let {
+            mMessage = view.findViewById(it)
+        }
+        resIntArray[2]?.let {
+            mCancel = view.findViewById(it)
+        }
+        resIntArray[3]?.let {
+            mConfirm = view.findViewById(it)
+        }
+        resIntArray[4]?.let {
+            mProgress = view.findViewById(it)
+        }
     }
 
     /**

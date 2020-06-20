@@ -12,34 +12,14 @@ import com.jplus.manyfunction.R
 import com.nice.baselibrary.base.adapter.BaseAdapter
 import com.nice.baselibrary.base.adapter.BaseAdapterWrapper
 import com.nice.baselibrary.base.utils.showNormalToast
-import com.nice.baselibrary.widget.loading.LoadingListener
-import com.nice.baselibrary.widget.loading.LoadingManager
 import kotlinx.android.synthetic.main.activity_refresh.*
 
 
 class RefreshActivity : AppCompatActivity() {
-    private var mloadingmanager: LoadingManager? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_refresh)
-        mloadingmanager = LoadingManager(this, object : LoadingListener() {
-            override fun setRetryEvent(retryView: View?) {
-
-            }
-
-            override fun setEmptyEvent(emptyView: View?) {
-
-            }
-
-            override fun setLoadingEvent(loadingView: View?) {
-
-            }
-
-            override fun generateLoadingLayoutId(): Int {
-                return super.generateLoadingLayoutId()
-            }
-        })
-        mloadingmanager?.showLoading()
         Handler().postDelayed({
             initView()
         },3000)
@@ -101,6 +81,6 @@ class RefreshActivity : AppCompatActivity() {
         rcy_test.layoutManager = rvManager
         rcy_test.itemAnimator = DefaultItemAnimator()
         rcy_test.adapter = adapterWrapper
-        mloadingmanager?.showContent()
+
     }
 }

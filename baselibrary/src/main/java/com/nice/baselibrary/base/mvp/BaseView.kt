@@ -10,4 +10,5 @@ interface BaseView<in T> {
      * @param presenter
      */
     fun setPresenter(presenter:T)
+
 }

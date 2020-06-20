@@ -20,7 +20,7 @@ import com.nice.baselibrary.widget.dialog.JDialog
  * @param resIntArray
  * @param styleable
  */
-fun Context.createDialog(resInt: Int, resIntArray: Array<Int>, styleable: Int): JDialog {
+fun Context.createDialog(resInt: Int, resIntArray: List<Int>, styleable: Int): JDialog {
     return JDialog(this, resInt, resIntArray, styleable)
 }
 
@@ -38,7 +38,7 @@ fun FragmentActivity.getAlertDialog(): BaseAlertDialog.Builder {
  * @param resIntArray
  * @param size dialog大小样式
  */
-fun Context.createDialog(resInt: Int, resIntArray: Array<Int>, size: String): JDialog {
+fun Context.createDialog(resInt: Int, resIntArray: List<Int?>, size: String): JDialog {
     var styleable = R.style.NormalNiceDialog
     when (size) {
         "normal" -> styleable = R.style.NormalNiceDialog
@@ -55,7 +55,7 @@ fun Context.createDialog(resInt: Int, resIntArray: Array<Int>, size: String): JD
  */
 fun Context.createDialog(size: String): JDialog {
     val resInt = R.layout.view_dialog
-    val resIntArray = arrayOf(R.id.bt_dialog_title, R.id.btv_dialog_message, R.id.btv_dialog_cancel, R.id.btv_dialog_confirm, R.id.cp_loading)
+    val resIntArray = mutableListOf<Int?>(R.id.bt_dialog_title, R.id.btv_dialog_message, R.id.btv_dialog_cancel, R.id.btv_dialog_confirm, R.id.cp_loading)
     return createDialog(resInt, resIntArray, size)
 }
 

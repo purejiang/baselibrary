@@ -23,7 +23,7 @@ class DownloadResponseBody(private val response: ResponseBody?, private val down
 
     override fun source(): BufferedSource? {
         response?.let {
-            bufferSource = bufferSource ?: Okio.buffer(getSource(it.source()))
+            bufferSource = bufferSource ?: getSource(it.source()).buffer()
         }
         return bufferSource
     }

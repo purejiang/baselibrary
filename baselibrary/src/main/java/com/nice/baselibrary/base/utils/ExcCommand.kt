@@ -23,7 +23,7 @@ class ExcCommand {
             try {
                 inputStream = exc(arrayOf(command))
                 var line = 0
-                while ({ line = inputStream!!.read(data);line }() != -1) {
+                while ({ line = inputStream.read(data);line }() != -1) {
                     result.append(line)
                 }
             }finally {

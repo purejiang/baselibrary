@@ -21,7 +21,6 @@ object PatchDexUtils {
      * @param dexFile
      */
     fun loadDex(context: Context, dexFile: File) {
-
         dexFile.getDirFiles()?.forEach {
             if (it.name.endsWith(".dex")) { // .dex结尾
                 mDexList.add(it)

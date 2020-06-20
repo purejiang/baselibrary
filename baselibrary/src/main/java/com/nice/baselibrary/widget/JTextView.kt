@@ -1,11 +1,15 @@
 package com.nice.baselibrary.widget
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatTextView
 import com.nice.baselibrary.base.utils.LogUtils
+import kotlin.math.ceil
 
 
 /**
@@ -43,7 +47,6 @@ class JTextView : AppCompatTextView {
     override fun performClick(): Boolean {
         return super.performClick()
     }
-
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         when (event?.action) {
             MotionEvent.ACTION_UP -> {
@@ -70,64 +73,63 @@ class JTextView : AppCompatTextView {
                         return true
                     }
                 }
-//                performClick()
             }
         }
         return super.onTouchEvent(event)
     }
 
-//    override fun onDraw(canvas: Canvas?) {
-//        val drawablePadding = compoundDrawablePadding
-//        when {
-//            compoundDrawables[DRAWABLE_LEFT] != null -> { // 左
-//                val drawableWidth: Int = compoundDrawables[DRAWABLE_LEFT].intrinsicWidth
-//                val bodyWidth: Float
-//                bodyWidth = if (TextUtils.isEmpty(text)) {
-//                    drawableWidth.toFloat()
-//                } else {
-//                    val textWidth = paint.measureText(text.toString())
-//                    textWidth + drawableWidth + drawablePadding
-//                }
-//                canvas?.translate((width - bodyWidth) / 2, 0f)
-//            }
-//            compoundDrawables[DRAWABLE_RIGHT] != null -> { // 右
-//                val drawableWidth: Int = compoundDrawables[DRAWABLE_RIGHT].intrinsicWidth
-//                val bodyWidth: Float
-//                bodyWidth = if (TextUtils.isEmpty(text)) {
-//                    drawableWidth.toFloat()
-//                } else {
-//                    val textWidth = paint.measureText(text.toString())
-//                    textWidth + drawableWidth + drawablePadding
-//                }
-//                canvas?.translate((bodyWidth - width) / 2, 0f)
-//            }
-//            compoundDrawables[DRAWABLE_TOP] != null -> { // 上
-//                val drawableHeight: Int = compoundDrawables[DRAWABLE_TOP].intrinsicHeight
-//                val bodyHeight: Float
-//                bodyHeight = if (TextUtils.isEmpty(text)) {
-//                    drawableHeight.toFloat()
-//                } else {
-//                    val fm: Paint.FontMetrics = paint.fontMetrics
-//                    val fontHeight = ceil((fm.descent - fm.ascent).toDouble()).toFloat()
-//                    fontHeight + drawableHeight + drawablePadding
-//                }
-//                canvas?.translate(0f, (height - bodyHeight) / 2)
-//            }
-//            compoundDrawables[DRAWABLE_BOTTOM] != null -> { // 下
-//                val drawableHeight: Int = compoundDrawables[DRAWABLE_BOTTOM].intrinsicHeight
-//                val bodyHeight: Float
-//                bodyHeight = if (TextUtils.isEmpty(text)) {
-//                    drawableHeight.toFloat()
-//                } else {
-//                    val fm: Paint.FontMetrics = paint.fontMetrics
-//                    val fontHeight = ceil((fm.descent - fm.ascent).toDouble()).toFloat()
-//                    fontHeight + drawableHeight + drawablePadding
-//                }
-//                canvas?.translate(0f, (bodyHeight - height) / 2)
-//            }
-//        }
-//        super.onDraw(canvas)
-//    }
+    override fun onDraw(canvas: Canvas?) {
+        val drawablePadding = compoundDrawablePadding
+        when {
+            compoundDrawables[DRAWABLE_LEFT] != null -> { // 左
+                val drawableWidth: Int = compoundDrawables[DRAWABLE_LEFT].intrinsicWidth
+                val bodyWidth: Float
+                bodyWidth = if (TextUtils.isEmpty(text)) {
+                    drawableWidth.toFloat()
+                } else {
+                    val textWidth = paint.measureText(text.toString())
+                    textWidth + drawableWidth + drawablePadding
+                }
+                canvas?.translate((width - bodyWidth) / 2, 0f)
+            }
+            compoundDrawables[DRAWABLE_RIGHT] != null -> { // 右
+                val drawableWidth: Int = compoundDrawables[DRAWABLE_RIGHT].intrinsicWidth
+                val bodyWidth: Float
+                bodyWidth = if (TextUtils.isEmpty(text)) {
+                    drawableWidth.toFloat()
+                } else {
+                    val textWidth = paint.measureText(text.toString())
+                    textWidth + drawableWidth + drawablePadding
+                }
+                canvas?.translate((bodyWidth - width) / 2, 0f)
+            }
+            compoundDrawables[DRAWABLE_TOP] != null -> { // 上
+                val drawableHeight: Int = compoundDrawables[DRAWABLE_TOP].intrinsicHeight
+                val bodyHeight: Float
+                bodyHeight = if (TextUtils.isEmpty(text)) {
+                    drawableHeight.toFloat()
+                } else {
+                    val fm: Paint.FontMetrics = paint.fontMetrics
+                    val fontHeight = ceil((fm.descent - fm.ascent).toDouble()).toFloat()
+                    fontHeight + drawableHeight + drawablePadding
+                }
+                canvas?.translate(0f, (height - bodyHeight) / 2)
+            }
+            compoundDrawables[DRAWABLE_BOTTOM] != null -> { // 下
+                val drawableHeight: Int = compoundDrawables[DRAWABLE_BOTTOM].intrinsicHeight
+                val bodyHeight: Float
+                bodyHeight = if (TextUtils.isEmpty(text)) {
+                    drawableHeight.toFloat()
+                } else {
+                    val fm: Paint.FontMetrics = paint.fontMetrics
+                    val fontHeight = ceil((fm.descent - fm.ascent).toDouble()).toFloat()
+                    fontHeight + drawableHeight + drawablePadding
+                }
+                canvas?.translate(0f, (bodyHeight - height) / 2)
+            }
+        }
+        super.onDraw(canvas)
+    }
 
     /**
      * 图片的点击监听
