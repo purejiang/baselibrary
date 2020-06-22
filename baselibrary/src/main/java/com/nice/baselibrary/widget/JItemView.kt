@@ -4,18 +4,16 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
-import android.widget.RelativeLayout
+import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.nice.baselibrary.R
-import kotlin.math.log
 
 /**
  * @author JPlus
@@ -63,7 +61,7 @@ class JItemView : ConstraintLayout {
         val middleColor = typeArray.getColor(R.styleable.JItemView_middle_text_color, ContextCompat.getColor(context, R.color.black))
         val rightColor = typeArray.getColor(R.styleable.JItemView_right_text_color, ContextCompat.getColor(context, R.color.black))
         typeArray.recycle()
-        LayoutInflater.from(context).inflate(R.layout.layout_item_setting, this)?.let {
+        LayoutInflater.from(context).inflate(R.layout.layout_item_view, this)?.let {
             mLeftTextView = it.findViewById(R.id.tv_left_item_view)
             mMiddleTextView = it.findViewById(R.id.tv_middle_item_view)
             mRightTextView = it.findViewById(R.id.tv_right_item_view)

@@ -107,7 +107,8 @@
 
         <com.nice.baselibrary.widget.JItemView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
+            android:background="@color/blueviolet"
             app:left_img="@mipmap/ic_video_back"
             app:left_text="返回"
             app:middle_text="标题"
