@@ -98,17 +98,17 @@
             android:text="Web"
             android:textAllCaps="false"
             />
-<!--        <com.nice.baselibrary.widget.JEditTextView-->
-<!--            android:id="@+id/jdt_text"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:right_pic="@mipmap/ic_del_grey"-->
-<!--            android:text="input"/>-->
+        <com.nice.baselibrary.widget.JEditTextView
+            android:id="@+id/jdt_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:right_pic="@mipmap/ic_del_grey"
+            android:text="input"/>
 
         <com.nice.baselibrary.widget.JItemView
             android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:background="@color/blueviolet"
+            android:layout_height="?android:actionBarSize"
+            android:background="@color/white"
             app:left_img="@mipmap/ic_video_back"
             app:left_text="返回"
             app:middle_text="标题"
