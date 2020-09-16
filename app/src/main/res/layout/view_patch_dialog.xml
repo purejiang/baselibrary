@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="@dimen/normal_space"
+        android:padding="@dimen/space_normal"
         android:orientation="vertical">
         <TextView
 
@@ -31,8 +31,8 @@
         <Button
             android:id="@+id/btn_patch_download"
             android:layout_width="0dp"
-            android:layout_height="@dimen/small_size"
-            android:layout_margin="@dimen/normal_space"
+            android:layout_height="@dimen/widget_size_small"
+            android:layout_margin="@dimen/space_normal"
             android:background="@drawable/bg_circle_btn"
             android:layout_weight="1"
             android:textColor="@color/white"

@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/big_space">
+    android:padding="@dimen/space_big">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/biggest_space"
+        android:layout_marginTop="@dimen/space_biggest"
         android:orientation="vertical">
         <!--android.support.design:hintAnimationEnabled | 是否显示hint的动画,默认true-->
         <!--android.support.design:hintEnabled | 是否使用hint属性,默认true-->
@@ -58,7 +58,7 @@
                 android:id="@+id/cb_auto_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/small_space"
+                android:layout_margin="@dimen/space_small"
                 android:text="自动登录"
                 android:textColor="@color/colorGrey_dark" />
         </LinearLayout>
@@ -68,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/normal_space"
+            android:layout_margin="@dimen/space_normal"
             android:background="@drawable/bg_circle_btn"
             android:text="登录"
             android:textColor="@color/white" />

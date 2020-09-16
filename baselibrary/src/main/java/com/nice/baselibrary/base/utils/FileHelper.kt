@@ -390,7 +390,7 @@ fun File.getDirFiles(): MutableList<File>? {
 @Throws(IOException::class)
 fun File.writeRandomAccessFile(responseBody: ResponseBody, read: Long, count: Long) {
     LogUtils.d("writeRandomAccessFile: contentLength:${responseBody.contentLength()} - file_path:${absolutePath}\nread:$read, count:$count")
-    if (parentFile?.exists()==true)
+    if (parentFile?.exists()!=true)
         parentFile?.mkdirs()
     if(!this.exists()) createNewFile()
 

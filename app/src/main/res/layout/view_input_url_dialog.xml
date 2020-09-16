@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/big_space">
+    android:padding="@dimen/space_big">
 
         <!--android.support.design:hintAnimationEnabled | 是否显示hint的动画,默认true-->
         <!--android.support.design:hintEnabled | 是否使用hint属性,默认true-->
@@ -22,7 +22,7 @@
             android:background="@drawable/stock_input_url"
             android:gravity="start"
             android:inputType="textMultiLine"
-            android:padding="@dimen/normal_space" />
+            android:padding="@dimen/space_normal" />
 
 
         <Button
@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/normal_space"
+            android:layout_margin="@dimen/space_normal"
             android:background="@drawable/bg_circle_btn"
             android:text="下载"
             android:textColor="@color/white" />

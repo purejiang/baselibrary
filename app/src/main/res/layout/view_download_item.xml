@@ -7,8 +7,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:gravity="center_vertical"
-        android:paddingLeft="@dimen/normal_space"
-        android:paddingRight="@dimen/normal_space"
+        android:paddingLeft="@dimen/space_normal"
+        android:paddingRight="@dimen/space_normal"
         android:layout_height="?attr/actionBarSize">
 
     <com.nice.baselibrary.widget.JTextView
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
 
         android:gravity="end"
-        android:textSize="@dimen/size_smallest"
+        android:textSize="@dimen/text_size_smallest"
         android:layout_weight="1"
         android:maxLines="1"
         android:text="进度" />
@@ -37,15 +37,15 @@
         android:id="@+id/bcp_download_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/normal_space"
-        android:layout_marginEnd="@dimen/normal_space"
+        android:layout_marginStart="@dimen/space_normal"
+        android:layout_marginEnd="@dimen/space_normal"
        />
     <CheckBox
         android:id="@+id/cb_download_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/smaller_space"
-        android:layout_marginEnd="@dimen/smaller_space"
+        android:layout_marginStart="@dimen/space_smaller"
+        android:layout_marginEnd="@dimen/space_smaller"
         android:visibility="gone"
         />
     </LinearLayout>

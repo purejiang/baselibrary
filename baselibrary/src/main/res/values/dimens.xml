@@ -1,47 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--控件大小-->
-    <dimen name="biggest_size">110dp</dimen>
-    <dimen name="bigger_size">86dp</dimen>
-    <dimen name="big_size">64dp</dimen>
-    <dimen name="normal_size">48dp</dimen>
-    <dimen name="small_size">40dp</dimen>
-    <dimen name="smaller_size">30dp</dimen>
-    <dimen name="smallest_size">24dp</dimen>
+    <dimen name="widget_size_biggest">110dp</dimen>
+    <dimen name="widget_size_bigger">86dp</dimen>
+    <dimen name="widget_size_big">64dp</dimen>
+    <dimen name="widget_size_normal">48dp</dimen>
+    <dimen name="widget_size_small">40dp</dimen>
+    <dimen name="widget_size_smaller">30dp</dimen>
+    <dimen name="widget_size_smallest">24dp</dimen>
+
+    <!-- 高度 -->
+    <dimen name="widget_title_bar_height_normal">44dp</dimen>
+    <dimen name="widget_button_height_big">42dp</dimen>
+    <dimen name="widget_edit_height_normal">42dp</dimen>
+    <dimen name="widget_tab_height_normal">44dp</dimen>
 
     <!--margin大小以及padding大小-->
-    <dimen name="biggest_space">48dp</dimen>
-    <dimen name="bigger_space">32dp</dimen>
-    <dimen name="big_space">24dp</dimen>
-    <dimen name="normal_space">16dp</dimen>
-    <dimen name="small_space">8dp</dimen>
-    <dimen name="smaller_space">4dp</dimen>
-    <dimen name="smallest_space">2dp</dimen>
+    <dimen name="space_biggest">48dp</dimen>
+    <dimen name="space_bigger">32dp</dimen>
+    <dimen name="space_big">24dp</dimen>
+    <dimen name="space_normal">16dp</dimen>
+    <dimen name="space_small">8dp</dimen>
+    <dimen name="space_smaller">4dp</dimen>
+    <dimen name="space_smallest">2dp</dimen>
 
     <!-- 字体大小 -->
-    <dimen name="size_biggestst">35sp</dimen>
-    <dimen name="size_biggest">30sp</dimen>
-    <dimen name="size_bigges">25sp</dimen>
-    <dimen name="size_bigger">18sp</dimen>
-    <dimen name="size_big">16sp</dimen>
-    <dimen name="size_normal">14sp</dimen>
-    <dimen name="size_small">12sp</dimen>
-    <dimen name="size_smaller">11sp</dimen>
-    <dimen name="size_smallest">10sp</dimen>
+    <dimen name="text_size_biggestst">35sp</dimen>
+    <dimen name="text_size_biggest">30sp</dimen>
+    <dimen name="text_size_bigges">25sp</dimen>
+    <dimen name="text_size_bigger">18sp</dimen>
+    <dimen name="text_size_big">16sp</dimen>
+    <dimen name="text_size_normal">14sp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_smaller">11sp</dimen>
+    <dimen name="text_size_smallest">10sp</dimen>
 
     <!-- 圆角大小 -->
     <dimen name="radius_biggest">20dp</dimen>
     <dimen name="radius_bigger">7dp</dimen>
-    <dimen name="radius_big">3dp</dimen>
-    <dimen name="radius">2dp</dimen>
+    <dimen name="radius_big">5dp</dimen>
+    <dimen name="radius_normal">2dp</dimen>
     <dimen name="radius_small">1dp</dimen>
 
-    <!-- 高度 -->
-    <dimen name="title_bar_height">44dp</dimen>
-    <dimen name="title_box_height">190dp</dimen>
-    <dimen name="button_height">42dp</dimen>
-    <dimen name="edit_text_height">42dp</dimen>
-    <dimen name="tab_height">44dp</dimen>
+
 
     <!-- 其它 -->
     <dimen name="line_width">1dp</dimen>

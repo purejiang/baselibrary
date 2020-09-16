@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:descendantFocusability="blocksDescendants"
-    android:padding="@dimen/smallest_space"
+    android:padding="@dimen/space_smallest"
     android:orientation="horizontal">
 
     <ImageView
@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:text="appName:"
                 android:textSize="10sp"
-                android:layout_margin="@dimen/smallest_space"
+                android:layout_margin="@dimen/space_smallest"
                 android:textColor="@color/colorGrey_dark"/>
             <TextView
                 android:id="@+id/tv_app_size"
@@ -36,7 +36,7 @@
                 android:text="appSize:"
                 android:layout_alignParentRight="true"
                 android:textSize="10sp"
-                android:layout_margin="@dimen/smallest_space"
+                android:layout_margin="@dimen/space_smallest"
                 android:textColor="@color/colorGrey_dark"/>
         <TextView
             android:id="@+id/tv_package_name"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:text="packageName:"
             android:textSize="10sp"
-            android:layout_margin="@dimen/smallest_space"
+            android:layout_margin="@dimen/space_smallest"
             android:textColor="@color/colorGrey_dark"/>
 
     </LinearLayout>

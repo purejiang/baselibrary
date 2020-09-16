@@ -55,7 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start"
-        android:padding="@dimen/normal_space"
+        android:padding="@dimen/space_normal"
         android:text="message"
         app:layout_constraintBottom_toTopOf="@+id/btv_dialog_cancel"
         app:layout_constraintStart_toStartOf="parent"
