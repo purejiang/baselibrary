@@ -5,12 +5,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "com.jplus.manyfunction"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
@@ -40,7 +40,7 @@ dependencies {
     implementation 'com.scwang.smart:refresh-layout-kernel:2.0.0-alpha-1'      //核心必须依赖
     implementation 'com.scwang.smart:refresh-header-classics:2.0.0-alpha-1'    //经典刷新头
     //图片加载框架
-    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
     //内存泄漏检测
     debugApi 'com.squareup.leakcanary:leakcanary-android:2.3'
     releaseApi 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
