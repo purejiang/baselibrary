@@ -6,6 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -119,6 +121,32 @@ class TestFragment : BaseFragment(), TestContract.View {
         btn_app_web?.setOnClickListener(object : NotDoubleOnClickListener() {
             override fun notDoubleOnClick(view: View) {
                 mPresenter?.showWebView("")
+            }
+        })
+        btn_web_source?.setOnClickListener(object : NotDoubleOnClickListener() {
+            override fun notDoubleOnClick(view: View) {
+               activity?.run {
+                    getAlertDialog()
+                            .setBackgroundRes(R.drawable.bg_normal_dialog_view)
+                            .setLayoutRes(R.layout.view_web_source_dialog)
+                            .setCancelable(true)
+                            .setTag("webSource")
+                            .setAnimationRes(R.style.NiceDialogAnim)
+                            .setGravity(Gravity.BOTTOM)
+                            .setDimAmount(0.0f)
+                            .setBindViewListener(object : BaseAlertDialog.OnBindViewListener {
+                                override fun onBindView(viewHolder: BaseAdapter.VH) {
+                                    val editText:EditText = viewHolder.getView<EditText>(R.id.edt_web_url)
+                                    editText.hint = "输入链接"
+                                    viewHolder.getView<Button>(R.id.btn_get_source).setOnClickListener {
+                                        mPresenter?.getWebSource(editText.text.toString())
+                                    }
+                                }
+                            })
+                            .setKeyListener(DialogInterface.OnKeyListener { _, _, _ -> false })
+                            .build()
+                            .show()
+                }
             }
         })
 //        jdt_text?.setEditCallBack {

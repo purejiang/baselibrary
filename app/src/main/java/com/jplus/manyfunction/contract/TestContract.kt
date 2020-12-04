@@ -150,6 +150,9 @@ interface TestContract {
          * WebView
          */
         fun showWebView(url: String)
-
+        /**
+         * 获取链接网页的源码
+         */
+        fun getWebSource(url: String)
     }
 }

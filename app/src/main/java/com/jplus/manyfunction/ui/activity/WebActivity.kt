@@ -17,28 +17,30 @@ class WebActivity : AppCompatActivity() {
         setContentView(R.layout.activity_web)
         val map = mutableMapOf<String, String>();
         //声明WebSettings子类
-        //声明WebSettings子类
 
-        //如果访问的页面中要与Javascript交互，则webview必须设置支持Javascript
         //如果访问的页面中要与Javascript交互，则webview必须设置支持Javascript
         wbv_test.settings.javaScriptEnabled = true
         // 若加载的 html 里有JS 在执行动画等操作，会造成资源浪费（CPU、电量）
         // 在 onStop 和 onResume 里分别把 setJavaScriptEnabled() 给设置成 false 和 true 即可
-
-        //支持插件
-        // 若加载的 html 里有JS 在执行动画等操作，会造成资源浪费（CPU、电量）
-        // 在 onStop 和 onResume 里分别把 setJavaScriptEnabled() 给设置成 false 和 true 即可
+//        s.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
+//        s.setUseWideViewPort(true);
+//        s.setJavaScriptEnabled(true);
+//        s.setCacheMode(WebSettings.LOAD_DEFAULT);
+//        s.setSupportZoom(false);
+//        s.setJavaScriptCanOpenWindowsAutomatically(true);
+//        lnWeb.addJavascriptInterface(this, WebViewJS.JS_OBJECT);
+//        lnWeb.requestFocus();
+//        lnWeb.setWebChromeClient(new LnWebChromeClient());
+//        lnWeb.setWebViewClient(new LnWebViewClient());
+//        lnWeb.setDrawingCacheEnabled(false);
         //支持插件
 //        wbv_test.settings.setPluginsEnabled(true)
 
         //设置自适应屏幕，两者合用
-        //设置自适应屏幕，两者合用
         wbv_test.settings.useWideViewPort = true //将图片调整到适合webview的大小
 
-        wbv_test.settings.loadWithOverviewMode = true // 缩放至屏幕的大小
+        wbv_test.settings.useWideViewPort = true //将图片调整到适合webview的大小
 
-
-        //缩放操作
         //缩放操作
         wbv_test.settings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
 
@@ -46,8 +48,6 @@ class WebActivity : AppCompatActivity() {
 
         wbv_test.settings.displayZoomControls = false //隐藏原生的缩放控件
 
-
-//其他细节操作
         //其他细节操作
         wbv_test.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK //关闭webview中缓存
 
@@ -59,7 +59,7 @@ class WebActivity : AppCompatActivity() {
 
         wbv_test.settings.defaultTextEncodingName = "utf-8" //设置编码格式
 
-        wbv_test.loadUrl("https://z1.m1907.cn/?jx=安家")
+        wbv_test.loadUrl("https://www.baidu.com")
         wbv_test.webViewClient = object : WebViewClient() {
             override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
                 handler.proceed() //表示等待证书响应

@@ -21,11 +21,11 @@ class DownloadResponseBody(private val response: ResponseBody?, private val down
         return response?.contentType()
     }
 
-    override fun source(): BufferedSource? {
+    override fun source(): BufferedSource {
         response?.let {
             bufferSource = bufferSource ?: getSource(it.source()).buffer()
         }
-        return bufferSource
+        return bufferSource!!
     }
 
     @Throws(SocketException::class)

@@ -98,6 +98,13 @@
             android:text="Web"
             android:textAllCaps="false"
             />
+        <Button
+            android:id="@+id/btn_web_source"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WebSource"
+            android:textAllCaps="false"
+            />
 
     </LinearLayout>
     </ScrollView>

@@ -20,17 +20,20 @@ import com.nice.baselibrary.base.common.BaseLibrary
 import com.nice.baselibrary.base.download.DownloadState
 import com.nice.baselibrary.base.entity.vo.AppInfo
 import com.nice.baselibrary.base.entity.vo.DownloadInfo
+import com.nice.baselibrary.base.net.doGet
 import com.nice.baselibrary.base.net.doPost
 import com.nice.baselibrary.base.net.uploadFile
 import com.nice.baselibrary.base.ui.BaseActivity
 import com.nice.baselibrary.base.utils.*
 import com.nice.baselibrary.widget.dialog.BaseAlertDialog
-import io.reactivex.observers.DisposableObserver
+import io.reactivex.rxjava3.observers.DisposableObserver
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import java.io.File
@@ -151,9 +154,9 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
             override fun onNext(response: ResponseBody) {
                 val str =response.string()
                 LogUtils.d("请求成功：$str")
-                val res = Gson().fromJson<BaseResponse>(str, BaseResponse::class.java)
+                val res = Gson().fromJson(str, BaseResponse::class.java)
                 if (res.result_code == BaseResponse.SUCCESS) {
-                    val re = Gson().fromJson<InitializeResponse>(res.result_data, InitializeResponse::class.java)
+                    val re = Gson().fromJson(res.result_data, InitializeResponse::class.java)
                     if (re.is_debug) {
                         //是否debug模式
                         requestShow("token", re.show_num)
@@ -171,6 +174,24 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
 
     override fun showWebView(url: String) {
         mView.showWebView(url)
+    }
+
+    override fun getWebSource(url: String) {
+        doGet(url, object : DisposableObserver<ResponseBody>(){
+            override fun onComplete() {
+
+            }
+
+            override fun onNext(response: ResponseBody) {
+                val str = response.string()
+                LogUtils.d("请求成功：$str")
+            }
+
+            override fun onError(e: Throwable) {
+
+            }
+
+        }, "https://www.google.com")
     }
 
     private fun requestShow(token: String, num: Long) {
@@ -208,7 +229,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
     private fun uploadPic(url: String, path: String) {
         LogUtils.d("ChoosePicture onSuccess，path:$path")
 
-        val request = RequestBody.create(MediaType.parse("multipart/form-data"), File(path))
+        val request = File(path).asRequestBody("multipart/form-data".toMediaTypeOrNull())
         val body = MultipartBody.Part.createFormData("pic", File(path).name, request)
         uploadFile(url, body, object : DisposableObserver<ResponseBody>() {
             override fun onComplete() {

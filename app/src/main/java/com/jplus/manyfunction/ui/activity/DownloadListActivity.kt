@@ -5,7 +5,6 @@ import com.jplus.manyfunction.R
 import com.jplus.manyfunction.presenter.DownloadListPresenter
 import com.nice.baselibrary.base.ui.BaseActivity
 import com.jplus.manyfunction.ui.fragment.DownloadListFragment
-import kotlinx.android.synthetic.main.activity_download.*
 
 
 /**

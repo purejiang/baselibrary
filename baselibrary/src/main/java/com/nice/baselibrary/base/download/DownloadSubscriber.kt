@@ -1,7 +1,7 @@
 package com.nice.baselibrary.base.download
 
 import com.nice.baselibrary.base.entity.vo.DownloadInfo
-import io.reactivex.observers.DisposableObserver
+import io.reactivex.rxjava3.observers.DisposableObserver
 import okhttp3.ResponseBody
 
 /**

@@ -13,7 +13,7 @@ class DownloadInterceptor(private val downloadListener: DownloadProgressListener
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.proceed(chain.request())
-        LogUtils.d("download[responseHeaders]:\n${original.headers()}")
-        return original.newBuilder().body(DownloadResponseBody(original.body(), downloadListener)).build()
+        LogUtils.d("download[responseHeaders]:\n${original.headers}")
+        return original.newBuilder().body(DownloadResponseBody(original.body, downloadListener)).build()
     }
 }

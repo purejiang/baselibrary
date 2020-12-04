@@ -1,9 +1,10 @@
 package com.nice.baselibrary.base.net
 
 
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.observers.DisposableObserver
-import io.reactivex.schedulers.Schedulers
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.observers.DisposableObserver
+import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
@@ -51,7 +52,7 @@ fun doPost(url: String, any: Any, observer: DisposableObserver<ResponseBody>, ba
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .retryOnConnectionFailure(true)
             .connectTimeout(15, TimeUnit.SECONDS)
-            .build())?.let {
+            .build()).let {
         RetrofitHelper(baseUrl, it)
                 .getService()
                 .post(any, url)
@@ -73,7 +74,7 @@ fun doPostForm(url: String, map: MutableMap<String, String>, observer: Disposabl
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .retryOnConnectionFailure(true)
             .connectTimeout(15, TimeUnit.SECONDS)
-            .build())?.let {
+            .build()).let {
         RetrofitHelper(baseUrl, it)
                 .getService()
                 .postForm(map, url)
@@ -94,7 +95,7 @@ fun doGet(url: String, observer: DisposableObserver<ResponseBody>, baseUrl: Stri
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .retryOnConnectionFailure(true)
             .connectTimeout(15, TimeUnit.SECONDS)
-            .build())?.let {
+            .build()).let {
         RetrofitHelper(baseUrl, it)
                 .getService()
                 .get(url)
