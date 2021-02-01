@@ -343,7 +343,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
 
     override fun downLoadPatch(url: String, dirPath: String, downloadCallback: DownloadCallback) {
         val name = parseUrlName(url)
-        val download = DownloadInfo(0, name, url, dirPath + File.separator + name, Date(System.currentTimeMillis()).getDateTimeByMillis(false), "", 0, 0, DownloadState.DOWNLOAD_UNKNOWN)
+        val download = DownloadInfo(0, name, url, dirPath + File.separator + name, Date(System.currentTimeMillis()).getDateTimeByMillis(false), "", 0, 0, DownloadState.DOWNLOAD_UNKNOWN,"")
         //不判断下载状态
         JDownloadManager.addNewDownload(download, downloadCallback, null, false)
 

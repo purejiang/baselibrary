@@ -13,4 +13,5 @@ data class DownloadInfo(var id:Int,
                         var end_time:String,
                         var read:Long,
                         var count:Long,
-                        var status:String)
+                        var status:String,
+                        var ext:String)

@@ -27,7 +27,8 @@ class DownloadDbHelper(context: Context, private val table_name: String = "downl
                 "end_time text not null," +
                 "read long not null," +
                 "count long not null," +
-                "status text not null"
+                "status text not null,"+
+                "ext text not null"+")"
         db?.execSQL(downloadSql)
     }
 
@@ -46,7 +47,7 @@ class DownloadDbHelper(context: Context, private val table_name: String = "downl
     @Throws(SQLException::class)
     fun addExec(data: DownloadInfo): Boolean {
         LogUtils.d("addExec:$data")
-        val sql = "insert into $table_name values (null, '${data.name}', '${data.url}', '${data.path}', '${data.start_time}', '${data.end_time}', ${data.read}, ${data.count}, '${data.status}')"
+        val sql = "insert into $table_name values (null, '${data.name}', '${data.url}', '${data.path}', '${data.start_time}', '${data.end_time}', ${data.read}, ${data.count}, '${data.status}, '${data.ext}')"
         this.writableDatabase?.execSQL(sql)
         return true
     }
@@ -75,7 +76,7 @@ class DownloadDbHelper(context: Context, private val table_name: String = "downl
         db.beginTransaction()
         try {
             for (jDownload in downloads) {
-                val sql = "insert into $table_name values (null, '${jDownload.name}', '${jDownload.url}', '${jDownload.path}', '${jDownload.start_time}', '${jDownload.end_time}', ${jDownload.read}, ${jDownload.count}, '${jDownload.status}')"
+                val sql = "insert into $table_name values (null, '${jDownload.name}', '${jDownload.url}', '${jDownload.path}', '${jDownload.start_time}', '${jDownload.end_time}', ${jDownload.read}, ${jDownload.count}, '${jDownload.status}', '${jDownload.ext}')"
                 LogUtils.d(sql)
                 this.writableDatabase?.execSQL(sql)
             }
@@ -121,7 +122,7 @@ class DownloadDbHelper(context: Context, private val table_name: String = "downl
 
     override fun update(data: DownloadInfo): Boolean {
         val db = this.writableDatabase
-        val sql = "update $table_name set  name = '${data.name}', url = '${data.url}', path = '${data.path}', end_time = '${data.end_time}', read = ${data.read}, count = ${data.count}, status = '${data.status}' where id = ${data.id}"
+        val sql = "update $table_name set  name = '${data.name}', url = '${data.url}', path = '${data.path}', end_time = '${data.end_time}', read = ${data.read}, count = ${data.count}, status = '${data.status}', ext = '${data.ext}' where id = ${data.id}"
         LogUtils.d(sql)
         db.execSQL(sql)
         db.close()
@@ -182,7 +183,8 @@ class DownloadDbHelper(context: Context, private val table_name: String = "downl
                         , it.getString(it.getColumnIndex("end_time"))
                         , it.getLong(it.getColumnIndex("read"))
                         , it.getLong(it.getColumnIndex("count"))
-                        , it.getString(it.getColumnIndex("status"))))
+                        , it.getString(it.getColumnIndex("status"))
+                        , it.getString(it.getColumnIndex("ext"))))
             }
         }
         cursor.close()
@@ -199,5 +201,6 @@ class DownloadDbHelper(context: Context, private val table_name: String = "downl
         put("read", data.read)
         put("count", data.count)
         put("status", data.status)
+        put("ext", data.ext)
     }
 }
