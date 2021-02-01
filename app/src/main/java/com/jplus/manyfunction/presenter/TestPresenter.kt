@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Handler
-import android.os.Message
 import android.util.Log
 import android.view.View
 import com.google.gson.Gson
@@ -20,19 +19,15 @@ import com.nice.baselibrary.base.common.BaseLibrary
 import com.nice.baselibrary.base.download.DownloadState
 import com.nice.baselibrary.base.entity.vo.AppInfo
 import com.nice.baselibrary.base.entity.vo.DownloadInfo
-import com.nice.baselibrary.base.net.doGet
-import com.nice.baselibrary.base.net.doPost
-import com.nice.baselibrary.base.net.uploadFile
+import com.nice.baselibrary.base.net.*
 import com.nice.baselibrary.base.ui.BaseActivity
 import com.nice.baselibrary.base.utils.*
 import com.nice.baselibrary.widget.dialog.BaseAlertDialog
 import io.reactivex.rxjava3.observers.DisposableObserver
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.ResponseBody
 import org.json.JSONObject
@@ -259,6 +254,52 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
 //        })
     }
 
+    override fun getNetWork() {
+        var netState:String?=null
+        when(NetWorkUtil.getNetWorkType(activity)){
+            NetWorkUtil.NETWORK_WIFI-> netState="wifi"
+            NetWorkUtil.NETWORK_MOBILE-> netState="moblie"
+            NetWorkUtil.NETWORK_INVALID-> netState="invalid"
+            NetWorkUtil.NETWORK_UNKNOWN-> netState="unknown"
+        }
+        mView.showNetWork(netState, NetWorkUtil.isOnline(activity))
+    }
+
+    override fun onNetWorkCallback() {
+//        NetWorkHelper.registerCallback(activity, object :NetWorkHelper.NetCallback{
+//            override fun onNetAvailable(available: Boolean) {
+//                activity.runOnUiThread {
+//                    mView.showNetWorkState(null, available, null)
+//                }
+//            }
+//
+//            override fun onNetType(type: String) {
+//                activity.runOnUiThread {
+//                    mView.showNetWorkState(type, null, null)
+//                }
+//            }
+//        })
+        NetWorkReceiver.register(activity, true, object :NetWorkReceiver.OnNetWorkChangeListener{
+            override fun getNetInfo(isOnline: Boolean) {
+                activity.runOnUiThread {
+                    mView.showNetWorkState(null, isOnline, null)
+                }
+            }
+
+            override fun getNetType(type: Int) {
+                activity.runOnUiThread {
+                    mView.showNetWorkState("${type}", null, null)
+                }
+            }
+
+            override fun getNetStrength(strength: Int) {
+                activity.runOnUiThread {
+                    mView.showNetWorkState(null, null, strength)
+                }
+            }
+        })
+    }
+
 
     override fun startPermissionTest() {
         mView.getFragActivity()?.let {
@@ -302,7 +343,7 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
 
     override fun downLoadPatch(url: String, dirPath: String, downloadCallback: DownloadCallback) {
         val name = parseUrlName(url)
-        val download = DownloadInfo(0, name, url, dirPath + File.separator + name, Date(System.currentTimeMillis()).getDateTimeByMillis(false), "", 0, 0, DownloadState.DOWNLOAD_UNKNOWN, "")
+        val download = DownloadInfo(0, name, url, dirPath + File.separator + name, Date(System.currentTimeMillis()).getDateTimeByMillis(false), "", 0, 0, DownloadState.DOWNLOAD_UNKNOWN)
         //不判断下载状态
         JDownloadManager.addNewDownload(download, downloadCallback, null, false)
 
@@ -363,7 +404,8 @@ class TestPresenter(private val mView: TestContract.View, private val activity: 
     }
 
     override fun unSubscribe() {
-
+//        NetWorkHelper.unRegisterCallback()
+        NetWorkReceiver.unRegister(activity)
     }
 
     override fun activityResult(requestCode: Int, resultCode: Int, data: Intent?) {

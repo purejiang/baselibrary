@@ -1,5 +1,6 @@
 package com.nice.baselibrary.base.utils
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ComponentName
@@ -60,6 +61,7 @@ fun getDeviceInfo(): String {
 
 /**
  * 获取设备mac地址
+ * <p>需要在manifest中声明权限{@link android.Manifest.permission.ACCESS_WIFI_STATE}</p>
  * @return
  */
 @SuppressLint("MissingPermission")

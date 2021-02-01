@@ -125,7 +125,7 @@ class TestFragment : BaseFragment(), TestContract.View {
         })
         btn_web_source?.setOnClickListener(object : NotDoubleOnClickListener() {
             override fun notDoubleOnClick(view: View) {
-               activity?.run {
+                activity?.run {
                     getAlertDialog()
                             .setBackgroundRes(R.drawable.bg_normal_dialog_view)
                             .setLayoutRes(R.layout.view_web_source_dialog)
@@ -136,7 +136,7 @@ class TestFragment : BaseFragment(), TestContract.View {
                             .setDimAmount(0.0f)
                             .setBindViewListener(object : BaseAlertDialog.OnBindViewListener {
                                 override fun onBindView(viewHolder: BaseAdapter.VH) {
-                                    val editText:EditText = viewHolder.getView<EditText>(R.id.edt_web_url)
+                                    val editText: EditText = viewHolder.getView<EditText>(R.id.edt_web_url)
                                     editText.hint = "输入链接"
                                     viewHolder.getView<Button>(R.id.btn_get_source).setOnClickListener {
                                         mPresenter?.getWebSource(editText.text.toString())
@@ -149,11 +149,40 @@ class TestFragment : BaseFragment(), TestContract.View {
                 }
             }
         })
+        btn_net_work?.setOnClickListener(object : NotDoubleOnClickListener() {
+            override fun notDoubleOnClick(view: View) {
+                mPresenter?.getNetWork()
+            }
+
+        })
+        mPresenter?.onNetWorkCallback()
 //        jdt_text?.setEditCallBack {
 //            Log.d("pipa", "jdt_text.changedToEmpty")
 //        }
     }
 
+    override fun showNetWork(state: String?, isOnline: Boolean?) {
+        btn_net_work?.text = "state:$state, isOnline:$isOnline"
+    }
+    override fun showNetWorkState(state: String?, isOnline: Boolean?, strength: Int?) {
+
+        state?.let {
+            tv_net_work_state.text = "state:${it}"
+//            when (it) {
+//                NetWorkReceiver.NETWORK_INVALID -> tv_net_work_state.text = "state:无网络"
+//                NetWorkReceiver.NETWORK_WIFI -> tv_net_work_state.text = "state:Wifi"
+//                NetWorkReceiver.NETWORK_MOBILE -> tv_net_work_state.text = "state:移动网络"
+//                else -> tv_net_work_state.text = "state:未知网络"
+//            }
+        }
+        isOnline?.let {
+            tv_net_work_online.text = ", isOnline:${isOnline}"
+        }
+        strength?.let {
+            tv_net_work_strength.text = ",strength: ${strength}"
+        }
+
+    }
 
     override fun showInitView(response: InitShowResponse) {
         this.activity?.createDialog(JDialog.DIALOG_NORMAL)

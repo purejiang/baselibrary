@@ -27,7 +27,7 @@ class DownloadDbHelper(context: Context, private val table_name: String = "downl
                 "end_time text not null," +
                 "read long not null," +
                 "count long not null," +
-                "status text not null" + ")"
+                "status text not null"
         db?.execSQL(downloadSql)
     }
 
@@ -38,13 +38,13 @@ class DownloadDbHelper(context: Context, private val table_name: String = "downl
     override fun add(data: DownloadInfo): Boolean {
         val db = this.writableDatabase
         LogUtils.d("add:$data")
-        val result = db.insert(table_name, null, download2Value(data))==1L
+        val result = db.insert(table_name, null, download2Value(data)) == 1L
 //        val sql = "select * from $table_name where name = ? and url = ?"
         return result
     }
 
     @Throws(SQLException::class)
-    fun addExec(data: DownloadInfo): Boolean{
+    fun addExec(data: DownloadInfo): Boolean {
         LogUtils.d("addExec:$data")
         val sql = "insert into $table_name values (null, '${data.name}', '${data.url}', '${data.path}', '${data.start_time}', '${data.end_time}', ${data.read}, ${data.count}, '${data.status}')"
         this.writableDatabase?.execSQL(sql)
@@ -58,7 +58,7 @@ class DownloadDbHelper(context: Context, private val table_name: String = "downl
         db.beginTransaction()
         try {
             for (data in dataList) {
-               result.add(db.insert(table_name, null, download2Value(data))==1L)
+                result.add(db.insert(table_name, null, download2Value(data)) == 1L)
             }
             db.setTransactionSuccessful()
             return result
@@ -117,7 +117,6 @@ class DownloadDbHelper(context: Context, private val table_name: String = "downl
         db.close()
         return true
     }
-
 
 
     override fun update(data: DownloadInfo): Boolean {
@@ -183,8 +182,7 @@ class DownloadDbHelper(context: Context, private val table_name: String = "downl
                         , it.getString(it.getColumnIndex("end_time"))
                         , it.getLong(it.getColumnIndex("read"))
                         , it.getLong(it.getColumnIndex("count"))
-                        , it.getString(it.getColumnIndex("status"))
-                         ,  it.getString(it.getColumnIndex("ext"))))
+                        , it.getString(it.getColumnIndex("status"))))
             }
         }
         cursor.close()

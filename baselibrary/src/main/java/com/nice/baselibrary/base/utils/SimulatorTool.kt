@@ -10,6 +10,7 @@ import android.provider.MediaStore
 import android.text.TextUtils
 
 /**
+ * 模拟器判断类
  * @author JPlus
  * @date 2020/4/21.
  */
@@ -54,7 +55,7 @@ class SimulatorTool {
 
         /**
          * 是否没有蓝牙
-         *
+         * <p>需要在manifest中声明权限{@link android.Manifest.permission.Blue}</p>
          * @return
          */
         fun isNotBlueTooth(): Boolean {

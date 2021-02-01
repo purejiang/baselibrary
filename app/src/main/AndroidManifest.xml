@@ -3,21 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.jplus.manyfunction">
 
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- 更改网络状态 -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 访问wifi状态 -->
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 读取系统中所有的LOG的权限,4.1以上已无法获取 -->
-    <!-- <uses-permission android:name="android.permission.READ_LOGS" /> -->
-    <!-- 系统弹出框,6.0以后需要用户在系统设置中同意 -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 危险权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <!-- 读取手机状态 -->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 读取手机存储 -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 相机权限 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 访问精细位置 -->
-    <uses-permission android:name="android.permission.CAMERA" /> <!-- 读取短信 -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 录制音频 -->
-    <uses-permission android:name="android.permission.READ_SMS" /> <!-- 读取联系人 -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- 读取日历 -->
-    <uses-permission android:name="android.permission.READ_CONTACTS" /> <!-- 传感器 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.BODY_SENSORS" />
 

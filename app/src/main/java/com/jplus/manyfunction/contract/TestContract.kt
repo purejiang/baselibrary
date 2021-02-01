@@ -80,6 +80,15 @@ interface TestContract {
          * WebView
          */
         fun showWebView(url: String)
+        /**
+         * 自动获取网络状态
+         */
+        fun showNetWorkState(state:String?, isOnline: Boolean?, strength: Int?)
+        /**
+         * 主动获取网络状态
+         */
+        fun showNetWork(state:String?, isOnline: Boolean?)
+
     }
 
     interface Presenter: BasePresenter {
@@ -154,5 +163,13 @@ interface TestContract {
          * 获取链接网页的源码
          */
         fun getWebSource(url: String)
+        /**
+         * 获取网络状态
+         */
+        fun onNetWorkCallback()
+        /**
+         * 获取网络状态
+         */
+        fun getNetWork()
     }
 }

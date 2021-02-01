@@ -57,7 +57,7 @@ class DownloadListPresenter(context: Context, private val mView: DownloadListCon
             override fun onDataLoaded(dataList: MutableList<DownloadInfo>) {
                     if (dataList.size == 0) {
                         val filePath = dirPath + File.separator + name
-                        val download = DownloadInfo(0, name, url, filePath, "${System.currentTimeMillis()}", "", 0L, 0L, DownloadState.DOWNLOAD_READY, "")
+                        val download = DownloadInfo(0, name, url, filePath, "${System.currentTimeMillis()}", "", 0L, 0L, DownloadState.DOWNLOAD_READY)
                         mDataSource.addData(download) { result->
                             if(result) Log.d("pipa", "aaaa")
                         }

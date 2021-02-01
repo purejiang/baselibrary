@@ -51,7 +51,7 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
     }
 
     override fun bindListener() {
-        val urls = "http://eyepetizer-test.oss-cn-beijing.aliyuncs.com/files/eyepetizer/5.3.482/eyepetizer-eyepetizer_web.apk"
+        val urls = "http://packages.cdn.leniu.com/com.jlsy.lycsln_52af1dbd45.apk"
 
         fab_input_url.setOnClickListener {
             this.activity?.let {
@@ -212,7 +212,7 @@ class DownloadListFragment : BaseFragment(), DownloadListContract.View {
             }
 
             override fun downloadFailed(e: Throwable) {
-                Log.e("pipa", e.message)
+
                 activity?.runOnUiThread {
                     itemView.getView<BaseCircleProgress>(R.id.bcp_download_item).failed()
                 }

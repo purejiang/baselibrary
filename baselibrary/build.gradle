@@ -41,7 +41,7 @@ dependencies {
     //Gson 库
     api 'com.google.code.gson:gson:2.8.6'
     //okhttp
-    api 'com.squareup.okhttp3:okhttp:4.9.0'
+//    api 'com.squareup.okhttp3:okhttp:4.9.0'
     //请求日志拦截器
     api 'com.squareup.okhttp3:logging-interceptor:4.9.0'
     //下面两个是RxJava 和 RxAndroid
